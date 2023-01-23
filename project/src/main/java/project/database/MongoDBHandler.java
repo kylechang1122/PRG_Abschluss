@@ -22,4 +22,8 @@ public class MongoDBHandler {
 
     public MongoCollection getCollection(){return this.collection;}
 
+    public Document getUser(String id) {
+        return null; // not finished yet
+    }
+
 }

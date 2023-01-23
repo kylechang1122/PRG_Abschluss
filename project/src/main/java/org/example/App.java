@@ -1,11 +1,16 @@
 package org.example;
 
-import project.database.MongoDBConfig;
-import project.database.MongoDBHandler;
-import project.exception.DataBaseException;
+import project.database.*;
+import project.exception.*;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 import freemarker.template.Configuration;
+import org.bson.Document;
+
+import java.io.File;
+import java.util.HashMap;
+
+import static spark.Spark.*;
 
 /**
  * Hello world!
@@ -33,8 +38,7 @@ public class App
             // set external template directory
             freemarker.template.Configuration templateConfig = new freemarker.template.Configuration(Configuration.getVersion());
             templateConfig.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + File.separator + "templates"));
-            // JSON transformer
-            Gson gson = new Gson();
+
             // set encoding to unicode
             templateConfig.setDefaultEncoding("utf-8");
 
@@ -51,10 +55,30 @@ public class App
         try {
 
             before((request, response) -> {
-                // 1) backend gets username and password from request Authentication header
 
+                // 1) backend gets username and password from request Authentication heade
+                BasicAuthFilter basicAuthFilter = new BasicAuthFilter();
+                String encodedHeader = request.headers("Authorization");
+                encodedHeader.substring(encodedHeader.lastIndexOf("Basic") + 1);
+                String[] credentials = basicAuthFilter.extractCredentials(encodedHeader);
                 // 2) backend gets user from database
+                MongoDBConfig config = new MongoDBConfig("C:\\Users\\Driton\\Desktop\\Fiverr Project\\parliamentreader\\project\\src\\main\\resources\\dbconnectionconfig.txt");
+                MongoDBHandler dbConnection = new MongoDBHandler(config);
+                Document user = dbConnection.getUser(credentials[0]);
                 // if exists
+                if (user != null) {
+                    if (user.get("password", String.class).equals(credentials[1])){
+                        if (user.get("group", String.class).equals {
+                        respond(200, requested data);
+                        }
+                        else {
+                            halt(405, "Not Authenticate");
+                        }
+                    }
+                    else {
+                        halt(401, "Not Authenticate");
+                    }
+                }
                 //         -> 3)
                 // if not
                 // halt(401)
