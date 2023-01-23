@@ -22,17 +22,22 @@
 <body>
 <h1>Welcome to Parliament Browser</h1>
 <h3> Please enter your User ID and Password to log in. </h3>
-<form class="login-form">
-<label for="userid">User ID:</label><br>
-<input type="text" id="userid" name="userid"/><br>
-<label for="password">Password:</label><br>
-<input type="password" id="password" name="password"/><br>
-<br>
-    <button id="login-button" value="Submit to log in">
-        Login
-    </button>
+<div id="login">
+    <form class="login-form">
+        <label for="userid">User ID:</label><br>
+        <input type="text" id="userid" name="userid"/><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"/><br>
+        <br>
+        <button id="login-button" value="Submit to log in">
+            Login
+        </button>
 
-</form>
+    </form>
+</div>
+<div id="speeches-editor">
+
+</div>
 
 <script>
     var hash = null;
