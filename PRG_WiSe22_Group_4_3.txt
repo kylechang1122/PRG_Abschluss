@@ -1,0 +1,6 @@
+remote_host = prg2022.texttechnologylab.org
+remote_database = PRG_WiSe22_Group_4_3
+remote_user = PRG_WiSe22_Group_4_3
+remote_password = F10NYFHP
+remote_port = 27020
+remote_collection = protocol
