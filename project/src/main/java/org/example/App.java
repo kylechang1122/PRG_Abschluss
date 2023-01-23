@@ -41,16 +41,32 @@ public class App
             get("/", (request, response) -> {
                 return  new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "login.ftl"));
             });
-            authenticated(templateConfig);
+            hasManagerRights(templateConfig);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    static public void authenticated(freemarker.template.Configuration templateConfig) {
+    static public void hasManagerRights(freemarker.template.Configuration templateConfig) {
         try {
 
             before((request, response) -> {
+                // 1) backend gets username and password from request Authentication header
+
+                // 2) backend gets user from database
+                // if exists
+                //         -> 3)
+                // if not
+                // halt(401)
+                // 3) backend compare the password
+                // if match
+                //         -> 4)
+                // if not
+                // halt(401)
+                // 4) backend checks if the user belongs to the correct group with the required rights for the requested content (e.g. admin group for admin content)
+                // if user has sufficient rights -> respond(200, requested data)
+                // if not
+                // halt(405)
                 new ParAnsyBasicAuthFilter("admin", "admin").handle(request, response);
             });
 

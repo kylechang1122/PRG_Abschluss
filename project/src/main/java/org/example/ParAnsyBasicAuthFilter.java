@@ -17,31 +17,40 @@ public class ParAnsyBasicAuthFilter {
         this.username = username;
         this.password = password;
     }
+
     // exam if request authenticated.
-    public void handle(Request request, Response response){
+    public void handle(Request request, Response response) {
         if (!request.headers().contains("Authorization") || !authenticated(request)) {
             halt(401, "Not Authenticate");
         }
     }
-    // exam credentials.
+
+    /**
+     * exam credentials.
+     *
+     * @param request the incoming HTTP-request from spark
+     * @return
+     */
     private Boolean authenticated(Request request) {
         String encodedHeader = request.headers("Authorization");
         encodedHeader.substring(encodedHeader.lastIndexOf("Basic") + 1);
         String[] submittedCredentials = extractCredentials(encodedHeader);
-        if (submittedCredentials != null && submittedCredentials.length == 2){
+        if (submittedCredentials != null && submittedCredentials.length == 2) {
             String submittedUser = submittedCredentials[0];
             String submittedPassword = submittedCredentials[1];
             return Objects.equals(username, submittedUser) && Objects.equals(password, submittedPassword);
         }
         return false;
     }
+
     // extract Credentials from Header
-    private String[] extractCredentials(String encodedHeader){
-        if (encodedHeader != null){
+    public String[] extractCredentials(String encodedHeader) {
+        if (encodedHeader != null) {
             String decodedHeader = new String(Base64.getDecoder().decode(encodedHeader));
             return decodedHeader.split(":");
+        } else {
+            return null;
         }
-        else{return null;}
 
     }
 
