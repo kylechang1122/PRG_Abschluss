@@ -43,8 +43,8 @@ public class App
             // set encoding to unicode
             templateConfig.setDefaultEncoding("utf-8");
 
-            get("/", (request, response) -> {
-                return  new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "login.ftl"));
+            get("/editor", (request, response) -> {
+                return  new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "editor.ftl"));
             });
             hasManagerRights(templateConfig);
         } catch (Exception e) {
@@ -93,9 +93,9 @@ public class App
                 // halt(405)
             });
 
-            get("/dashboard", (request, response) -> {
-                return  new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "dashboard.ftl"));
-            });
+           // get("/dashboard", (request, response) -> {
+           //     return  new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "dashboard.ftl"));
+           // });
         } catch (Exception e) {
             e.printStackTrace();
         }
