@@ -67,7 +67,6 @@ public class App
                 // if user has sufficient rights -> respond(200, requested data)
                 // if not
                 // halt(405)
-                new ParAnsyBasicAuthFilter("admin", "admin").handle(request, response);
             });
 
             get("/dashboard", (request, response) -> {
