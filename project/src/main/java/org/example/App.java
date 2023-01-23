@@ -18,6 +18,7 @@ import static spark.Spark.*;
  */
 public class App
 {
+    static public String configDir = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "dbconnectionconfig.txt";
     public static void main( String[] args ) {
 
         try {
@@ -62,17 +63,16 @@ public class App
                 encodedHeader.substring(encodedHeader.lastIndexOf("Basic") + 1);
                 String[] credentials = basicAuthFilter.extractCredentials(encodedHeader);
                 // 2) backend gets user from database
-                MongoDBConfig config = new MongoDBConfig("C:\\Users\\Driton\\Desktop\\Fiverr Project\\parliamentreader\\project\\src\\main\\resources\\dbconnectionconfig.txt");
+
+                MongoDBConfig config = new MongoDBConfig(configDir);
                 MongoDBHandler dbConnection = new MongoDBHandler(config);
                 Document user = dbConnection.getUser(credentials[0]);
                 // if exists
                 if (user != null) {
+                    String group = user.get("group", String.class);
                     if (user.get("password", String.class).equals(credentials[1])){
-                        if (user.get("group", String.class).equals {
-                        respond(200, requested data);
-                        }
-                        else {
-                            halt(405, "Not Authenticate");
+                        if (!group.equals("manager") && !group.equals("admin")) {
+                            halt(405, "Not Authorized");
                         }
                     }
                     else {
