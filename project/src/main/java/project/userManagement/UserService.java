@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class UserService {
 
-    private MongoDBHandler dbConnection;
-    public UserService(MongoDBHandler mongoDBHandler) {
+    private UserDbHandler dbConnection;
+    public UserService(UserDbHandler mongoDBHandler) {
         dbConnection = mongoDBHandler;
     }
 

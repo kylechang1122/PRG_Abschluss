@@ -20,11 +20,9 @@ public class MongoDBHandler {
         collection = db.getCollection(config.getCollection());
     }
 
-    public MongoCollection getCollection(){return this.collection;}
+    public MongoCollection<Document> getCollection(){return this.collection;}
 
-    public Document getUser(String id) {
-        return null; // not finished yet
-    }
+    public MongoCollection<Document> getCollection(String collection){return this.db.getCollection(collection);}
 
     public void addUser(Document user) {
         // not finished yet

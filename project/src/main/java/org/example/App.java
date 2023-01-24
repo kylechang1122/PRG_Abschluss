@@ -3,6 +3,7 @@ package org.example;
 import project.database.*;
 import project.exception.*;
 import project.frontend.Frontend;
+import project.userManagement.UserDbHandler;
 import project.userManagement.UserManagement;
 import project.userManagement.UserService;
 
@@ -28,7 +29,7 @@ public class App
             MongoDBHandler dbConnection = new MongoDBHandler(config);
             System.out.println("Hello World");
             new Frontend().initRoutes();
-            new UserManagement(new UserService(dbConnection)).initApi();
+            new UserManagement(new UserService(new UserDbHandler(dbConnection))).initApi();
 
         }catch (DataBaseException ex){
             ex.printStackTrace();
