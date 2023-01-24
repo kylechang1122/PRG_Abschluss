@@ -10,11 +10,11 @@ public class UserDbHandler {
 
     private MongoDBHandler dbHandler;
 
-    public UserDbHandler(MongoDBHandler dbHandler){
+    public UserDbHandler(MongoDBHandler dbHandler) {
         this.dbHandler = dbHandler;
     }
 
-    private MongoCollection<Document> getCollection(){
+    private MongoCollection<Document> getCollection() {
 
         return dbHandler.getCollection("users");
     }

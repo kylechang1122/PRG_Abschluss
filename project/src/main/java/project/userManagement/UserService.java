@@ -1,7 +1,6 @@
 package project.userManagement;
 
 import org.bson.Document;
-import project.database.MongoDBHandler;
 
 import java.util.ArrayList;
 
@@ -9,7 +8,8 @@ public class UserService {
 
     private UserDbHandler dbConnection;
     public UserService(UserDbHandler mongoDBHandler) {
-        dbConnection = mongoDBHandler;
+
+        this.dbConnection = mongoDBHandler;
     }
 
     public void addUser (User user){
@@ -36,7 +36,7 @@ public class UserService {
         dbConnection.deleteUser(id);
     }
 
-    public boolean userExist (String id){
+    public boolean userExists (String id){
         return dbConnection.userExists(id);
     }
 }
