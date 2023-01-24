@@ -26,4 +26,20 @@ public class MongoDBHandler {
         return null; // not finished yet
     }
 
+    public void addUser(Document user) {
+        // not finished yet
+    }
+
+    public void replaceUser(Document user) {
+        // not finished yet
+    }
+
+    public void deleteUser(String id) {
+        // not finished yet
+    }
+
+    public boolean userExists(String id) {
+        return false; // not finished yet
+    }
+
 }
