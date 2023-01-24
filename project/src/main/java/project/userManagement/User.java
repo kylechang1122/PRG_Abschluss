@@ -40,6 +40,7 @@ public class User {
 
     public String toJson() {
         Document document = toDocument();
+        // todo remove password
         return new Gson().toJson(document);
     }
 }

@@ -15,6 +15,7 @@ public class UserDbHandler {
     }
 
     private MongoCollection<Document> getCollection(){
+
         return dbHandler.getCollection("users");
     }
 

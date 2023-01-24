@@ -22,10 +22,13 @@ public class UserService {
     }
     public User getUser (String id){
         Document document = dbConnection.getUser(id);
+        if(document == null) {
+            return null;
+        }
         return new User(document);
     }
 
-    public void editUser (User user){
+    public void editUser(User user) {
         dbConnection.replaceUser(user.toDocument());
     }
 

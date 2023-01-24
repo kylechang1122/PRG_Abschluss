@@ -16,11 +16,18 @@ public class BasicAuthHelper {
 
     private UserService userService;
     public BasicAuthHelper(UserService userService) {
+        this.userService = userService;
     }
 
     // extract Credentials from Header
     private String[] extractCredentials(String encodedHeader) {
-        if (encodedHeader != null) {
+        String prefix = "Basic ";
+        if (encodedHeader.startsWith(prefix)) {
+            encodedHeader = encodedHeader.substring(prefix.length());
+        } else {
+            return null;
+        }
+        if (!encodedHeader.equals("")) {
             String decodedHeader = new String(Base64.getDecoder().decode(encodedHeader));
             return decodedHeader.split(":");
         } else {
@@ -34,18 +41,25 @@ public class BasicAuthHelper {
         String encodedHeader = request.headers("Authorization");
         if(encodedHeader == null) {
             halt(401, "Not Authenticated");
+            return null;
         }
-        encodedHeader = encodedHeader.substring(encodedHeader.lastIndexOf("Basic") + 1);
         String[] credentials = extractCredentials(encodedHeader);
+        if (credentials == null) {
+            halt(401, "Not Authenticated");
+            return null;
+        }
         // 2) backend gets user from database
-        User user = userService.getUser(credentials[0]);
+        String userId = credentials[0];
+        User user = userService.getUser(userId);
         // if not exists
         if (user == null) {
             halt(401, "Not Authenticated");
+            return null;
         }
         // 3) backend compares password
         if (!user.checkPassword(credentials[1])) {
             halt(401, "Not Authenticated");
+            return null;
         }
         return user;
     }
