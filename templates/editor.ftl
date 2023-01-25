@@ -14,6 +14,7 @@
             src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"></script>
     <script type="text/javascript" src="global.js"></script>
     <script type="text/javascript" src="ui/user-editor.js"></script>
+    <script type="text/javascript" src="ui/speaker-editor.js"></script>
     <style>
         #editor > div{
             display: none;
@@ -64,7 +65,8 @@
     // show user editor for test purpose
     function showFakeUserEditor(){
         $("#admin-area").show();
-        showUserEditor($("#user-editor"), {userId: "fake", group: "manager"});
+        showUserEditor($("#user-editor"), {});
+        showSpeakerEditor($("#user-editor"), {firstName: "Kyle", lastName: "Chang"});
     }
 
     showFakeUserEditor();

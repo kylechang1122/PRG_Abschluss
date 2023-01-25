@@ -24,7 +24,6 @@ public class UserManagement {
 
     public void initApi() {
         Gson gson = new Gson();
-        initCreateUser();
         get("/authenticate", (request, response) -> {
             Document user = basicAuthHelper.getCurrentUser(request).toDocument();
             return user;
