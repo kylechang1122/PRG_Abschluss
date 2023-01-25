@@ -23,8 +23,7 @@ public class UserManagement {
     public void initApi() {
         Gson gson = new Gson();
         get("/authenticate", (request, response) -> {
-            Document user = basicAuthHelper.getAuthenticatedUser(request).toDocument();
-            user.remove("password");
+            Document user = basicAuthHelper.getCurrentUser(request).toDocument();
             return user;
         }, gson::toJson);
         get("/rest/admin/users/:id", (request, response) -> {
@@ -32,10 +31,16 @@ public class UserManagement {
             String id = request.params(":id");
             return userService.getUser(id);
         }, gson::toJson);
+        put("/rest/admin/users/:id", (request, response) -> {
+            // todo edit user
+            checkAuthorization(request, response);
+            String id = request.params(":id");
+            return userService.getUser(id);
+        }, gson::toJson);
     }
 
     private void checkAuthorization(Request request, Response response) throws DataBaseException {
-            User user = basicAuthHelper.getAuthenticatedUser(request);
+            User user = basicAuthHelper.getCurrentUser(request);
             // 4) backend checks if the user belongs to the correct group with the required rights for the requested content (e.g. admin group for admin content)
             String group = user.getGroup();
             if (!group.equals("admin")) {

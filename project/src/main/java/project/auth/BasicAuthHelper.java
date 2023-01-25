@@ -36,7 +36,7 @@ public class BasicAuthHelper {
 
     }
 
-    public User getAuthenticatedUser(Request request) throws DataBaseException {
+    public User getCurrentUser(Request request) throws DataBaseException {
         // 1) backend gets username and password from request Authentication header
         String encodedHeader = request.headers("Authorization");
         if(encodedHeader == null) {
@@ -57,7 +57,7 @@ public class BasicAuthHelper {
             return null;
         }
         // 3) backend compares password
-        if (!user.checkPassword(credentials[1])) {
+        if (!user.checkCredential(credentials[1])) {
             halt(401, "Not Authenticated");
             return null;
         }

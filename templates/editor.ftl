@@ -1,55 +1,73 @@
 <html>
 <head>
-<title> Parliament Browser - Login </title>
+    <title> Parliament Browser - Login </title>
     <script src="jquery-3.6.2.js"></script>
+    <script type="text/javascript"
+            src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <!-- alpaca -->
+    <link type="text/css" href="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.css"
+          rel="stylesheet"/>
+    <script type="text/javascript"
+            src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"></script>
+    <script type="text/javascript" src="global.js"></script>
+    <script type="text/javascript" src="ui/user-editor.js"></script>
     <style>
-        .login-form {
-            font-size: 1.5em;
-            background: green;
-            color: white;
-        }
-        #login-button {
-            font-size: 1.5em;
-            background: pink;
-            color: green;
-        }
-        form.login-form button{
-            background: blue!important;
+        #editor > div{
+            display: none;
         }
     </style>
+    <script>
+
+        function evaluateUser() {
+            var user = sessionStorage.user;
+            if (!user) {
+                gotToLogin();
+            } else {
+                switch (user.group) {
+                    case "user":
+                        $("#user-area").show();
+                        break;
+                    case "manager":
+                        $("#user-area, #manager-area").show();
+                        break;
+                    case "admin":
+                        $("#user-area, #manager-area, #admin-area").show();
+                        break;
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
-<h1>Welcome to Parliament Browser</h1>
-<h3> Please enter your User ID and Password to log in. </h3>
-<div id="login">
-    <form class="login-form">
-        <label for="userid">User ID:</label><br>
-        <input type="text" id="userid" name="userid"/><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"/><br>
-        <br>
-        <button id="login-button" value="Submit to log in">
-            Login
-        </button>
-
-    </form>
+<h1>Welcome to Parliament Browser Editor</h1>
+<div id="editor" >
+    <h2>Editor</h2>
+    <div id="user-area" >
+        <h3>User Area</h3>
+    </div>
+    <div id="manager-area" >
+        <h3>Managwer Area</h3>
+    </div>
+    <div id="admin-area">
+        <h3>Admin Area</h3>
+        <div id="user-editor"></div>
+    </div>
 </div>
-<div id="speeches-editor">
-
-</div>
-
 <script>
-    var hash = null;
-    function authenticate() {
-        var userId = $("#userid").val();
-        var password = $("#password").val();
-        var authString = userId + ":" + password;
-        hash = btoa(unescape(encodeURIComponent(authString)));
 
-        alert("Your hash is " + hash);
+    // evaluateUser();
+
+    // show user editor for test purpose
+    function showFakeUserEditor(){
+        $("#admin-area").show();
+        showUserEditor($("#user-editor"), {userId: "fake", group: "manager"});
     }
-    $("form.login-form button").click(authenticate);
+
+    showFakeUserEditor();
 
 </script>
 

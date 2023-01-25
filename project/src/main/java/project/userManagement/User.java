@@ -6,20 +6,20 @@ import org.bson.Document;
 public class User {
     protected String id;
     protected String group;
-    protected String password;
+    protected String credential;
 
     public User(Document mongoDBUser) {
         id = mongoDBUser.get("_id", String.class);
         group = mongoDBUser.get("group", String.class);
-        password = mongoDBUser.get("password", String.class);
+        credential = mongoDBUser.get("credential", String.class);
     }
 
-    public Boolean checkPassword(String pwd){
-        return pwd.equals(password);
+    public Boolean checkCredential(String credential){
+        return credential.equals(this.credential);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setCredential(String credential) {
+        this.credential = credential;
     }
 
     public String getGroup() {
@@ -34,13 +34,14 @@ public class User {
         Document document = new Document();
         document.append("_id", id);
         document.append("group", group);
-        document.append("password", password);
+        document.append("credential", credential);
         return document;
     }
 
     public String toJson() {
         Document document = toDocument();
-        // todo remove password
+        // credential should not be sent to the frontend
+        document.remove("credential");
         return new Gson().toJson(document);
     }
 }
