@@ -8,6 +8,8 @@ import spark.Response;
 
 import org.bson.Document;
 
+import java.util.Base64;
+
 import static spark.Spark.*;
 
 public class UserManagement {
@@ -22,6 +24,7 @@ public class UserManagement {
 
     public void initApi() {
         Gson gson = new Gson();
+        initCreateUser();
         get("/authenticate", (request, response) -> {
             Document user = basicAuthHelper.getCurrentUser(request).toDocument();
             return user;
@@ -32,9 +35,15 @@ public class UserManagement {
             return userService.getUser(id);
         }, gson::toJson);
         put("/rest/admin/users/:id", (request, response) -> {
-            // todo edit user
             checkAuthorization(request, response);
             String id = request.params(":id");
+            // todo edit user
+            return userService.getUser(id);
+        }, gson::toJson);
+        post("/rest/admin/users/:id", (request, response) -> {
+            checkAuthorization(request, response);
+            String id = request.params(":id");
+            // todo edit user
             return userService.getUser(id);
         }, gson::toJson);
     }
@@ -46,5 +55,13 @@ public class UserManagement {
             if (!group.equals("admin")) {
                 halt(403, "Not Authorized");
             }
+    }
+
+    private void initCreateUser(){
+        Document admin = new Document();
+        admin.append("_id", "admin");
+        admin.append("group", "admin");
+        admin.append("credential", Base64.getEncoder().encode("admin:bla1123".getBytes()));
+        userService.addUser(new User(admin));
     }
 }

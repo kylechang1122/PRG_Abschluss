@@ -13,7 +13,7 @@ public class UserService {
     }
 
     public void addUser (User user){
-        // not implemented
+        dbConnection.addUser(user.toDocument());
     }
 
     public ArrayList<User> getUsers (){

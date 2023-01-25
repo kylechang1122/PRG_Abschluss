@@ -57,7 +57,7 @@ public class BasicAuthHelper {
             return null;
         }
         // 3) backend compares password
-        if (!user.checkCredential(credentials[1])) {
+        if (!user.checkCredential(encodedHeader)) {
             halt(401, "Not Authenticated");
             return null;
         }

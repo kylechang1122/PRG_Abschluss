@@ -24,7 +24,7 @@ public class UserDbHandler {
     }
 
     public void addUser(Document user) {
-        // not finished yet
+        this.getCollection().insertOne(user);
     }
 
     public void replaceUser(Document user) {
