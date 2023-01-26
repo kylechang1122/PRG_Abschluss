@@ -1,36 +1,33 @@
-
-function showSpeakerEditor($target, data) {
+function showCommentEditor($target, data) {
     var schema = {
-        title: "Redner Bearbeiten",
+        title: "Comment Bearbeiten",
         type: "object",
         properties: {
-            firstName: {
+            protocolId: {
                 type: "string",
-                title: "Vorname",
+                title: "Protokoll ID",
+                required: true
+            }, // maybe the Protocol ID can be showed automatically when we gibe TOP ID.
+            agendaId: {
+                type: "string",
+                title: "Tagesordnungspunkt ID",
                 required: true
             },
-            lastName: {
+            speaker: {
                 type: "string",
-                title: "Nachname",
+                title: "Render",
                 required: true
-            },
-            title: {
-                type: "string",
-                title: "Titel"
-            },
+            }, // want to show a list of speaker for choosing
             party: {
                 type: "string",
-                title: "Partei"
-            },
-            fraction: {
+                title: "Partei der Render",
+                required: true
+            }, // I want the system bring the party of the speaker automatically when we enter speaker
+            content: {
                 type: "string",
-                title: "Fraktion"
+                title: "Kommentar",
             },
-            role: {
-                type: "string",
-                title: "Rolle"
-            },
-        }
+        },
     };
     var options = {
         fields: {

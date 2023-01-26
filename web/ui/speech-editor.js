@@ -1,36 +1,29 @@
-
-function showSpeakerEditor($target, data) {
+function showSpeechEditor($target, data) {
     var schema = {
-        title: "Redner Bearbeiten",
+        title: "Speech Bearbeiten",
         type: "object",
         properties: {
-            firstName: {
+            protocolId: {
                 type: "string",
-                title: "Vorname",
+                title: "Protokoll ID",
                 required: true
             },
-            lastName: {
+            agendaId: {
                 type: "string",
-                title: "Nachname",
+                title: "Tagesordnungspunkt ID",
                 required: true
             },
-            title: {
+            speaker: {
                 type: "string",
-                title: "Titel"
+                title: "Render",
+                required: true
             },
-            party: {
+            content: {
                 type: "string",
-                title: "Partei"
+                title: "Inhalt der Rede",
+                required: true
             },
-            fraction: {
-                type: "string",
-                title: "Fraktion"
-            },
-            role: {
-                type: "string",
-                title: "Rolle"
-            },
-        }
+        },
     };
     var options = {
         fields: {

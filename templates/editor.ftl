@@ -15,8 +15,12 @@
     <script type="text/javascript" src="global.js"></script>
     <script type="text/javascript" src="ui/user-editor.js"></script>
     <script type="text/javascript" src="ui/speaker-editor.js"></script>
+    <script type="text/javascript" src="ui/agendaItem-editor.js"></script>
+    <script type="text/javascript" src="ui/protocol-editor.js"></script>
+    <script type="text/javascript" src="ui/speech-editor.js"></script>
+    <script type="text/javascript" src="ui/comment-editor.js"></script>
     <style>
-        #editor > div{
+        #editor > div {
             display: none;
         }
     </style>
@@ -45,12 +49,12 @@
 
 <body>
 <h1>Welcome to Parliament Browser Editor</h1>
-<div id="editor" >
+<div id="editor">
     <h2>Editor</h2>
-    <div id="user-area" >
+    <div id="user-area">
         <h3>User Area</h3>
     </div>
-    <div id="manager-area" >
+    <div id="manager-area">
         <h3>Managwer Area</h3>
     </div>
     <div id="admin-area">
@@ -63,10 +67,14 @@
     // evaluateUser();
 
     // show user editor for test purpose
-    function showFakeUserEditor(){
+    function showFakeUserEditor() {
         $("#admin-area").show();
         showUserEditor($("#user-editor"), {});
         showSpeakerEditor($("#user-editor"), {firstName: "Kyle", lastName: "Chang"});
+        showAgendaItemEditor($("#user-editor"), {});
+        showProtocolEditor($("#user-editor"), {});
+        showSpeechEditor($("#user-editor"), {});
+        showCommentEditor($("#user-editor"), {});
     }
 
     showFakeUserEditor();

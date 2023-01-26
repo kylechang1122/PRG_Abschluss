@@ -1,36 +1,26 @@
-
-function showSpeakerEditor($target, data) {
+function showAgendaItemEditor($target, data) {
     var schema = {
-        title: "Redner Bearbeiten",
+        title: "Agenda Item Bearbeiten",
         type: "object",
         properties: {
-            firstName: {
+            protocolId: {
                 type: "string",
-                title: "Vorname",
+                title: "Protokoll ID",
                 required: true
             },
-            lastName: {
-                type: "string",
-                title: "Nachname",
-                required: true
+            index: {
+                type: "integer",
+                title: "Index",
+                required: true,
+                "minimum": 1,
+                "maximum": 99,
             },
             title: {
                 type: "string",
-                title: "Titel"
+                title: "Titel",
+                required: true
             },
-            party: {
-                type: "string",
-                title: "Partei"
-            },
-            fraction: {
-                type: "string",
-                title: "Fraktion"
-            },
-            role: {
-                type: "string",
-                title: "Rolle"
-            },
-        }
+        },
     };
     var options = {
         fields: {
