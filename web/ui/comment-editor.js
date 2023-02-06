@@ -1,31 +1,31 @@
 function showCommentEditor($target, data) {
     var schema = {
-        title: "Comment Bearbeiten",
+        title: "Comment Edit",
         type: "object",
         properties: {
             protocolId: {
                 type: "string",
-                title: "Protokoll ID",
+                title: "Protocol ID",
                 required: true
             }, // maybe the Protocol ID can be showed automatically when we gibe TOP ID.
             agendaId: {
                 type: "string",
-                title: "Tagesordnungspunkt ID",
+                title: "Agenda Item ID",
                 required: true
             },
             speaker: {
                 type: "string",
-                title: "Render",
+                title: "Speaker",
                 required: true
             }, // want to show a list of speaker for choosing
             party: {
                 type: "string",
-                title: "Partei der Render",
+                title: "Speaker's Party",
                 required: true
             }, // I want the system bring the party of the speaker automatically when we enter speaker
             content: {
                 type: "string",
-                title: "Kommentar",
+                title: "Comment",
             },
         },
     };
@@ -39,7 +39,7 @@ function showCommentEditor($target, data) {
                         var value = this.getValue();
                         console.log(value)
                     },
-                    title: "Abschicken"
+                    title: "Save"
                 }
             }
         }

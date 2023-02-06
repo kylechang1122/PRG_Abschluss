@@ -1,26 +1,26 @@
 function showSpeechEditor($target, data) {
     var schema = {
-        title: "Speech Bearbeiten",
+        title: "Speech Edit",
         type: "object",
         properties: {
             protocolId: {
                 type: "string",
-                title: "Protokoll ID",
+                title: "Protocol ID",
                 required: true
             },
             agendaId: {
                 type: "string",
-                title: "Tagesordnungspunkt ID",
+                title: "Agenda Item ID",
                 required: true
             },
             speaker: {
                 type: "string",
-                title: "Render",
+                title: "Speaker",
                 required: true
             },
             content: {
                 type: "string",
-                title: "Inhalt der Rede",
+                title: "Content of Speech",
                 required: true
             },
         },
@@ -33,9 +33,19 @@ function showSpeechEditor($target, data) {
                 submit: {
                     click: function() {
                         var value = this.getValue();
+                        $.ajax({
+                            type: 'PUT',
+                            url: "/rest/admin/speech/" + value.userId, //wrong not finished
+                            success: function (userData) {
+                                this.data = userData;
+                            },
+                            error: function () {
+                                alert("Save failed");
+                            }
+                        });
                         console.log(value)
                     },
-                    title: "Abschicken"
+                    title: "Save"
                 }
             }
         }

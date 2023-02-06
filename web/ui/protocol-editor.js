@@ -1,6 +1,6 @@
 function showProtocolEditor($target, data) {
     var schema = {
-        title: "Sitzung Protocol Bearbeiten",
+        title: "Sesseion Edit",
         type: "object",
         properties: {
             id: {
@@ -10,32 +10,32 @@ function showProtocolEditor($target, data) {
             },
             electionperiod: {
                 type: "string",
-                title: "Wahlperiode",
+                title: "Election Period",
                 required: true,
             },
             date: {
                 type: "string",
-                title: "Datum der Sitzung",
+                title: "Date of Sesseion",
                 required: true,
             },
             startTime: {
                 type: "string",
-                title: "Anfangsziet",
+                title: "Start Time",
                 required: true,
             },
             endTime: {
                 type: "string",
-                title: "Endzeit",
+                title: "End Time",
                 required: true,
             },
             place: {
                 type: "string",
-                title: "Ort der Sitzung",
+                title: "Location of Session",
                 required: true,
             },
             title: {
                 type: "string",
-                title: "Titel",
+                title: "Title",
                 required: true
             },
         },
@@ -50,7 +50,7 @@ function showProtocolEditor($target, data) {
                         var value = this.getValue();
                         console.log(value)
                     },
-                    title: "Abschicken"
+                    title: "Save"
                 }
             }
         }

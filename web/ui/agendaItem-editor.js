@@ -1,11 +1,11 @@
 function showAgendaItemEditor($target, data) {
     var schema = {
-        title: "Agenda Item Bearbeiten",
+        title: "Agenda Item Edit",
         type: "object",
         properties: {
             protocolId: {
                 type: "string",
-                title: "Protokoll ID",
+                title: "Protocol ID",
                 required: true
             },
             index: {
@@ -17,7 +17,7 @@ function showAgendaItemEditor($target, data) {
             },
             title: {
                 type: "string",
-                title: "Titel",
+                title: "Title",
                 required: true
             },
         },
@@ -32,7 +32,7 @@ function showAgendaItemEditor($target, data) {
                         var value = this.getValue();
                         console.log(value)
                     },
-                    title: "Abschicken"
+                    title: "Save"
                 }
             }
         }

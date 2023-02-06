@@ -1,12 +1,12 @@
 
 function showUserEditor($target, data) {
     var schema = {
-        title: "Benutzer Bearbeiten",
+        title: "User Edit",
         type: "object",
         properties: {
             userId: {
                 type: "string",
-                title: "Benutzername",
+                title: "User ID",
                 required: true
             },
             group: {
@@ -14,13 +14,39 @@ function showUserEditor($target, data) {
                 title: "Gruppe",
                 enum: ['admin', 'manager', 'user'],
                 required: true
-            }
+            },
+            firstName: {
+                type: "string",
+                title: "First Name",
+                required: true
+            },
+            lastName: {
+                type: "string",
+                title: "Last Name",
+                required: true
+            },
+            title: {
+                type: "string",
+                title: "Title"
+            },
+            party: {
+                type: "string",
+                title: "Party"
+            },
+            fraction: {
+                type: "string",
+                title: "Fraction"
+            },
+            role: {
+                type: "string",
+                title: "Role"
+            },
         }
     };
     var options = {
         fields: {
             group: {
-                "optionLabels": ["AdmistratorIn", "ManagerIn", "BenutzerIn"]
+                "optionLabels": ["Admistrator", "Manager", "User"]
             }
         },
         form: {
@@ -35,11 +61,11 @@ function showUserEditor($target, data) {
                                 this.data = userData;
                             },
                             error: function () {
-                                alert("Senden fehlgeschlagen");
+                                alert("Save failed");
                             }
                         });
                     },
-                    title: "Abschicken"
+                    title: "Save"
                 }
             }
         }

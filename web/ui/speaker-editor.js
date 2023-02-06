@@ -1,34 +1,34 @@
 
 function showSpeakerEditor($target, data) {
     var schema = {
-        title: "Redner Bearbeiten",
+        title: "Speaker Eidt",
         type: "object",
         properties: {
             firstName: {
                 type: "string",
-                title: "Vorname",
+                title: "First Name",
                 required: true
             },
             lastName: {
                 type: "string",
-                title: "Nachname",
+                title: "Last Name",
                 required: true
             },
             title: {
                 type: "string",
-                title: "Titel"
+                title: "Title"
             },
             party: {
                 type: "string",
-                title: "Partei"
+                title: "Party"
             },
             fraction: {
                 type: "string",
-                title: "Fraktion"
+                title: "Fraction"
             },
             role: {
                 type: "string",
-                title: "Rolle"
+                title: "Role"
             },
         }
     };
@@ -42,7 +42,7 @@ function showSpeakerEditor($target, data) {
                         var value = this.getValue();
                         console.log(value)
                     },
-                    title: "Abschicken"
+                    title: "Save"
                 }
             }
         }

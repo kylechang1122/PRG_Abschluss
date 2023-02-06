@@ -15,7 +15,7 @@ function authenticate(userId, password) {
             evaluateUser();
         },
         error: function () {
-            alert("Login fehlgeschlagen!");
+            alert("Login failed!");
         }
     });
 }
@@ -27,12 +27,12 @@ function showLogin($target) {
         "properties": {
             "userId": {
                 "type": "string",
-                "title": "Benutzername"
+                "title": "User ID"
             },
             "password": {
                 "type": "string",
                 "format": "password",
-                "title": "Passwort"
+                "title": "Password"
             }
         }
     };
