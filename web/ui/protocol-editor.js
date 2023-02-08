@@ -9,14 +9,17 @@ function showProtocolEditor($target, data) {
                 required: true
             },
             electionperiod: {
-                type: "string",
+                type: "select",
                 title: "Election Period",
+                data: "19", // doesn't work
+                enum: ["19", "20", "...", "..."], // less than 3 options will be checkbox.
                 required: true,
             },
             date: {
-                type: "string",
+                type: "string", // want a picker but "date" not working
                 title: "Date of Sesseion",
                 required: true,
+
             },
             startTime: {
                 type: "string",
@@ -42,6 +45,7 @@ function showProtocolEditor($target, data) {
     };
     var options = {
         fields: {
+
         },
         form: {
             buttons: {

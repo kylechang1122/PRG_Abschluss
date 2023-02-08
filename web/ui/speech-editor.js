@@ -27,6 +27,9 @@ function showSpeechEditor($target, data) {
     };
     var options = {
         fields: {
+            content: {
+                type: "textarea"
+            }
         },
         form: {
             buttons: {
