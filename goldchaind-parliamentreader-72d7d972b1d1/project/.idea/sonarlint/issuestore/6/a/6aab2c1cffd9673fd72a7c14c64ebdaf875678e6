@@ -1,0 +1,15 @@
+
+o
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(™şá­
+t
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(şµ­şÿÿÿÿ
+h
+java:S1301%"KReplace this "switch" statement by "if" statements to increase readability.(ï–°8âÜ°ïá0
+m
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(¢Ëå¼úÿÿÿÿ
+I
+java:S1481""3Remove this unused "optionalSpeech" local variable.(Ùõÿ×
+7	java:S131%""Add a default case to this switch.(ï–°
+]	java:S125G"<This block of commented-out lines of code should be removed.(Ò–¬ºûÿÿÿÿ8×Ş°ïá0
+l
+java:S1128"QRemove this unused import 'org.apache.commons.jxpath.ri.model.beans.NullPointer'.(‘‚§şıÿÿÿÿ

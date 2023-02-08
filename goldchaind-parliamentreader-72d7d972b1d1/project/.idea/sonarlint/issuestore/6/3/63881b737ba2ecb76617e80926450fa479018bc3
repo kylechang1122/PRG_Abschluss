@@ -1,0 +1,24 @@
+
+I
+java:S2755*"3Disable access to external entities in XML parsing.(ÒŒß¿
+9
+java:S2885"$Make "sdfTime" an instance variable.(Ü·Ğ
+?
+java:S2885"$Make "sdfDate" an instance variable.(£Ğşùÿÿÿÿ
+N
+java:S11171"8Rename "date" which hides the field declared at line 32.(’ï…ğ
+X
+java:S11173"=Rename "startTime" which hides the field declared at line 33.(ôÄÈğúÿÿÿÿ
+Q
+java:S11175";Rename "endTime" which hides the field declared at line 34.(Ë›š™
+=
+java:S1481D"'Remove this unused "ag" local variable.(²ÅÕ
+C
+java:S1481F"-Remove this unused "speeches" local variable.(É†²
+V	java:S125I"<This block of commented-out lines of code should be removed.(Ş¼‚ıÿÿÿÿ
+c
+java:S5361U"HReplace this call to "replaceAll()" by a call to the "replace()" method.(ş­¶¡ıÿÿÿÿ
+N
+java:S1128",Remove this unused import 'marmot.util.Sys'.(«‹½ÿûÿÿÿÿ8É‡‹íá0
+K
+java:S1128"/Remove this unused import 'java.sql.Timestamp'.(èò½+8É‡‹íá0
