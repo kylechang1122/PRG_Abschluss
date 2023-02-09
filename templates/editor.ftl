@@ -84,7 +84,7 @@
     // show user editor for test purpose
     function showFakeUserEditor() {
         $("#admin-area").show();
-        showUserEditor($("#user-editor"), {});
+        showUserEditor($("#user-editor"), {}, putUser);
         showSpeakerEditor($("#user-editor"), {firstName: "Kyle", lastName: "Chang"});
         showAgendaItemEditor($("#user-editor"), {});
         showProtocolEditor($("#user-editor"), {});

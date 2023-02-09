@@ -1,5 +1,30 @@
-
-function showUserEditor($target, data) {
+function putUser() {
+    var value = this.getValue();
+    $.ajax({
+        type: 'PUT',
+        url: "/rest/admin/users/" + value.userId,
+        success: function (userData) {
+            this.data = userData;
+        },
+        error: function () {
+            alert("Save failed");
+        }
+    });
+}
+function postUser() {
+    var value = this.getValue();
+    $.ajax({
+        type: 'POST',
+        url: "/rest/admin/users/" + value.userId,
+        success: function (userData) {
+            this.data = userData;
+        },
+        error: function () {
+            alert("Save failed");
+        }
+    });
+}
+function showUserEditor($target, submitFunction, data = {}) {
     var schema = {
         title: "User Edit",
         type: "object",
@@ -52,19 +77,7 @@ function showUserEditor($target, data) {
         form: {
             buttons: {
                 submit: {
-                    click: function() {
-                        var value = this.getValue();
-                        $.ajax({
-                            type: 'PUT',
-                            url: "/rest/admin/users/" + value.userId,
-                            success: function (userData) {
-                                this.data = userData;
-                            },
-                            error: function () {
-                                alert("Save failed");
-                            }
-                        });
-                    },
+                    click: submitFunction,
                     title: "Save"
                 }
             }
