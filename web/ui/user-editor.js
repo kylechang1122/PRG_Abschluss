@@ -29,6 +29,9 @@ function showUserEditor($target, submitFunction, data = {}) {
         title: "User Edit",
         type: "object",
         properties: {
+            id: {
+                type: "string",
+            },
             userId: {
                 type: "string",
                 title: "User ID",
@@ -50,29 +53,16 @@ function showUserEditor($target, submitFunction, data = {}) {
                 title: "Last Name",
                 required: true
             },
-            title: {
-                type: "string",
-                title: "Title"
-            },
-            party: {
-                type: "string",
-                title: "Party"
-            },
-            fraction: {
-                type: "string",
-                title: "Fraction"
-            },
-            role: {
-                type: "string",
-                title: "Role"
-            },
         }
     };
     var options = {
         fields: {
             group: {
                 "optionLabels": ["Admistrator", "Manager", "User"]
-            }
+            },
+            id: {
+                type: "hidden"
+            },
         },
         form: {
             buttons: {

@@ -11,8 +11,7 @@ function showProtocolEditor($target, data) {
             electionperiod: {
                 type: "select",
                 title: "Election Period",
-                data: "19", // doesn't work
-                enum: ["19", "20", "...", "..."], // less than 3 options will be checkbox.
+                enum: ["19", "20"], // less than 3 options will be checkbox.
                 required: true,
             },
             date: {
@@ -45,6 +44,11 @@ function showProtocolEditor($target, data) {
     };
     var options = {
         fields: {
+            electionperiod: {
+                type: "select",
+                label: "select the election period",
+
+            }
 
         },
         form: {
