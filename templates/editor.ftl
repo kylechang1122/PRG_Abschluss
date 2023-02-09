@@ -29,7 +29,7 @@
         function evaluateUser() {
             var user = sessionStorage.user;
             if (!user) {
-                gotToLogin();
+                gotToLogin("editor");
             } else {
                 switch (user.group) {
                     case "user":
@@ -44,24 +44,39 @@
                 }
             }
         }
+        evaluateUser();
     </script>
+
 </head>
 
 <body>
-<h1>Welcome to Parliament Browser Editor</h1>
-<div id="editor">
-    <h2>Editor</h2>
-    <div id="user-area">
-        <h3>User Area</h3>
-    </div>
-    <div id="manager-area">
-        <h3>Managwer Area</h3>
-    </div>
-    <div id="admin-area">
-        <h3>Admin Area</h3>
-        <div id="user-editor"></div>
+<div class="container">
+    <h1>Welcome to Parliament Browser Editor</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <nav id="menu">
+                <ul>
+                    <li>Benutzer bearbeiten</li>
+                </ul>
+            </nav>
+        </div>
+        <div id="editor" class="col-md-8">
+            <h2>Editor</h2>
+            <div id="user-area">
+                <h3>User Area</h3>
+            </div>
+            <div id="manager-area">
+                <h3>Manager Area</h3>
+            </div>
+            <div id="admin-area">
+                <h3>Admin Area</h3>
+                <div id="user-editor"></div>
+            </div>
+        </div>
     </div>
 </div>
+
+
 <script>
 
     // evaluateUser();

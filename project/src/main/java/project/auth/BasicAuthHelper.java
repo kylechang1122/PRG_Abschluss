@@ -1,5 +1,6 @@
 package project.auth;
 
+import org.jetbrains.annotations.Nullable;
 import project.exception.DataBaseException;
 import project.userManagement.User;
 import project.userManagement.UserService;
@@ -21,12 +22,8 @@ public class BasicAuthHelper {
 
     // extract Credentials from Header
     private String[] extractCredentials(String encodedHeader) {
-        String prefix = "Basic ";
-        if (encodedHeader.startsWith(prefix)) {
-            encodedHeader = encodedHeader.substring(prefix.length());
-        } else {
-            return null;
-        }
+        encodedHeader = getCredential(encodedHeader);
+        if (encodedHeader == null) return null;
         if (!encodedHeader.equals("")) {
             String decodedHeader = new String(Base64.getDecoder().decode(encodedHeader));
             return decodedHeader.split(":");
@@ -34,6 +31,17 @@ public class BasicAuthHelper {
             return null;
         }
 
+    }
+
+    @Nullable
+    private static String getCredential(String encodedHeader) {
+        String prefix = "Basic ";
+        if (encodedHeader.startsWith(prefix)) {
+            encodedHeader = encodedHeader.substring(prefix.length());
+        } else {
+            return null;
+        }
+        return encodedHeader;
     }
 
     public User getCurrentUser(Request request) throws DataBaseException {
@@ -57,7 +65,7 @@ public class BasicAuthHelper {
             return null;
         }
         // 3) backend compares password
-        if (!user.checkCredential(encodedHeader)) {
+        if (!user.checkCredential(getCredential(encodedHeader))) {
             halt(401, "Not Authenticated");
             return null;
         }

@@ -19,7 +19,7 @@ import static spark.Spark.*;
 public class App
 {
     static public String configDir() {
-        URL resource = App.class.getClassLoader().getResource("dbconnectionconfig.txt");
+        URL resource = App.class.getResource("/dbconnectionconfig.txt");
         return resource.getPath();
     }
     public static void main( String[] args ) {

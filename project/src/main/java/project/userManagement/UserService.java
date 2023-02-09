@@ -12,8 +12,9 @@ public class UserService {
         this.dbConnection = mongoDBHandler;
     }
 
-    public void addUser (User user){
+    public User addUser (User user){
         dbConnection.addUser(user.toDocument());
+        return user;
     }
 
     public ArrayList<User> getUsers (){

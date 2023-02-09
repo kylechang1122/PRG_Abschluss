@@ -5,9 +5,9 @@ import org.bson.Document;
 
 public class User {
     protected String id;
+
     protected String group;
     protected String credential;
-
     public User(Document mongoDBUser) {
         id = mongoDBUser.get("_id", String.class);
         group = mongoDBUser.get("group", String.class);
@@ -20,6 +20,14 @@ public class User {
 
     public void setCredential(String credential) {
         this.credential = credential;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getGroup() {

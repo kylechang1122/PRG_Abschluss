@@ -1,6 +1,7 @@
 package project.userManagement;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import project.auth.BasicAuthHelper;
 import project.exception.DataBaseException;
 import spark.Request;
@@ -39,11 +40,11 @@ public class UserManagement {
             // todo edit user
             return userService.getUser(id);
         }, gson::toJson);
-        post("/rest/admin/users/:id", (request, response) -> {
+        post("/rest/admin/users/", (request, response) -> {
             checkAuthorization(request, response);
-            String id = request.params(":id");
-            // todo edit user
-            return userService.getUser(id);
+            User user = new Gson().fromJson(request.body(), User.class);
+            // todo add user
+            return userService.addUser(user);
         }, gson::toJson);
     }
 
@@ -60,7 +61,8 @@ public class UserManagement {
         Document admin = new Document();
         admin.append("_id", "admin");
         admin.append("group", "admin");
-        admin.append("credential", Base64.getEncoder().encode("admin:bla1123".getBytes()));
-        userService.addUser(new User(admin));
+        admin.append("credential", Base64.getEncoder().encodeToString("admin:bla1123".getBytes()));
+        User user = new User(admin);
+        userService.addUser(user);
     }
 }

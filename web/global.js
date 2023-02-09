@@ -6,9 +6,9 @@ function addAuthHeader(xhr) {
     }
 }
 
-function gotToLogin() {
+function gotToLogin(redirect) {
 // Redirect the to the login page.
-    location.href = "./login";
+    location.href = "./login?redirect=" + redirect;
 }
 
 //global options for ajax requests

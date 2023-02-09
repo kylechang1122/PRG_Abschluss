@@ -12,7 +12,10 @@ function authenticate(userId, password) {
         success: function (userData) {
             sessionStorage.auth = btoa(userId + ":" + password);
             sessionStorage.user = userData;
-            evaluateUser();
+            redirect = new URL(location.href).searchParams.get("redirect");
+            if(redirect) {
+                location.href= "./" + redirect;
+            }
         },
         error: function () {
             alert("Login failed!");

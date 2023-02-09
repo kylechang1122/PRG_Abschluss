@@ -13,6 +13,11 @@ function showSpeechEditor($target, data) {
                 title: "Agenda Item ID",
                 required: true
             },
+            index: {
+                type: "number",
+                title: "Index",
+                required: true
+            },
             speaker: {
                 type: "string",
                 title: "Speaker",
@@ -38,7 +43,7 @@ function showSpeechEditor($target, data) {
                         var value = this.getValue();
                         $.ajax({
                             type: 'PUT',
-                            url: "/rest/admin/speech/" + value.userId, //wrong not finished
+                            url: "/rest/parliament/speech/" + value.userId, //wrong not finished
                             success: function (userData) {
                                 this.data = userData;
                             },
