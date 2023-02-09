@@ -4,6 +4,9 @@ function showSpeakerEditor($target, data) {
         title: "Speaker Eidt",
         type: "object",
         properties: {
+            id: {
+                type: "string"
+            },
             firstName: {
                 type: "string",
                 title: "First Name",
@@ -34,6 +37,9 @@ function showSpeakerEditor($target, data) {
     };
     var options = {
         fields: {
+            id: {
+                type: "hidden"
+            },
         },
         form: {
             buttons: {

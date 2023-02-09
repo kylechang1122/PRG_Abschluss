@@ -4,12 +4,19 @@ import com.google.gson.Gson;
 import org.bson.Document;
 
 public class User {
-    protected String id;
+    protected String id; //id in DB
+
+    protected String userId;
+    protected String firstName;
+    protected String lastName;
 
     protected String group;
     protected String credential;
     public User(Document mongoDBUser) {
         id = mongoDBUser.get("_id", String.class);
+        userId = mongoDBUser.get("userId", String.class);
+        firstName = mongoDBUser.get("firstName", String.class);
+        lastName = mongoDBUser.get("lastName", String.class);
         group = mongoDBUser.get("group", String.class);
         credential = mongoDBUser.get("credential", String.class);
     }
@@ -30,6 +37,30 @@ public class User {
         this.id = id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getGroup() {
         return group;
     }
@@ -41,6 +72,9 @@ public class User {
     public Document toDocument() {
         Document document = new Document();
         document.append("_id", id);
+        document.append("userId", userId);
+        document.append("firstName", firstName);
+        document.append("lastName", lastName);
         document.append("group", group);
         document.append("credential", credential);
         return document;
