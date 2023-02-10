@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import org.bson.Document;
 
 public class User {
-    protected String id; //id in DB
-
     protected String userId;
     protected String firstName;
     protected String lastName;
@@ -13,7 +11,6 @@ public class User {
     protected String group;
     protected String credential;
     public User(Document mongoDBUser) {
-        id = mongoDBUser.get("_id", String.class);
         userId = mongoDBUser.get("userId", String.class);
         firstName = mongoDBUser.get("firstName", String.class);
         lastName = mongoDBUser.get("lastName", String.class);
@@ -27,14 +24,6 @@ public class User {
 
     public void setCredential(String credential) {
         this.credential = credential;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUserId() {
@@ -71,8 +60,7 @@ public class User {
 
     public Document toDocument() {
         Document document = new Document();
-        document.append("_id", id);
-        document.append("userId", userId);
+        document.append("_id", userId);
         document.append("firstName", firstName);
         document.append("lastName", lastName);
         document.append("group", group);

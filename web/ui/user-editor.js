@@ -1,26 +1,48 @@
 function putUser() {
     var value = this.getValue();
+    var credential = btoa(value.userId + ":" + value.password)
+    var data = {
+        userId: value.userId,
+        credential: credential,
+        group: value.group,
+        firstName: value.firstName,
+        lastName: value.lastName
+    }
     $.ajax({
+        dataType: 'json',
         type: 'PUT',
-        url: "/rest/admin/users/" + value.userId,
-        success: function (userData) {
+        url: "/rest/admin/users/" + data.userId,
+        data: JSON.stringify(data),
+        success: (userData) => {
+            alert("Save successful!");
             this.data = userData;
         },
-        error: function () {
-            alert("Save failed");
+        error: function (xhr) {
+            alert("Save failed: " + xhr.responseText);
         }
     });
 }
 function postUser() {
     var value = this.getValue();
+    var credential = btoa(value.userId + ":" + value.password)
+    var data = {
+        userId: value.userId,
+        credential: credential,
+        group: value.group,
+        firstName: value.firstName,
+        lastName: value.lastName
+    }
     $.ajax({
+        dataType: 'json',
         type: 'POST',
-        url: "/rest/admin/users/" + value.userId,
-        success: function (userData) {
+        url: "/rest/admin/users/",
+        data: JSON.stringify(data),
+        success: (userData) => {
+            alert("Save successful!");
             this.data = userData;
         },
-        error: function () {
-            alert("Save failed");
+        error: function (xhr) {
+            alert("Save failed: " + xhr.responseText);
         }
     });
 }
@@ -29,18 +51,20 @@ function showUserEditor($target, submitFunction, data = {}) {
         title: "User Edit",
         type: "object",
         properties: {
-            id: {
-                type: "string",
-            },
             userId: {
                 type: "string",
                 title: "User ID",
                 required: true
             },
+            password: {
+                type: "string",
+                title: "Password",
+                required: true
+            },
             group: {
                 type: "string",
-                title: "Gruppe",
-                enum: ['admin', 'manager', 'user'],
+                title: "Group",
+                enum: ['user', 'manager', 'admin'],
                 required: true
             },
             firstName: {
@@ -58,10 +82,9 @@ function showUserEditor($target, submitFunction, data = {}) {
     var options = {
         fields: {
             group: {
-                "optionLabels": ["Admistrator", "Manager", "User"]
-            },
-            id: {
-                type: "hidden"
+                "optionLabels": ["User", "Manager", "Administrator"],
+                type: "select",
+                default: 'user',
             },
         },
         form: {

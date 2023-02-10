@@ -1,6 +1,7 @@
 package project.userManagement;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
@@ -29,8 +30,9 @@ public class UserService {
         return new User(document);
     }
 
-    public void editUser(User user) {
+    public User editUser(User user) {
         dbConnection.replaceUser(user.toDocument());
+        return user;
     }
 
     public void deleteUser (String id){

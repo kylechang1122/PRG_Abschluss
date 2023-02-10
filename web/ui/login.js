@@ -1,7 +1,3 @@
-function logout() {
-    sessionStorage.auth = null;
-    sessionStorage.user = null;
-}
 
 function authenticate(userId, password) {
     $.getJSON({
@@ -11,7 +7,7 @@ function authenticate(userId, password) {
         },
         success: function (userData) {
             sessionStorage.auth = btoa(userId + ":" + password);
-            sessionStorage.user = userData;
+            sessionStorage.user = JSON.stringify(userData);
             redirect = new URL(location.href).searchParams.get("redirect");
             if(redirect) {
                 location.href= "./" + redirect;

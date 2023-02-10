@@ -1,7 +1,6 @@
 package project.userManagement;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import project.auth.BasicAuthHelper;
 import project.exception.DataBaseException;
 import spark.Request;
@@ -37,13 +36,21 @@ public class UserManagement {
         put("/rest/admin/users/:id", (request, response) -> {
             checkAuthorization(request, response);
             String id = request.params(":id");
-            // todo edit user
-            return userService.getUser(id);
+            if(! userService.userExists(id)){
+                halt(404, "User does not exist");
+            }
+            User user = new Gson().fromJson(request.body(), User.class);
+            if(! user.getUserId().equals(id)){
+                halt(400, "Wrong user data");
+            }
+            return userService.editUser(user);
         }, gson::toJson);
         post("/rest/admin/users/", (request, response) -> {
             checkAuthorization(request, response);
             User user = new Gson().fromJson(request.body(), User.class);
-            // todo add user
+            if(userService.userExists(user.getUserId())){
+                halt(400, "User already exists");
+            }
             return userService.addUser(user);
         }, gson::toJson);
     }

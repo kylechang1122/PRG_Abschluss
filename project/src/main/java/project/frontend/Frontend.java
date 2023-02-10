@@ -24,6 +24,10 @@ public class Frontend {
 
         // set encoding to unicode
         templateConfig.setDefaultEncoding("utf-8");
+        // route of the home page
+        get("/", (request, response) -> {
+            return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "home.ftl"));
+        });
         // route of the login page
         get("/login", (request, response) -> {
             return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "login.ftl"));

@@ -16,7 +16,18 @@ var globalAjaxOptions = {
     beforeSend: addAuthHeader,
     statusCode: {
         401: gotToLogin
-    }
+    },
 };
 
 $.ajaxSetup(globalAjaxOptions);
+
+function getCurrentUser(){
+    return sessionStorage.user && JSON.parse(sessionStorage.user)
+}
+
+function logout() {
+    sessionStorage.auth = null;
+    sessionStorage.user = null;
+    location.href = "./";
+}
+
