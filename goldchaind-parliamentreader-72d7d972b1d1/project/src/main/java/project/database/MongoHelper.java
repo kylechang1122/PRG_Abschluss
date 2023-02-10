@@ -2,16 +2,14 @@ package project.database;
 
 import com.mongodb.BasicDBObject;
 import org.bson.Document;
-import project.data.classes.AgendaItem;
-import project.data.classes.PlenaryProtocol;
-import project.data.classes.Speaker;
+import project.data.classes.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MongoHelper {
 
-    public static Document toMongoDocument(PlenaryProtocol plenaryProtocol)  {
+    public static Document toMongoDocument(PlenaryProtocol plenaryProtocol) {
 
         Document mongoDocument = new Document();
         mongoDocument.put("_id", plenaryProtocol.getId());
@@ -25,17 +23,24 @@ public class MongoHelper {
         mongoDocument.put("standort", plenaryProtocol.getPlace());
 
         List<BasicDBObject> agenditems = new ArrayList<>();
-        for (AgendaItem item: plenaryProtocol.getAgendaItems() ) {
+        for (AgendaItem item : plenaryProtocol.getAgendaItems()) {
             agenditems.add(new BasicDBObject(item.getIndex(), item.getTitle()));
         }
 
         mongoDocument.put("agenditems", agenditems);
 
+        List<Document> speeches = new ArrayList<>();
+        for (Speech item : plenaryProtocol.getSpeeches()) {
+            speeches.add(toMongoDocument(item));
+        }
+        mongoDocument.put("speeches", speeches);
+
+
         return mongoDocument;
 
     }
 
-    public static Document toMongoDocument(Speaker speaker)  {
+    public static Document toMongoDocument(Speaker speaker) {
 
         Document mongoDocument = new Document();
         mongoDocument.put("_id", speaker.getId());
@@ -50,6 +55,7 @@ public class MongoHelper {
         mongoDocument.put("akademischertitel", speaker.getAcademicTitle());
         mongoDocument.put("familienstand", speaker.getFamilyState());
         mongoDocument.put("religion", speaker.getReligion());
+        mongoDocument.put("image", speaker.getImage());
 
 //        List<Integer> iAbsendes = new ArrayList<>();
 //        for (PlenaryProtocol absence : speaker.getAbsences()) {
@@ -57,13 +63,30 @@ public class MongoHelper {
 //        }
 //
 //        mongoDocument.put("absence", iAbsendes);
-        if(speaker.getParty()!=null){
+        if (speaker.getParty() != null) {
             mongoDocument.put("party", speaker.getParty().getName());
         }
-        if(speaker.getFraction()!=null){
+        if (speaker.getFraction() != null) {
             mongoDocument.put("fraction", speaker.getFraction().getName());
         }
         mongoDocument.put("role", speaker.getRole());
+        return mongoDocument;
+
+    }
+
+    public static Document toMongoDocument(Speech speech) {
+
+        Document mongoDocument = new Document();
+        mongoDocument.put("_id", speech.getId());
+        mongoDocument.put("speaker", toMongoDocument(speech.getSpeaker()));
+        List<BasicDBObject> textItem = new ArrayList<>();
+
+        for (Text text : speech.getTexts()) {
+            textItem.add(new BasicDBObject(text.getSpeaker().getId(), text.getText()));
+        }
+
+        mongoDocument.put("texte", textItem);
+
         return mongoDocument;
 
     }

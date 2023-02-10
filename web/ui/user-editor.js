@@ -1,8 +1,10 @@
 function putUser() {
     var value = this.getValue();
     $.ajax({
+        dataType: "json",
+        data: value,
         type: 'PUT',
-        url: "/rest/admin/users/" + value.userId,
+        url: "/rest/admin/users/" + value.id,
         success: function (userData) {
             this.data = userData;
         },
@@ -14,11 +16,13 @@ function putUser() {
 function postUser() {
     var value = this.getValue();
     $.ajax({
+        dataType: "json",
         type: 'POST',
-        url: "/rest/admin/users/" + value.userId,
+        url: "/rest/admin/users/" + value.id,
         success: function (userData) {
             this.data = userData;
         },
+        data: value,
         error: function () {
             alert("Save failed");
         }

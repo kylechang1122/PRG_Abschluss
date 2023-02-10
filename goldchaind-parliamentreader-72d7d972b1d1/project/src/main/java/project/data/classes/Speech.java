@@ -8,7 +8,7 @@ import project.utils.XMLHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Speech extends PlenaryObject{
+public class Speech extends PlenaryObject {
     AgendaItem agendaItem;
     List<Text> texts = new ArrayList<Text>();
     String text;
@@ -18,11 +18,12 @@ public class Speech extends PlenaryObject{
     int length;
     List<Speech> insertions = new ArrayList<Speech>();
 
-    public Speech(AgendaItem agendaItem,String id){
+    public Speech(AgendaItem agendaItem, String id) {
         this.agendaItem = agendaItem;
         this.setId(id);
     }
-    public Speech(AgendaItem agendaItem,Node node,PlenaryProtocol protocol){
+
+    public Speech(AgendaItem agendaItem, Node node, PlenaryProtocol protocol) {
         int extraSpeeches = 0;
         this.protocol = protocol;
         this.agendaItem = agendaItem;
@@ -37,38 +38,38 @@ public class Speech extends PlenaryObject{
             switch (currentNode.getNodeName()) {
                 case "p":
                     String klasse = "";
-                    if(currentNode.hasAttributes()){
-                            klasse = currentNode.getAttributes().getNamedItem("klasse").getTextContent();
+                    if (currentNode.hasAttributes()) {
+                        klasse = currentNode.getAttributes().getNamedItem("klasse").getTextContent();
                     }
-                    if(klasse.equalsIgnoreCase("redner")){
-                        Node speakerNode = XMLHelper.getDeepChildNodeByName(currentNode,"redner");
+                    if (klasse.equalsIgnoreCase("redner")) {
+                        Node speakerNode = XMLHelper.getDeepChildNodeByName(currentNode, "redner");
                         String speakerId = speakerNode.getAttributes().getNamedItem("id").getTextContent();
                         currentSpeaker = factory.getSpeakerById(speakerId);
-                        if(currentSpeaker == null){
+                        if (currentSpeaker == null) {
                             currentSpeaker = Speaker.fromShortNode(speakerNode);
                         }
                         setSpeaker(currentSpeaker);
                         currentSpeaker.getSpeaches().add(this);
-                    }else {
-                        currentSpeech.texts.add(new Text(currentSpeaker,currentSpeech, currentNode.getTextContent()));
+                    } else {
+                        currentSpeech.texts.add(new Text(currentSpeaker, currentSpeech, currentNode.getTextContent()));
                     }
                     break;
                 case "name":
                     Speaker speakerByName = factory.getSpeakerByNameTag(currentNode.getTextContent());
-                    if(speakerByName == getSpeaker()){
+                    if (speakerByName == getSpeaker()) {
                         currentSpeech = this;
-                    }else if(currentSpeaker != speakerByName && speakerByName != null){
+                    } else if (currentSpeaker != speakerByName && speakerByName != null) {
                         currentSpeaker = speakerByName;
-                        currentSpeech = new Speech(agendaItem,getId()+"-" + extraSpeeches);
+                        currentSpeech = new Speech(agendaItem, getId() + "-" + extraSpeeches);
                         currentSpeaker.getSpeaches().add(currentSpeech);
                         currentSpeech.setSpeaker(currentSpeaker);
                         insertions.add(currentSpeech);
                         extraSpeeches++;
                     }
                     break;
-
+//
 //                case "kommentar":
-//                    texts.add(new Text(currentSpeaker,currentSpeech,node.getTextContent()));
+//                    texts.add(new Text(currentSpeaker, currentSpeech, node.getTextContent()));
 //                    break;
             }
 
@@ -132,5 +133,13 @@ public class Speech extends PlenaryObject{
 
     public void setInsertions(List<Speech> insertions) {
         this.insertions = insertions;
+    }
+
+    public List<Text> getTexts() {
+        return texts;
+    }
+
+    public void setTexts(List<Text> texts) {
+        this.texts = texts;
     }
 }

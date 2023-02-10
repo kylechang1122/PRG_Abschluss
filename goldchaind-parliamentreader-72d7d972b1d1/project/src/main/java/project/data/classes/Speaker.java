@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Speaker extends PlenaryObject{
+public class Speaker extends PlenaryObject {
 
     Party party;
     Fraction fraction;
@@ -22,7 +22,7 @@ public class Speaker extends PlenaryObject{
     boolean government;
     Set<PlenaryProtocol> absences;
     String academicTitle;
-    Date birthday;
+    String birthday;
     String birthPlace;
     String familyState;
     String religion;
@@ -30,29 +30,49 @@ public class Speaker extends PlenaryObject{
     String gender;
     String deathDate;
 
-    public Speaker(){
+    String image;
+
+    public Speaker() {
 
     }
-    public Speaker(Node mdbNode){
+
+    public Speaker(Node mdbNode) {
         ParliamentFactory factory = ParliamentFactory.getInstance();
-        setId(XMLHelper.getDeepChildNodeByName(mdbNode,"ID").getTextContent());
-        Node nameNode = XMLHelper.getDeepChildNodeByName(mdbNode,"NAME");
-        List<String> attriubtes = XMLHelper.getChildNodeValuesByNames(nameNode, "NACHNAME","VORNAME","ANREDE_TITEL");
-        setName(attriubtes.get(0));
-        setFirstName(attriubtes.get(1));
-        setTitle(attriubtes.get(2));
-        String partyName = XMLHelper.getDeepChildNodeByName(mdbNode,"PARTEI_KURZ").getTextContent();
+        setId(XMLHelper.getDeepChildNodeByName(mdbNode, "ID").getTextContent());
+        Node nameNode = XMLHelper.getDeepChildNodeByName(mdbNode, "NAME");
+        List<String> attributes = XMLHelper.getChildNodeValuesByNames(nameNode, "NACHNAME", "VORNAME", "ANREDE_TITEL", "AKAD_TITEL");
+        setName(attributes.get(0));
+        setFirstName(attributes.get(1));
+        setTitle(attributes.get(2));
+        setAcademicTitle(attributes.get(3));
+        String partyName = XMLHelper.getDeepChildNodeByName(mdbNode, "PARTEI_KURZ").getTextContent();
+        String birthday = XMLHelper.getDeepChildNodeByName(mdbNode, "GEBURTSDATUM").getTextContent();
+        String deathday = XMLHelper.getDeepChildNodeByName(mdbNode, "STERBEDATUM").getTextContent();
+        setBirthday(birthday);
+        setDeathDate(deathday);
+        Node bioNode = XMLHelper.getDeepChildNodeByName(mdbNode, "BIOGRAFISCHE_ANGABEN");
+        List<String> attributesBio = XMLHelper.getChildNodeValuesByNames(bioNode, "GEBURTSORT",
+                "GESCHLECHT", "BERUF", "FAMILIENSTAND", "RELIGION");
+        setBirthPlace(attributesBio.get(0));
+        setGender(attributesBio.get(1));
+        setJob(attributesBio.get(2));
+        setFamilyState(attributesBio.get(3));
+        setReligion(attributesBio.get(4));
+        
+
         Party party = factory.getParty(partyName);
+        image = "https://bilddatenbank.bundestag.de/search/picture-result?query=%22" + getFirstName() + " " + getName() + "%22#group-1";
+
         party.addMember(this);
         setParty(party);
     }
 
-    public static Speaker fromShortNode(Node node){
+    public static Speaker fromShortNode(Node node) {
         Speaker speaker = new Speaker();
         Node idNode = node.getAttributes().getNamedItem("id");
         speaker.setId(idNode.getTextContent());
-        speaker.setFirstName(XMLHelper.getDeepChildNodeByName(node,"vorname").getTextContent());
-        speaker.setName(XMLHelper.getDeepChildNodeByName(node,"nachname").getTextContent());
+        speaker.setFirstName(XMLHelper.getDeepChildNodeByName(node, "vorname").getTextContent());
+        speaker.setName(XMLHelper.getDeepChildNodeByName(node, "nachname").getTextContent());
         ParliamentFactory.getInstance().getSpeakers().add(speaker);
         return speaker;
     }
@@ -153,11 +173,11 @@ public class Speaker extends PlenaryObject{
         this.academicTitle = academicTitle;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -207,6 +227,14 @@ public class Speaker extends PlenaryObject{
 
     public void setDeathDate(String deathDate) {
         this.deathDate = deathDate;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

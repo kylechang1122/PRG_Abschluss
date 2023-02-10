@@ -92,18 +92,18 @@ public class App {
 
                 }
             }
-            for (Speaker speaker : parliamentFactory.getSpeakers()) {
-                System.out.println(speaker.getName());
-                try {
-                    handler.insertSpeaker(speaker);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-
-                    System.out.println("Problem beim speichern von Speaker: " + speaker.getId());
-                    result.put("Problem beim speichern von Speaker: ", speaker.getId());
-
-                }
-            }
+//            for (Speaker speaker : parliamentFactory.getSpeakers()) {
+//                System.out.println(speaker.getName());
+//                try {
+//                    handler.insertSpeaker(speaker);
+//                } catch (Exception e) {
+//                    System.out.println(e.getMessage());
+//
+//                    System.out.println("Problem beim speichern von Speaker: " + speaker.getId());
+//                    result.put("Problem beim speichern von Speaker: ", speaker.getId());
+//
+//                }
+//            }
 
 
             return gson.toJson(result);

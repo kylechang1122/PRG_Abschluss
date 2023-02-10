@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PlenaryProtocol extends PlenaryObject{
+public class PlenaryProtocol extends PlenaryObject {
 
     private static SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
     private static SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
@@ -34,58 +34,65 @@ public class PlenaryProtocol extends PlenaryObject{
     Time endTime;
     String title;
     List<AgendaItem> agendaItems = new ArrayList<>();
-    HashMap<String,AgendaItem> agendaItemCache = new HashMap<>();
+    HashMap<String, AgendaItem> agendaItemCache = new HashMap<>();
+
+    List<Speech> speeches = new ArrayList<>();
+
     String place;
     Set<Speaker> speakers;
     long duration;
+
     public PlenaryProtocol(InputStream xmlStream) throws ParserConfigurationException, IOException, SAXException, NodeNotFoundException, ParseException {
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(xmlStream);
 
-        this.setElectionPeriod(XMLHelper.getFirstIntValueFromDocumentByName(document,"wahlperiode"));
-        this.setId(XMLHelper.getFirstIntValueFromDocumentByName(document,"wahlperiode")+XMLHelper.getFirstStringValueFromDocumentByName(document,"sitzungsnr"));
-        this.setTitle(XMLHelper.getFirstStringValueFromDocumentByName(document,"plenarprotokoll-nummer"));
-        this.setPlace(XMLHelper.getFirstStringValueFromDocumentByName(document,"ort"));
-        String date = XMLHelper.getAttributeFromNodeOfDocument(document,"datum","date");
+        this.setElectionPeriod(XMLHelper.getFirstIntValueFromDocumentByName(document, "wahlperiode"));
+        this.setId(XMLHelper.getFirstIntValueFromDocumentByName(document, "wahlperiode") + XMLHelper.getFirstStringValueFromDocumentByName(document, "sitzungsnr"));
+        this.setTitle(XMLHelper.getFirstStringValueFromDocumentByName(document, "plenarprotokoll-nummer"));
+        this.setPlace(XMLHelper.getFirstStringValueFromDocumentByName(document, "ort"));
+        String date = XMLHelper.getAttributeFromNodeOfDocument(document, "datum", "date");
         this.setDate(new Date(sdfDate.parse(date).getTime()));
-        String startTime = XMLHelper.getAttributeFromNodeOfDocument(document,"sitzungsbeginn","sitzung-start-uhrzeit");
+        String startTime = XMLHelper.getAttributeFromNodeOfDocument(document, "sitzungsbeginn", "sitzung-start-uhrzeit");
         this.setStartTime(getTimeFromString(startTime));
-        String endTime = XMLHelper.getAttributeFromNodeOfDocument(document,"sitzungsende","sitzung-ende-uhrzeit");
+        String endTime = XMLHelper.getAttributeFromNodeOfDocument(document, "sitzungsende", "sitzung-ende-uhrzeit");
         this.setEndTime(getTimeFromString(endTime));
 
         NodeList agendaNodes = document.getElementsByTagName("ivz-block");
-        for(int b=0; b < agendaNodes.getLength(); b++){
+        for (int b = 0; b < agendaNodes.getLength(); b++) {
             Node agendaNode = agendaNodes.item(b);
-            AgendaItem agendaItem = new AgendaItem(agendaNode,this);
+            AgendaItem agendaItem = new AgendaItem(agendaNode, this);
+
             this.agendaItems.add(agendaItem);
-            this.agendaItemCache.put(agendaItem.getIndex(),agendaItem);
+            //this.agendaItemCache.put(agendaItem.getIndex(),agendaItem);
         }
 
-        NodeList items = document.getElementsByTagName("tagesordnungspunkt");
-        for(int i = 0; i < items.getLength(); i++){
+        NodeList items = document.getElementsByTagName("rede");
+        for (int i = 0; i < items.getLength(); i++) {
             Node item = items.item(i);
-            String id = item.getAttributes().getNamedItem("top-id").getTextContent();
-            AgendaItem ag = this.agendaItemCache.get(id);
-            List<Node> reden = XMLHelper.getDeepChildNodesByName(item,"rede");
-            List<Speech> speeches = reden.stream().map(node -> new Speech(this.agendaItemCache.get(id), node,this)).collect(Collectors.toList());
+            String id = item.getAttributes().getNamedItem("id").getTextContent();
+            List<Node> reden = XMLHelper.getDeepChildNodesByName(item, "rede");
+            List<Speech> speeches = reden.stream().map(node -> new Speech(this.agendaItemCache.get(id), node, this)).collect(Collectors.toList());
+            this.speeches.addAll(speeches);
         }
 
-        /*NodeList speeches = document.getElementsByTagName("rede");
-        for(int i = 0; i < speeches.getLength(); i++){
-            Node speechNode = speeches.item(i);
-            if(speechNode.getParentNode().hasAttributes() && speechNode.getParentNode().getAttributes().getNamedItem("top-id") != null) {
-                String index = speechNode.getParentNode().getAttributes().getNamedItem("top-id").getTextContent();
-                Speech speech = new Speech(speechNode);
-                //agendaItemCache.get(index).getSpeeches().add(speech);
-            }
-        }*/
+//        NodeList speeches = document.getElementsByTagName("rede");
+//        for(int i = 0; i < speeches.getLength(); i++){
+//            Node speechNode = speeches.item(i);
+//            if(speechNode.getParentNode().hasAttributes() && speechNode.getParentNode().getAttributes().getNamedItem("top-id") != null) {
+//                String index = speechNode.getParentNode().getAttributes().getNamedItem("top-id").getTextContent();
+//                AgendaItem ag = this.agendaItemCache.get(index);
+//
+//                Speech speech = new Speech(ag, speechNode, this);
+//                agendaItemCache.get(index).getSpeeches().add(speech);
+//            }
+//        }
     }
 
-    private static Time getTimeFromString(String time)  {
+    private static Time getTimeFromString(String time) {
         String formattedTime = time.replaceAll("\\.", ":").replace(" Uhr", "");
         try {
             return new Time(sdfTime.parse(formattedTime).getTime());
-        }catch(ParseException ex){
+        } catch (ParseException ex) {
             return null;
         }
     }
@@ -160,5 +167,13 @@ public class PlenaryProtocol extends PlenaryObject{
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public List<Speech> getSpeeches() {
+        return speeches;
+    }
+
+    public void setSpeeches(List<Speech> speeches) {
+        this.speeches = speeches;
     }
 }
