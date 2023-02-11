@@ -1,10 +1,12 @@
 package project.data.classes;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import project.utils.XMLHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class AgendaItem extends PlenaryObject{
 

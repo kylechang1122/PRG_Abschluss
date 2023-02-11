@@ -1,5 +1,6 @@
 package project.data.classes;
 
+import org.apache.commons.jxpath.ri.model.beans.NullPointer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import project.utils.XMLHelper;

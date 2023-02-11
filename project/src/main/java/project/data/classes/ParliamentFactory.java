@@ -1,5 +1,8 @@
 package project.data.classes;
 
+import org.bytedeco.javacv.FrameFilter;
+import org.sweble.wikitext.lazy.parser.Url;
+import org.texttechnologylab.utilities.helper.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;

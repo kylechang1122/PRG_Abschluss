@@ -14,11 +14,12 @@ import project.data.classes.Speaker;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class MongoDBHandler {
 
-    private project.database.MongoDBConfig pConfig = null;
+    private MongoDBConfig pConfig = null;
     private MongoClient pClient = null;
     private MongoDatabase pDatabase = null;
     private MongoCollection<Document> pCollection = null;
@@ -197,7 +198,5 @@ public class MongoDBHandler {
         System.out.println("Deleted speaker: " + result.getDeletedCount());
 
     }
-
-
 
 }

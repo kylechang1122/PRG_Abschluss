@@ -1,5 +1,10 @@
 package project.database;
 
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import project.exception.DataBaseException;
+
 import java.io.*;
 import java.util.Properties;
 

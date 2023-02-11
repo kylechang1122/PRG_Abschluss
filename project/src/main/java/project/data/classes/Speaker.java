@@ -3,6 +3,7 @@ package project.data.classes;
 import org.w3c.dom.Node;
 import project.utils.XMLHelper;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class Speaker extends PlenaryObject {
         setJob(attributesBio.get(2));
         setFamilyState(attributesBio.get(3));
         setReligion(attributesBio.get(4));
-
+        
 
         Party party = factory.getParty(partyName);
         image = "https://bilddatenbank.bundestag.de/search/picture-result?query=%22" + getFirstName() + " " + getName() + "%22#group-1";
