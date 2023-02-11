@@ -1,4 +1,4 @@
-package project.userManagement;
+package project.userApi;
 
 import com.google.gson.Gson;
 import project.auth.BasicAuthHelper;
@@ -12,12 +12,12 @@ import java.util.Base64;
 
 import static spark.Spark.*;
 
-public class UserManagement {
+public class UserApi {
 
     private final UserService userService;
     private final BasicAuthHelper basicAuthHelper;
 
-    public UserManagement(UserService userService) {
+    public UserApi(UserService userService) {
         this.userService = userService;
         this.basicAuthHelper = new BasicAuthHelper(userService);
     }
@@ -62,14 +62,5 @@ public class UserManagement {
             if (!group.equals("admin")) {
                 halt(403, "Not Authorized");
             }
-    }
-
-    private void initCreateUser(){
-        Document admin = new Document();
-        admin.append("_id", "admin");
-        admin.append("group", "admin");
-        admin.append("credential", Base64.getEncoder().encodeToString("admin:bla1123".getBytes()));
-        User user = new User(admin);
-        userService.addUser(user);
     }
 }

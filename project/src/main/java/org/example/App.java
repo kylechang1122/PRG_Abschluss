@@ -1,11 +1,11 @@
 package org.example;
 
 import project.database.*;
-import project.exception.*;
 import project.frontend.Frontend;
-import project.userManagement.UserDbHandler;
-import project.userManagement.UserManagement;
-import project.userManagement.UserService;
+import project.pariamentApi.ParliamentApi;
+import project.userApi.UserDbHandler;
+import project.userApi.UserApi;
+import project.userApi.UserService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,24 +23,28 @@ public class App
         return resource.getPath();
     }
     public static void main( String[] args ) {
-
         try {
-            MongoDBConfig config = new MongoDBConfig(configDir());
-            MongoDBHandler dbConnection = new MongoDBHandler(config);
-            System.out.println("Hello World");
-            new Frontend().initRoutes();
-            new UserManagement(new UserService(new UserDbHandler(dbConnection))).initApi();
+            initApis();
+            initFrontend();
 
-        }catch (DataBaseException ex){
-            ex.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         routes();
     }
 
+    private static void initApis() throws IOException {
+        MongoDBConfig config = new MongoDBConfig(configDir());
+        MongoDBHandler dbConnection = new MongoDBHandler(config);
+        UserService userService = new UserService(new UserDbHandler(dbConnection));
 
+        new UserApi(userService).initApi();
+        new ParliamentApi(userService).initApi();
+    }
 
+    private static void initFrontend() throws IOException {
+        new Frontend().initRoutes();
+    }
 
 
 }

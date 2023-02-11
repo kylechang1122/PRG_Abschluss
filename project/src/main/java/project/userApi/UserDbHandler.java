@@ -1,4 +1,4 @@
-package project.userManagement;
+package project.userApi;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;

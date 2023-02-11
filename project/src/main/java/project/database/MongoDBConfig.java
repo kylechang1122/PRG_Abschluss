@@ -1,118 +1,82 @@
 package project.database;
 
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import project.exception.DataBaseException;
-
 import java.io.*;
 import java.util.Properties;
 
-public class MongoDBConfig  extends Properties implements DataBaseConfig {
+public class MongoDBConfig extends Properties {
 
-    private String hostname;
-    private String username;
-    private String password;
-    private int port;
-    private String database;
-    private String collection;
-    public MongoDBConfig(File configFile) throws DataBaseException{
-        loadConfig(configFile.getAbsolutePath());
-    }
-    public MongoDBConfig(String configPath) throws DataBaseException{
-        loadConfig(configPath);
-    }
-    private void loadConfig(String configPath) throws DataBaseException {
-        BufferedReader configReader = null;
-        try {
-            InputStreamReader configStream = new InputStreamReader(new FileInputStream(new File(configPath)), "UTF-8");
-            configReader = new BufferedReader(configStream);
-            super.load(configReader);
-            setValues();
-        }catch(IOException ex){
-            throw new DataBaseException("Failed to get config for Database Connection");
-        }finally {
-            if(configReader != null){
-                try {
-                    configReader.close();
-                }catch(IOException ex){
-                    ex.printStackTrace();
-                }
-            }
-        }
+    /**
+     * Constructor with a File-Object for the Config-File
+     * @param pFile
+     * @throws IOException
+     */
+    public MongoDBConfig(File pFile) throws IOException {
+        this(pFile.getAbsolutePath());
     }
 
-    private void setValues(){
-        setHostname(getProperty("remote_host"));
-        setUsername(getProperty("remote_user"));
-        setPassword(getProperty("remote_password"));
-        setPort(Integer.parseInt(getProperty("remote_port")));
-        setDatabase(getProperty("remote_database"));
-        setCollection(getProperty("remote_collection"));
+    /**
+     * Constructor with the path of the Config-File
+     * @param sPath
+     * @throws IOException
+     */
+
+    public MongoDBConfig(String sPath) throws IOException {
+        String current = new File( "." ).getCanonicalPath();
+        BufferedReader lReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(sPath)), "UTF-8"));
+        this.load(lReader);
+        lReader.close();
     }
 
-    private void setHostname(String hostname) {
-        this.hostname = hostname;
+    /**
+     * Method for the Hostname
+     * @return
+     */
+    public String getMongoHostname(){
+        return getProperty("remote_host", "127.0.0.1");
+
     }
 
-    private void setUsername(String username) {
-        this.username = username;
+    /**
+     * Method for the Username
+     * @return
+     */
+    public String getMongoUsername(){
+        return getProperty("remote_user", "user");
+
     }
 
-    private void setPassword(String password) {
-        this.password = password;
+    /**
+     * Method for the Password
+     * @return
+     */
+    public String getMongoPassword(){
+        return getProperty("remote_password", "password");
     }
 
-    private void setPort(int port) {
-        this.port = port;
+    /**
+     * Method for the Port
+     * @return
+     */
+    public int getMongoPort(){
+        return Integer.valueOf(getProperty("remote_port", "27017"));
     }
 
-    private void setDatabase(String database) {
-        this.database = database;
+
+    /**
+     * Method for the Database name
+     * @return
+     */
+    public String getMongoDatabase(){
+        return getProperty("remote_database", "database");
     }
 
-    private void setCollection(String collection) {
-        this.collection = collection;
+    /**
+     * Method for the Collection to connect
+     * @return
+     */
+    public String getMongoCollection(){
+        return getProperty("remote_collection", "collection");
     }
 
-    @Override
-    public String getHostname() {
-        return hostname;
-    }
-    @Override
-    public String getUserName() {
-        return username;
-    }
-    @Override
-    public String getPassword() {
-        return password;
-    }
-    @Override
-    public int getPort() {
-        return port;
-    }
-    @Override
-    public String getDatabase() {
-        return database;
-    }
 
-    public String getCollection(){
-        return collection;
-    }
-
-    public MongoCredential getCredentials(){
-        return MongoCredential.createScramSha1Credential(getUserName(),getDatabase(),getPassword().toCharArray());
-    }
-    public ServerAddress getServerAddress(){
-        return new ServerAddress(getHostname(),getPort());
-    }
-    public MongoClientOptions getDefaultClientOptions(){
-        return MongoClientOptions.builder()
-                .connectionsPerHost(20)
-                .socketTimeout(10000)
-                .maxWaitTime(10000)
-                .connectTimeout(1000)
-                .sslEnabled(false)
-                .build();
-    }
 }

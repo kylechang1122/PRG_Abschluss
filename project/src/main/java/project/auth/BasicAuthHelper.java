@@ -2,8 +2,8 @@ package project.auth;
 
 import org.jetbrains.annotations.Nullable;
 import project.exception.DataBaseException;
-import project.userManagement.User;
-import project.userManagement.UserService;
+import project.userApi.User;
+import project.userApi.UserService;
 import spark.Request;
 
 import java.util.Base64;
