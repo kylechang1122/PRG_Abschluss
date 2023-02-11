@@ -2,6 +2,7 @@ package project.userApi;
 
 import com.google.gson.Gson;
 import project.auth.BasicAuthHelper;
+import project.database.MongoDBHandler;
 import project.exception.DataBaseException;
 import spark.Request;
 import spark.Response;
@@ -56,11 +57,6 @@ public class UserApi {
     }
 
     private void checkAuthorization(Request request, Response response) throws DataBaseException {
-            User user = basicAuthHelper.getCurrentUser(request);
-            // 4) backend checks if the user belongs to the correct group with the required rights for the requested content (e.g. admin group for admin content)
-            String group = user.getGroup();
-            if (!group.equals("admin")) {
-                halt(403, "Not Authorized");
-            }
+        basicAuthHelper.checkAuthorization(request, response, "admin");
     }
 }

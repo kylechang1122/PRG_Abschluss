@@ -39,7 +39,7 @@ public class App
         UserService userService = new UserService(new UserDbHandler(dbConnection));
 
         new UserApi(userService).initApi();
-        new ParliamentApi(userService).initApi();
+        new ParliamentApi(userService, dbConnection).initApi();
     }
 
     private static void initFrontend() throws IOException {
