@@ -7,6 +7,7 @@ import project.userApi.UserDbHandler;
 import project.userApi.UserApi;
 import project.userApi.UserService;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -24,13 +25,14 @@ public class App
     }
     public static void main( String[] args ) {
         try {
+            // set external directory for the static files
+            String staticDirectory = System.getProperty("user.dir") + File.separator + "web";
+            staticFiles.externalLocation(staticDirectory);
             initApis();
             initFrontend();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-        routes();
     }
 
     private static void initApis() throws IOException {

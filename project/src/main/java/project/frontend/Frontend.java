@@ -14,10 +14,6 @@ import static spark.Spark.staticFiles;
 public class Frontend {
 
     public void initRoutes() throws IOException {
-
-        // set external directory for the static files
-        String staticDirectory = System.getProperty("user.dir") + File.separator + "web";
-        staticFiles.externalLocation(staticDirectory);
         // set external template directory
         Configuration templateConfig = new Configuration(Configuration.getVersion());
         templateConfig.setDirectoryForTemplateLoading(new File(System.getProperty("user.dir") + File.separator + "templates"));
