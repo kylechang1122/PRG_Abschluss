@@ -1,6 +1,7 @@
 package project.data.classes;
 
 import org.apache.commons.jxpath.ri.model.beans.NullPointer;
+import org.bson.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import project.utils.XMLHelper;
@@ -75,6 +76,10 @@ public class Speech extends PlenaryObject {
 
         }
 
+    }
+
+    public Speech(Document document) {
+        // todo
     }
 
 

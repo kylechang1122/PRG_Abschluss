@@ -1,5 +1,6 @@
 package project.data.classes;
 
+import org.bson.Document;
 import org.w3c.dom.Node;
 import project.utils.XMLHelper;
 
@@ -58,7 +59,7 @@ public class Speaker extends PlenaryObject {
         setJob(attributesBio.get(2));
         setFamilyState(attributesBio.get(3));
         setReligion(attributesBio.get(4));
-        
+
 
         Party party = factory.getParty(partyName);
         image = "https://bilddatenbank.bundestag.de/search/picture-result?query=%22" + getFirstName() + " " + getName() + "%22#group-1";
@@ -75,6 +76,19 @@ public class Speaker extends PlenaryObject {
         speaker.setName(XMLHelper.getDeepChildNodeByName(node, "nachname").getTextContent());
         ParliamentFactory.getInstance().getSpeakers().add(speaker);
         return speaker;
+    }
+
+    public Speaker(Document document) {
+        setId(document.getString("_id"));
+        setName(document.getString("name"));
+        setFirstName(document.getString("firstName"));
+        setBirthday(document.getString("geburtsdatum"));
+        setBirthPlace(document.getString("geburtsort"));
+        setDeathDate(document.getString("sterbedatum"));
+        setGender(document.getString("geschlecht"));
+        setJob(document.getString("beruf"));
+        setAcademicTitle(document.getString("akademischertitel"));
+        // ... todo
     }
 
     public Party getParty() {

@@ -88,6 +88,22 @@ public class PlenaryProtocol extends PlenaryObject {
 //        }
     }
 
+    public PlenaryProtocol(org.bson.Document document) {
+        setId(document.getString("_id"));
+        setElectionPeriod(document.getInteger("wahlperiode"));
+        setTitle(document.getString("title"));
+        setDate(document.get("datum", java.sql.Date.class));
+        setStartTime(document.get("startzeit", java.sql.Time.class));
+        setEndTime(document.get("endzeit", java.sql.Time.class));
+        setPlace(document.getString("standort"));
+        document.getList("speeches", org.bson.Document.class).forEach((speech) -> {
+            // speeches.add(new Speech(speech, this));
+        });
+        document.getList("agendaitems", org.bson.Document.class).forEach((agendaItem) -> {
+            agendaItems.add(new AgendaItem(agendaItem, this));
+        });
+    }
+
     private static Time getTimeFromString(String time) {
         String formattedTime = time.replaceAll("\\.", ":").replace(" Uhr", "");
         try {

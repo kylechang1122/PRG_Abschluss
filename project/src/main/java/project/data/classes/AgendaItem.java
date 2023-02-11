@@ -1,5 +1,6 @@
 package project.data.classes;
 
+import org.bson.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import project.utils.XMLHelper;
@@ -24,6 +25,13 @@ public class AgendaItem extends PlenaryObject{
         setProtocol(protocol);
         setIndex(XMLHelper.getChildNodeByName(node,"ivz-block-titel").getTextContent().replace(":",""));
         setTitle(XMLHelper.getDeepChildNodeByName(node,"ivz-eintrag-inhalt").getTextContent());
+    }
+
+    public AgendaItem(Document document, PlenaryProtocol protocol){
+        setProtocol(protocol);
+        String index = document.keySet().iterator().next();
+        setIndex(index);
+        setTitle(document.getString(index));
     }
 
     public void setSpeeches(List<Speech> speeches) {
