@@ -78,7 +78,8 @@ public class MongoHelper {
 
         Document mongoDocument = new Document();
         mongoDocument.put("_id", speech.getId());
-        mongoDocument.put("speaker", toMongoDocument(speech.getSpeaker()));
+        mongoDocument.put("agendaItem", speech.getAgendaItem().getIndex());
+        mongoDocument.put("speaker", speech.getSpeaker().getId());
         List<BasicDBObject> textItem = new ArrayList<>();
 
         for (Text text : speech.getTexts()) {
