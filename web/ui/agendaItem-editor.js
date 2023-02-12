@@ -34,7 +34,7 @@ function showAgendaItemEditor($target, data) {
                         console.log(value)
                     },
                     title: "Save"
-                }
+                },
                 cancel: {
                     click: () => $target.html(''),
                     title: "Cancel"

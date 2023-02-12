@@ -24,13 +24,13 @@
                 startTime: "13:00",
                 endTime: "14:00",
                 place: "Berlin",
-                title: "Sitzungsprotocoll"
+                title: "Sitzungsprotokoll"
             });
         }
 
         function showProtocols() {
             clearEditor();
-            showProtocolOverview($("#editor"), {});
+            showProtocolOverview("#editor", {});
         }
 
         function showAddSpeech() {
