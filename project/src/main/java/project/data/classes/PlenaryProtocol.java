@@ -40,6 +40,8 @@ public class PlenaryProtocol extends PlenaryObject {
     Set<Speaker> speakers;
     long duration;
 
+    public PlenaryProtocol(){}
+
     public PlenaryProtocol(InputStream xmlStream) throws ParserConfigurationException, IOException, SAXException, NodeNotFoundException, ParseException {
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(xmlStream);
@@ -90,16 +92,31 @@ public class PlenaryProtocol extends PlenaryObject {
         setId(document.getString("_id"));
         setElectionPeriod(document.getInteger("wahlperiode"));
         setTitle(document.getString("title"));
-        setDate(document.get("datum", java.sql.Date.class));
-        setStartTime(document.get("startzeit", java.sql.Time.class));
-        setEndTime(document.get("endzeit", java.sql.Time.class));
+        java.util.Date date = document.getDate("datum");
+        if (date != null) {
+            setDate(new Date(date.getTime()));
+        }
+        java.util.Date start = document.getDate("startzeit");
+        java.util.Date end = document.getDate("endzeit");
+        if (start != null) {
+            setStartTime(new Time(start.getTime()));
+        }
+        if (end != null) {
+            setEndTime(new Time(end.getTime()));
+        }
         setPlace(document.getString("standort"));
-        document.getList("speeches", org.bson.Document.class).forEach((speech) -> {
-            // speeches.add(new Speech(speech, this));
-        });
-        document.getList("agendaitems", org.bson.Document.class).forEach((agendaItem) -> {
-            agendaItems.add(new AgendaItem(agendaItem, this));
-        });
+        List<org.bson.Document> speechesList = document.getList("speeches", org.bson.Document.class);
+        if(speechesList != null) {
+            speechesList.forEach((speech) -> {
+                // speeches.add(new Speech(speech, this));
+            });
+        }
+        List<org.bson.Document> agendaItemList = document.getList("agendaitems", org.bson.Document.class);
+        if (agendaItemList != null) {
+            agendaItemList.forEach((agendaItem) -> {
+                agendaItems.add(new AgendaItem(agendaItem, this));
+            });
+        }
     }
 
     private static Time getTimeFromString(String time) {

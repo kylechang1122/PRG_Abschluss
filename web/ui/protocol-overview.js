@@ -16,9 +16,12 @@ function showProtocolOverview($target) {
                     <td>${p._id}</td>
                     <td>${p.title}</td>
                     <td>${p.date}</td>
-                    <td><button onclick="editProtocol(${p._id})">Edit</button></td>
+                    <td>
+                    <button onclick="editProtocol('${p._id}')">Edit</button>
+                    <button onclick="deleteProtocol('${p._id}')">Delete</button>
+                    </td>
                 </tr>`)
-                $table.append(`<tr id="protocol-${p._id}"></tr>`)
+                $table.append(`<tr><td id="protocol-${p._id}" colspan="4"></td></tr>`)
             })
         },
         error: function (xhr) {
@@ -32,10 +35,23 @@ function editProtocol(id) {
     $.getJSON({
         url: `/rest/parliament/protocol/${id}`,
         success: function (protocol) {
-            showProtocolEditor($target, protocol);
+            showProtocolEditor($target, putProtocol, protocol);
         },
         error: function (xhr) {
             alert("Loading Protocol failed: " + xhr.responseText);
+        }
+    });
+}
+
+function deleteProtocol(id) {
+    $.ajax({
+        method: 'DELETE',
+        url: `/rest/parliament/protocol/${id}`,
+        success: function () {
+            alert(`protocol ${id}  deleted`)
+        },
+        error: function (xhr) {
+            alert("Deleting protocol failed: " + xhr.responseText);
         }
     });
 }

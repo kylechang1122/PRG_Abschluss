@@ -94,7 +94,7 @@ function showUserEditor($target, submitFunction, data = {}) {
                     click: submitFunction,
                     title: "Save"
                 },
-                canel: {
+                cancel: {
                     click: () => $target.html(''),
                     title: "Cancel"
                 }

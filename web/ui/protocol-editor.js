@@ -1,4 +1,61 @@
-function showProtocolEditor($target, data) {
+function toSQLDate(date) {
+    // from https://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime
+    return date.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+function parseDates(data) {
+    if(data.date) {
+        data.date = new Date(Date.parse(data.date));
+        //data.date = toSQLDate(data.date);
+    }
+    if(data.startTime) {
+        data.startTime = new Date(Date.parse("1970-01-01T14:" + data.startTime));
+        //data.startTime = toSQLDate(data.startTime);
+    }
+    if(data.endTime) {
+        data.endTime = new Date(Date.parse("1970-01-01T14:" + data.endTime));
+        //data.endTime = toSQLDate(data.endTime);
+    }
+}
+
+function putProtocol() {
+    var value = this.getValue();
+    var data = value;
+    parseDates(data);
+    $.ajax({
+        dataType: 'json',
+        type: 'PUT',
+        url: "/rest/parliament/protocol/" + data.id,
+        data: JSON.stringify(data),
+        success: (userData) => {
+            alert("Save successful!");
+            this.data = userData;
+        },
+        error: function (xhr) {
+            alert("Save failed: " + xhr.responseText);
+        }
+    });
+}
+
+function postProtocol() {
+    var value = this.getValue();
+    var data = value;
+    parseDates(data);
+    $.ajax({
+        dataType: 'json',
+        type: 'POST',
+        url: "/rest/parliament/protocol",
+        data: JSON.stringify(data),
+        success: (response) => {
+            alert("Save successful!");
+            this.data = response;
+        },
+        error: function (xhr) {
+            alert("Save failed: " + xhr.responseText);
+        }
+    });
+}
+function showProtocolEditor($target, submitFunction,  data) {
     var schema = {
         title: "Sesseion Edit",
         type: "object",
@@ -16,18 +73,18 @@ function showProtocolEditor($target, data) {
             },
             date: {
                 type: "string", // want a picker but "date" not working
-                title: "Date of Sesseion",
+                title: "Date of Session (yyyy-mm-dd)",
                 required: true,
 
             },
             startTime: {
                 type: "string",
-                title: "Start Time",
+                title: "Start Time (hh:mm)",
                 required: true,
             },
             endTime: {
                 type: "string",
-                title: "End Time",
+                title: "End Time (hh:mm)",
                 required: true,
             },
             place: {
@@ -48,17 +105,21 @@ function showProtocolEditor($target, data) {
                 type: "select",
                 label: "select the election period",
 
+            },
+            id: {
+                type: "hidden"
             }
 
         },
         form: {
             buttons: {
                 submit: {
-                    click: function() {
-                        var value = this.getValue();
-                        console.log(value)
-                    },
+                    click: submitFunction,
                     title: "Save"
+                },
+                cancel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }

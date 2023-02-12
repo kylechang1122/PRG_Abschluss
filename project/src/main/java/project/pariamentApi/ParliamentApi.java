@@ -1,6 +1,6 @@
 package project.pariamentApi;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import project.auth.BasicAuthHelper;
 import project.data.classes.*;
 import project.database.MongoDBHandler;
@@ -9,9 +9,57 @@ import project.userApi.UserService;
 import spark.Request;
 import spark.Response;
 
+import java.lang.reflect.Type;
+import java.sql.Time;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import static spark.Spark.*;
 
 public class ParliamentApi {
+
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final String TIME_FORMAT = "HH:mm:ss";
+
+    /**
+     * from https://stackoverflow.com/questions/29630028/gson-time-deserilization
+     */
+    private class DateDeserializer implements JsonDeserializer<Date> {
+
+        @Override
+        public java.sql.Date deserialize(JsonElement jsonElement, Type typeOF,
+                                JsonDeserializationContext context) throws JsonParseException {
+            try {
+                Date date = new SimpleDateFormat(DATE_FORMAT, Locale.GERMAN).parse(jsonElement.getAsString());
+                return new java.sql.Date(date.getTime());
+            } catch (ParseException e) {
+            }
+
+            throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
+                    + "\". Supported formats: " + DATE_FORMAT);
+        }
+    }
+    /**
+     * from https://stackoverflow.com/questions/29630028/gson-time-deserilization
+     */
+    private class TimeDeserializer implements JsonDeserializer<Time> {
+
+        @Override
+        public Time deserialize(JsonElement jsonElement, Type typeOF,
+                                JsonDeserializationContext context) throws JsonParseException {
+            try {
+
+                Date date = new SimpleDateFormat(DATE_FORMAT, Locale.GERMAN).parse(jsonElement.getAsString());
+                Time t = new Time(date.getTime());
+                return t;
+            } catch (ParseException e) {
+            }
+            throw new JsonParseException("Unparseable time: \"" + jsonElement.getAsString()
+                    + "\". Supported formats: " + TIME_FORMAT);
+        }
+    }
 
     private final ParliamentService parliamentService;
     private final BasicAuthHelper basicAuthHelper;
@@ -25,7 +73,10 @@ public class ParliamentApi {
      * start rest api for parliament data
      */
     public void initApi() {
-        Gson gson = new Gson();
+        GsonBuilder gSonBuilder=  new GsonBuilder();
+        gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
+        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
+        Gson gson = gSonBuilder.create();
         // get overview
         get("/rest/parliament/protocol/overview", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
@@ -44,16 +95,16 @@ public class ParliamentApi {
             if(! parliamentService.protocolExists(id)){
                 halt(404, "Protocol does not exist");
             }
-            PlenaryProtocol protocol = new Gson().fromJson(request.body(), PlenaryProtocol.class);
+            PlenaryProtocol protocol = gson.fromJson(request.body(), PlenaryProtocol.class);
             if(! protocol.getId().equals(id)){
                 halt(400, "Wrong protocol data");
             }
             return parliamentService.saveProtocol(protocol);
         }, gson::toJson);
         // create protocol
-        post("/rest/parliament/protocol/", (request, response) -> {
+        post("/rest/parliament/protocol", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
-            PlenaryProtocol protocol = new Gson().fromJson(request.body(), PlenaryProtocol.class);
+            PlenaryProtocol protocol = gson.fromJson(request.body(), PlenaryProtocol.class);
             if(parliamentService.protocolExists(protocol.getId())){
                 halt(400, "Protocol already exists");
             }

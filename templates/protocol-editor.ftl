@@ -19,7 +19,13 @@
 
         function showAddProtocol() {
             clearEditor();
-            showProtocolEditor($("#editor"), {});
+            showProtocolEditor($("#editor"), postProtocol, {
+                date: "2020-12-25",
+                startTime: "13:00",
+                endTime: "14:00",
+                place: "Berlin",
+                title: "Sitzungsprotocoll"
+            });
         }
 
         function showProtocols() {
