@@ -1,4 +1,5 @@
 function showAgendaItemEditor($target, data) {
+    // schema of Agenda Item Edit for Alpaca
     var schema = {
         title: "Agenda Item Edit",
         type: "object",
@@ -33,6 +34,10 @@ function showAgendaItemEditor($target, data) {
                         console.log(value)
                     },
                     title: "Save"
+                }
+                cancel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }

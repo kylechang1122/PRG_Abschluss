@@ -1,5 +1,6 @@
 
 function showSpeakerEditor($target, data) {
+    // schema of Speaker Edit for Alpaca
     var schema = {
         title: "Speaker Eidt",
         type: "object",
@@ -49,6 +50,10 @@ function showSpeakerEditor($target, data) {
                         console.log(value)
                     },
                     title: "Save"
+                }
+                cancel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }

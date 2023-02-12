@@ -1,4 +1,5 @@
 function showCommentEditor($target, data) {
+    // schema of Comment Edit for Alpaca
     var schema = {
         title: "Comment Edit",
         type: "object",
@@ -40,6 +41,10 @@ function showCommentEditor($target, data) {
                         console.log(value)
                     },
                     title: "Save"
+                }
+                cancel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }

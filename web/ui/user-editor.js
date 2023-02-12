@@ -22,7 +22,6 @@ function putUser() {
         }
     });
 }
-
 function postUser() {
     var value = this.getValue();
     var credential = btoa(value.userId + ":" + value.password)
@@ -47,9 +46,9 @@ function postUser() {
         }
     });
 }
-
 function showUserEditor($target, submitFunction, data = {}) {
     data.password = data.credential && data.userId && atob(data.credential).replace(data.userId + ':', '');
+    // schema of User Edit for Alpaca
     var schema = {
         title: "User Edit",
         type: "object",

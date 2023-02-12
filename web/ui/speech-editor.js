@@ -1,4 +1,5 @@
 function showSpeechEditor($target, data) {
+    // schema of Speech Edit for Alpaca
     var schema = {
         title: "Speech Edit",
         type: "object",
@@ -54,6 +55,10 @@ function showSpeechEditor($target, data) {
                         console.log(value)
                     },
                     title: "Save"
+                }
+                cancel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }
