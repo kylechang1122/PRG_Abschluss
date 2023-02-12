@@ -2,11 +2,28 @@
 <head>
     <#include "./include/editor-head.ftl">
     <script type="text/javascript" src="ui/speaker-editor.js"></script>
+    <style>
+        #menu > li {
+            display: none;
+        }
+    </style>
     <script>
         function clearEditor() {
             $("#editor").html("");
         }
         function showAddSpeaker() {
+            clearEditor();
+            showSpeakerEditor($("#editor"), {});
+        }
+        function showEditSpeaker() {
+            clearEditor();
+            showSpeakerEditor($("#editor"), {});
+        }
+        function showSpeaker() {
+            clearEditor();
+            showSpeakerOverview($("#editor"), {});
+        }
+        function showDeleteSpeaker() {
             clearEditor();
             showSpeakerEditor($("#editor"), {});
         }
@@ -21,18 +38,23 @@
             <#include "./include/menu.ftl">
             <nav class="menu">
                 <ul>
-                    <li class="admin"><a href="#" onclick="showAddSpeaker()"> Add User </a></li>
+                    <li class="admin"><a href="#" onclick="showAddSpeaker()"> Add Speaker </a></li>
+                    <li class="admin"><a href="#" onclick="showEditSpeaker()"> Edit Speaker </a></li>
+                    <li class="admin"><a href="#" onclick="showSpeaker()"> Show Speaker </a></li>
+                    <li class="admin"><a href="#" onclick="showDeleteSpeaker()"> Delete Speaker </a></li>
                 </ul>
             </nav>
-            <script>
-                evaluateUser();
-            </script>
         </div>
         <div id="editor" class="col-md-8">
         </div>
     </div>
 </div>
 
+<script>
+
+    evaluateUser();
+
+</script>
 </body>
 
 </html>

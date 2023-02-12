@@ -1,7 +1,7 @@
 package project.pariamentApi;
 
 import org.bson.Document;
-import project.data.classes.PlenaryProtocol;
+import project.data.classes.*;
 import project.database.MongoHelper;
 
 import java.util.ArrayList;
@@ -44,5 +44,36 @@ public class ParliamentService {
 
     public boolean protocolExists(String id) {
         return dbConnection.protocolExists(id);
+    }
+
+    //speaker:
+    public Speaker getSpeaker(String id) {
+        Document document = dbConnection.getSpeaker(id);
+        return new Speaker(document);
+    }
+
+    public Speaker addSpeaker(Speaker speaker) {
+        Document document = dbConnection.createSpeaker(MongoHelper.toMongoDocument(speaker));
+        speaker.setId(document.getString("_id"));
+        return speaker;
+    }
+
+    public Speaker saveSpeaker(Speaker speaker) {
+        Document document = dbConnection.updateSpeaker(MongoHelper.toMongoDocument(speaker));
+        return speaker;
+    }
+
+    public void deleteSpeaker(String id) {
+        dbConnection.deletetSpeaker(id);
+    }
+
+    public ArrayList<Document> getSpeakerOverview() {
+        return dbConnection.getCollection().aggregate(Arrays.asList(new Document("$project",
+                new Document("title", 1L)
+                        .append("_id", 1L)))).into(new ArrayList<>());
+    }
+
+    public boolean speakerExists(String id) {
+        return dbConnection.speakerExists(id);
     }
 }

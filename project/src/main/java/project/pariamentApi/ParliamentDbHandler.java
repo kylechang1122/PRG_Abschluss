@@ -62,6 +62,43 @@ public class ParliamentDbHandler {
         // check if the id exists in the collection
         return search.first() != null;
     }
+    // speaker:
+    public Document getSpeaker(String id) {
+        return this.dbHandler.getObject(id, "speaker");
+    }
 
+    public Document createSpeaker(Document document) {
+        String id = document.getString("_id");
+        if(id == null) {
+            id = new ObjectId().toString();
+            document.append("_id", id);
+        }
+        this.getCollection().insertOne(document);
+        return this.getSpeaker(id);
+    }
+
+    public void deletetSpeaker(String id) {
+        this.dbHandler.deleteSpeaker(id);
+    }
+
+    public Document updateSpeaker(Document updates) {
+        String id = updates.getString("_id");
+        if(id == null) {
+            throw new IllegalArgumentException("cannot update speaker without id");
+        }
+        Document query = new Document().append("_id",  id);
+        UpdateOptions options = new UpdateOptions().upsert(false);
+        UpdateResult result = this.getCollection().updateOne(query, updates, options);
+        return this.getSpeaker(id);
+    }
+
+    public boolean speakerExists(String id) {
+        // create a filter by _id
+        Bson filter = Filters.in("_id", id);
+        // search the id in the collection
+        FindIterable<Document> search = getCollection().find(filter);
+        // check if the id exists in the collection
+        return search.first() != null;
+    }
 
 }
