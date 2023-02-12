@@ -38,10 +38,10 @@
             <#include "./include/menu.ftl">
             <nav class="menu">
                 <ul>
-                    <li class="admin"><a href="#" onclick="showAddSpeaker()"> Add Speaker </a></li>
-                    <li class="admin"><a href="#" onclick="showEditSpeaker()"> Edit Speaker </a></li>
-                    <li class="admin"><a href="#" onclick="showSpeaker()"> Show Speaker </a></li>
-                    <li class="admin"><a href="#" onclick="showDeleteSpeaker()"> Delete Speaker </a></li>
+                    <li class="manager"><a href="#" onclick="showAddSpeaker()"> Add Speaker </a></li>
+                    <li class="manager"><a href="#" onclick="showEditSpeaker()"> Edit Speaker </a></li>
+                    <li class="manager"><a href="#" onclick="showSpeaker()"> Show Speaker </a></li>
+                    <li class="manager"><a href="#" onclick="showDeleteSpeaker()"> Delete Speaker </a></li>
                 </ul>
             </nav>
         </div>
