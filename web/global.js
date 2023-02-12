@@ -6,7 +6,7 @@ function addAuthHeader(xhr) {
     }
 }
 
-function gotToLogin(redirect) {
+function gotToLogin(redirect = "home") {
 // Redirect the to the login page.
     location.href = "/login?redirect=" + redirect;
 }
@@ -15,7 +15,10 @@ function gotToLogin(redirect) {
 var globalAjaxOptions = {
     beforeSend: addAuthHeader,
     statusCode: {
-        401: gotToLogin
+        401: () => {
+            redirect = new URL(location.href).searchParams.get("redirect");
+            gotToLogin(redirect)
+        }
     },
 };
 
