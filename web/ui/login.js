@@ -1,4 +1,4 @@
-
+// authenticate login
 function authenticate(userId, password) {
     $.getJSON({
         url: "/authenticate",
@@ -20,6 +20,7 @@ function authenticate(userId, password) {
 }
 
 function showLogin($target) {
+    // schema of Login for Alpaca
     var schema = {
         "title": "Login",
         "type": "object",

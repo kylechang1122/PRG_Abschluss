@@ -1,4 +1,5 @@
 function showProtocolEditor($target, data) {
+    // schema of Session Edit for Alpaca
     var schema = {
         title: "Sesseion Edit",
         type: "object",
@@ -59,6 +60,10 @@ function showProtocolEditor($target, data) {
                         console.log(value)
                     },
                     title: "Save"
+                }
+                cancel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }
