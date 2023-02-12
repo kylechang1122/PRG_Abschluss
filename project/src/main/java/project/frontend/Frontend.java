@@ -32,5 +32,11 @@ public class Frontend {
         get("/editor", (request, response) -> {
             return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "editor.ftl"));
         });
+        get("/editor/users", (request, response) -> {
+            return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "user-editor.ftl"));
+        });
+        get("/editor/protocols", (request, response) -> {
+            return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "protocol-editor.ftl"));
+        });
     }
 }

@@ -31,3 +31,37 @@ function logout() {
     location.href = "./";
 }
 
+function showUserMenu() {
+    $(".menu li.user").show();
+}
+
+function showManagerMenu() {
+    $(".menu li.manager").show();
+}
+
+function showAdminMenu() {
+    $(".menu li.admin").show();
+}
+
+function evaluateUser() {
+    var user = getCurrentUser();
+    if (!user || !user.group) {
+        gotToLogin("editor");
+    } else {
+        switch (user.group) {
+            case "user":
+                showUserMenu();
+                break;
+            case "manager":
+                showUserMenu();
+                showManagerMenu();
+                break;
+            case "admin":
+                showUserMenu();
+                showManagerMenu();
+                showAdminMenu();
+                break;
+        }
+    }
+}
+
