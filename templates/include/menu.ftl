@@ -1,5 +1,5 @@
 <style>
-    #menu > li {
+    .menu  li {
         display: none;
     }
 </style>

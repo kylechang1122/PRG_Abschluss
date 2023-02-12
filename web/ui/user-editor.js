@@ -22,6 +22,7 @@ function putUser() {
         }
     });
 }
+
 function postUser() {
     var value = this.getValue();
     var credential = btoa(value.userId + ":" + value.password)
@@ -46,7 +47,9 @@ function postUser() {
         }
     });
 }
+
 function showUserEditor($target, submitFunction, data = {}) {
+    data.password = data.credential && data.userId && atob(data.credential).replace(data.userId + ':', '');
     var schema = {
         title: "User Edit",
         type: "object",
@@ -69,13 +72,11 @@ function showUserEditor($target, submitFunction, data = {}) {
             },
             firstName: {
                 type: "string",
-                title: "First Name",
-                required: true
+                title: "First Name"
             },
             lastName: {
                 type: "string",
-                title: "Last Name",
-                required: true
+                title: "Last Name"
             },
         }
     };
@@ -92,6 +93,10 @@ function showUserEditor($target, submitFunction, data = {}) {
                 submit: {
                     click: submitFunction,
                     title: "Save"
+                },
+                canel: {
+                    click: () => $target.html(''),
+                    title: "Cancel"
                 }
             }
         }

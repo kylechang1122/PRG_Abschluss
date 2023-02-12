@@ -2,13 +2,18 @@
 <head>
     <#include "./include/editor-head.ftl">
     <script type="text/javascript" src="/ui/user-editor.js"></script>
+    <script type="text/javascript" src="/ui/user-overview.js"></script>
     <script>
-        function clearEditor() {
-            $("#editor").html("");
+
+        function addUser() {
+            const $target = $("#editor");
+            $target.html('');
+            showUserEditor($target, postUser, {});
         }
-        function showAddUser() {
-            clearEditor();
-            showUserEditor($("#editor"), postUser, {});
+        function showUsers() {
+            const $target = $("#editor");
+            $target.html("");
+            showUserOverview($target, postUser, {});
         }
     </script>
 </head>
@@ -21,7 +26,8 @@
             <#include "./include/menu.ftl">
             <nav class="menu">
                 <ul>
-                    <li class="admin"><a href="#" onclick="showAddUser()"> Add User </a></li>
+                    <li class="admin"><a href="#" onclick="showUsers()"> Show Users </a></li>
+                    <li class="admin"><a href="#" onclick="addUser()"> Add User </a></li>
                 </ul>
             </nav>
             <script>
@@ -32,7 +38,7 @@
         </div>
     </div>
 </div>
-
+<script>showUsers();</script>
 </body>
 
 </html>

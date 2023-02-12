@@ -29,6 +29,10 @@ public class UserApi {
             Document user = basicAuthHelper.getCurrentUser(request).toDocument();
             return user;
         }, gson::toJson);
+        get("/rest/admin/users/overview", (request, response) -> {
+            checkAuthorization(request, response);
+            return userService.getUserOverview();
+        }, gson::toJson);
         get("/rest/admin/users/:id", (request, response) -> {
             checkAuthorization(request, response);
             String id = request.params(":id");

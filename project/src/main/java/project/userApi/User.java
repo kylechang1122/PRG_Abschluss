@@ -11,7 +11,7 @@ public class User {
     protected String group;
     protected String credential;
     public User(Document mongoDBUser) {
-        userId = mongoDBUser.get("userId", String.class);
+        userId = mongoDBUser.get("_id", String.class);
         firstName = mongoDBUser.get("firstName", String.class);
         lastName = mongoDBUser.get("lastName", String.class);
         group = mongoDBUser.get("group", String.class);
