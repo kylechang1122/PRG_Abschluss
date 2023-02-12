@@ -8,7 +8,7 @@ function addAuthHeader(xhr) {
 
 function gotToLogin(redirect) {
 // Redirect the to the login page.
-    location.href = "./login?redirect=" + redirect;
+    location.href = "/login?redirect=" + redirect;
 }
 
 //global options for ajax requests
@@ -28,7 +28,7 @@ function getCurrentUser(){
 function logout() {
     sessionStorage.auth = null;
     sessionStorage.user = null;
-    location.href = "./";
+    location.href = "/";
 }
 
 function showUserMenu() {
