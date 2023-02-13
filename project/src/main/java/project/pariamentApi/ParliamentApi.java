@@ -64,19 +64,31 @@ public class ParliamentApi {
     private final ParliamentService parliamentService;
     private final BasicAuthHelper basicAuthHelper;
 
+    private final Gson gson;
+
     public ParliamentApi(UserService userService, MongoDBHandler dbConnection) {
         this.parliamentService = new ParliamentService(new ParliamentDbHandler(dbConnection));
         this.basicAuthHelper = new BasicAuthHelper(userService);
+        GsonBuilder gSonBuilder=  new GsonBuilder();
+        gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
+        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
+        gson = gSonBuilder.create();
     }
 
     /**
      * start rest api for parliament data
      */
     public void initApi() {
-        GsonBuilder gSonBuilder=  new GsonBuilder();
-        gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
-        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
-        Gson gson = gSonBuilder.create();
+        //protocol
+        initProtocolApi();
+        //speeches
+        initSpeechesApi();
+        // speaker:
+        initSpeakerApi();
+
+    }
+
+    private void initProtocolApi() {
         // get overview
         get("/rest/parliament/protocol/overview", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
@@ -99,7 +111,7 @@ public class ParliamentApi {
             if(! protocol.getId().equals(id)){
                 halt(400, "Wrong protocol data");
             }
-            return parliamentService.saveProtocol(protocol);
+            return parliamentService.updateProtocol(protocol);
         }, gson::toJson);
         // create protocol
         post("/rest/parliament/protocol", (request, response) -> {
@@ -117,7 +129,53 @@ public class ParliamentApi {
             parliamentService.deleteProtocol(id);
             return "ok";
         }, gson::toJson);
-        // speaker:
+    }
+
+    private void initSpeechesApi() {
+        // get overview
+        get("/rest/parliament/protocol/:id/speeches/overview", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String id = request.params(":id");
+            return parliamentService.getSpeechesOverview(id);
+        }, gson::toJson);
+        // get protocol
+        get("/rest/parliament/protocol/:id", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String id = request.params(":id");
+            return parliamentService.getProtocol(id);
+        }, gson::toJson);
+        // edit protocol
+        put("/rest/parliament/protocol/:id", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String id = request.params(":id");
+            if(! parliamentService.protocolExists(id)){
+                halt(404, "Protocol does not exist");
+            }
+            PlenaryProtocol protocol = gson.fromJson(request.body(), PlenaryProtocol.class);
+            if(! protocol.getId().equals(id)){
+                halt(400, "Wrong protocol data");
+            }
+            return parliamentService.updateProtocol(protocol);
+        }, gson::toJson);
+        // create protocol
+        post("/rest/parliament/protocol", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            PlenaryProtocol protocol = gson.fromJson(request.body(), PlenaryProtocol.class);
+            if(parliamentService.protocolExists(protocol.getId())){
+                halt(400, "Protocol already exists");
+            }
+            return parliamentService.addProtocol(protocol);
+        }, gson::toJson);
+        // delete protocol
+        delete("/rest/parliament/protocol/:id", (request, response) -> {
+            checkAuthorizationManagerLevel(request, response);
+            String id = request.params(":id");
+            parliamentService.deleteProtocol(id);
+            return "ok";
+        }, gson::toJson);
+    }
+
+    private void initSpeakerApi() {
         // get overview
         get("/rest/parliament/speaker/overview", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
