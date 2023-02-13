@@ -1,6 +1,6 @@
 package project.auth;
 
-import org.jetbrains.annotations.Nullable;
+
 import project.exception.DataBaseException;
 import project.userApi.User;
 import project.userApi.UserService;
@@ -35,7 +35,7 @@ public class BasicAuthHelper {
 
     }
 
-    @Nullable
+
     private static String getCredential(String encodedHeader) {
         String prefix = "Basic ";
         if (encodedHeader.startsWith(prefix)) {
