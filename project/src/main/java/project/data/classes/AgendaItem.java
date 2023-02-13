@@ -17,7 +17,7 @@ public class AgendaItem extends PlenaryObject{
 
     PlenaryProtocol protocol;
 
-    List<Speech> getSpeeches(){
+    public List<Speech> getSpeeches(){
         return speeches;
     }
 
@@ -34,8 +34,8 @@ public class AgendaItem extends PlenaryObject{
         setTitle(document.getString(index));
     }
 
-    public void setSpeeches(List<Speech> speeches) {
-        this.speeches = speeches;
+    public void addSpeech(Speech speech) {
+        this.speeches.add(speech);
     }
 
     public String getIndex() {

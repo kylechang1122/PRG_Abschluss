@@ -1,6 +1,7 @@
 package project.utils;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import project.exception.NodeNotFoundException;
@@ -8,6 +9,9 @@ import project.exception.NodeNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class XMLHelper {
 
@@ -16,7 +20,14 @@ public abstract class XMLHelper {
     }
 
 
-
+    public static List<Element> match(NodeList nodeList, Predicate<Element> predicate){
+        return IntStream.range(0, nodeList.getLength())
+                .mapToObj(nodeList::item)
+                .filter(Element.class::isInstance)
+                .map(Element.class::cast)
+                .filter(predicate)
+                .collect(Collectors.toList());
+    }
     public static String getAttributeFromNodeOfDocument(Document document, String nodeName,String attributeName) throws NodeNotFoundException {
         NodeList nodes = document.getElementsByTagName(nodeName);
         if(nodes.getLength() > 0){

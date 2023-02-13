@@ -19,25 +19,27 @@ public class MongoHelper {
         mongoDocument.put("datum", plenaryProtocol.getDate());
         mongoDocument.put("startzeit", plenaryProtocol.getStartTime());
         mongoDocument.put("endzeit", plenaryProtocol.getEndTime());
-        mongoDocument.put("Sprecher", plenaryProtocol.getSpeakers());
         mongoDocument.put("standort", plenaryProtocol.getPlace());
 
-        List<BasicDBObject> agenditems = new ArrayList<>();
+        List<Document> agenditems = new ArrayList<>();
         for (AgendaItem item : plenaryProtocol.getAgendaItems()) {
-            agenditems.add(new BasicDBObject(item.getIndex(), item.getTitle()));
+            agenditems.add(toMongoDocument(item));
         }
-
         mongoDocument.put("agenditems", agenditems);
-
-        List<Document> speeches = new ArrayList<>();
-        for (Speech item : plenaryProtocol.getSpeeches()) {
-            speeches.add(toMongoDocument(item));
-        }
-        mongoDocument.put("speeches", speeches);
 
 
         return mongoDocument;
 
+    }
+
+    public static Document toMongoDocument(AgendaItem agendaItem) {
+        Document document = new Document().append("index", agendaItem.getIndex()).append("title", agendaItem.getTitle());
+        List<Document> speeches = new ArrayList<>();
+        for (Speech speech : agendaItem.getSpeeches()) {
+            speeches.add(toMongoDocument(speech));
+        }
+        document.put("speeches", speeches);
+        return document;
     }
 
     public static Document toMongoDocument(Speaker speaker) {
@@ -80,13 +82,14 @@ public class MongoHelper {
         mongoDocument.put("_id", speech.getId());
         mongoDocument.put("agendaItem", speech.getAgendaItem().getIndex());
         mongoDocument.put("speaker", speech.getSpeaker().getId());
-        List<BasicDBObject> textItem = new ArrayList<>();
+        List<Document> texts = new ArrayList<>();
 
         for (Text text : speech.getTexts()) {
-            textItem.add(new BasicDBObject(text.getSpeaker().getId(), text.getText()));
+            String type = text instanceof Comment ? "comment" : "text";
+            texts.add(new Document().append("type", type).append("text", text.getText()));
         }
 
-        mongoDocument.put("texte", textItem);
+        mongoDocument.put("texte", texts);
 
         return mongoDocument;
 

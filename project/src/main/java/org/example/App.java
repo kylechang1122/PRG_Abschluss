@@ -3,12 +3,8 @@ package org.example;
 import org.apache.uima.UIMAException;
 import org.bson.Document;
 import org.xml.sax.SAXException;
-import project.data.classes.ParliamentFactory;
-import project.data.classes.PlenaryProtocol;
-import project.data.classes.Speech;
-import project.data.classes.Text;
+import project.data.classes.*;
 import project.database.*;
-import project.exception.DataBaseException;
 import project.frontend.Frontend;
 import project.nlp.Engine;
 import project.pariamentApi.ParliamentApi;
@@ -25,61 +21,97 @@ import static spark.Spark.*;
 
 /**
  * Hello world!
- *
  */
-public class App
-{
-    private static ParliamentFactory parliamentFactory;
+public class App {
+    private MongoDBHandler dbConnection;
+    private ParliamentFactory parliamentFactory;
+
     static public String configDir() {
         URL resource = App.class.getResource("/dbconnectionconfig.txt");
         return resource.getPath();
     }
-    public static void main( String[] args ) {
+
+    public static void main(String[] args) {
+        App app = new App();
+        try{
+            if (args.length > 0) {
+                String arg = args[0];
+                if (arg.equals("import")) {
+                    app.importXML();
+                } else if (arg.equals("analyze")) {
+                    app.getAndAnalyseSpeech();
+                }
+            } else{
+                startWebApp(app);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void startWebApp(App app) throws IOException {
+            // set external directory for the static files
+            String staticDirectory = System.getProperty("user.dir") + File.separator + "web";
+            staticFiles.externalLocation(staticDirectory);
+            app.initApis();
+            app.initFrontend();
+    }
+
+    App() {
         MongoDBConfig config = null;
         try {
             config = new MongoDBConfig(configDir());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        MongoDBHandler dbConnection = new MongoDBHandler(config);
-        if (args.length > 2 && args[0].equals("analyze")) {
-            try {
-                getAndAnalyseSpeech(dbConnection);
-            } catch (IOException | UIMAException | SAXException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            // set external directory for the static files
-            String staticDirectory = System.getProperty("user.dir") + File.separator + "web";
-            staticFiles.externalLocation(staticDirectory);
-            initApis(dbConnection);
-            initFrontend();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        dbConnection = new MongoDBHandler(config);
+        parliamentFactory = ParliamentFactory.getInstance();
     }
 
-    private static void initApis(MongoDBHandler dbConnection) throws IOException {
+    private void initApis() throws IOException {
+
         UserService userService = new UserService(new UserDbHandler(dbConnection));
 
         new UserApi(userService).initApi();
         new ParliamentApi(userService, dbConnection).initApi();
     }
 
-    private static void initFrontend() throws IOException {
+    private void initFrontend() throws IOException {
         new Frontend().initRoutes();
+    }
+
+    private void importXML() {
+        System.out.println(parliamentFactory.getProtocols().size());
+
+        for (PlenaryProtocol protocol : parliamentFactory.getProtocols()) {
+            System.out.println(protocol.getId());
+            try {
+                dbConnection.update(protocol);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("Problem beim speichern von Protokoll: " + protocol.getId());
+            }
+        }
+        for (Speaker speaker : parliamentFactory.getSpeakers()) {
+            System.out.println(speaker.getName());
+            try {
+                dbConnection.update(speaker);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println("Problem beim speichern von Speaker: " + speaker.getId());
+            }
+        }
+        System.out.println("XML import abgeschlossen");
     }
 
     /**
      * Method that retrieves the Speech from each protocol and perform analysis.
      *
-     * @param handler MongoDBHandler
      * @throws UIMAException Exception
      * @throws IOException   Exception
      * @throws SAXException  Exception
      */
-    private static void getAndAnalyseSpeech(MongoDBHandler handler) throws UIMAException, IOException, SAXException {
+    private void getAndAnalyseSpeech() throws UIMAException, IOException, SAXException {
         List<PlenaryProtocol> plenaryProtocols = parliamentFactory.getProtocols();
 
         Engine engine = new Engine();
@@ -107,7 +139,7 @@ public class App
                 }
 
                 try {
-                    handler.insertSpeech(document);
+                    dbConnection.insertNlpSpeech(document);
                 } catch (Exception e) {
                     System.out.println("Cannot insert speech with id --> " + speechID);
                 }
@@ -116,5 +148,4 @@ public class App
 
         }
     }
-
 }

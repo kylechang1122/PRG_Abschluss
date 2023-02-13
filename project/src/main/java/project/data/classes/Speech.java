@@ -28,12 +28,12 @@ public class Speech extends PlenaryObject {
         int extraSpeeches = 0;
         this.protocol = protocol;
         this.agendaItem = agendaItem;
+        this.agendaItem.addSpeech(this);
         ParliamentFactory factory = ParliamentFactory.getInstance();
         this.setId(node.getAttributes().getNamedItem("id").getTextContent());
         NodeList childNodes = node.getChildNodes();
         Speaker currentSpeaker = null;
         Speech currentSpeech = this;
-        int optionalSpeech = 1;
         for (int a = 0; a < childNodes.getLength(); a++) {
             Node currentNode = childNodes.item(a);
             switch (currentNode.getNodeName()) {
@@ -52,7 +52,7 @@ public class Speech extends PlenaryObject {
                         setSpeaker(currentSpeaker);
                         currentSpeaker.getSpeaches().add(this);
                     } else {
-                        currentSpeech.texts.add(new Text(currentSpeaker, currentSpeech, currentNode.getTextContent()));
+                        currentSpeech.texts.add(new Text(currentNode.getTextContent()));
                     }
                     break;
                 case "name":
@@ -68,10 +68,9 @@ public class Speech extends PlenaryObject {
                         extraSpeeches++;
                     }
                     break;
-//
-//                case "kommentar":
-//                    texts.add(new Text(currentSpeaker, currentSpeech, node.getTextContent()));
-//                    break;
+               case "kommentar":
+                   texts.add(new Comment(currentNode.getTextContent()));
+                 break;
             }
 
         }

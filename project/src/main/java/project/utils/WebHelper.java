@@ -86,11 +86,6 @@ public abstract class WebHelper {
 
 
     public static List<String> getProtocolsUrls() throws IOException {
-        Path dtdPath = Paths.get("/" + "dbtplenarprotokoll.dtd");
-        if (!Files.exists(dtdPath)) {
-            InputStream in = getStream(dtdUrl);
-            Files.copy(in, dtdPath, StandardCopyOption.REPLACE_EXISTING);
-        }
         List<String> urls = new ArrayList<>();
         addProtocolUrlsForLink(urls, period19Url);
         System.out.println("Loaded links for 19 Period");

@@ -14,7 +14,6 @@ import project.data.classes.Speaker;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
 public class MongoDBHandler {
@@ -24,13 +23,13 @@ public class MongoDBHandler {
     private MongoDatabase pDatabase = null;
     private MongoCollection<Document> pCollection = null;
 
-    public MongoDBHandler(MongoDBConfig pConfig){
+    public MongoDBHandler(MongoDBConfig pConfig) {
         this.pConfig = pConfig;
         init();
     }
 
 
-    private void init(){
+    private void init() {
 
         // defind credentials (Username, database, password)
         List<MongoCredential> credentialList = new ArrayList(0);
@@ -62,15 +61,15 @@ public class MongoDBHandler {
         pCollection = pDatabase.getCollection(pConfig.getMongoCollection());
 
         // some debug information
-        System.out.println("Connect to "+pConfig.getMongoDatabase()+" on "+pConfig.getMongoHostname());
+        System.out.println("Connect to " + pConfig.getMongoDatabase() + " on " + pConfig.getMongoHostname());
 
     }
 
-    public MongoCollection getCollection(String sCollection){
+    public MongoCollection getCollection(String sCollection) {
         return this.pDatabase.getCollection(sCollection);
     }
 
-    public Document getObject(String sID, String sCollection){
+    public Document getObject(String sID, String sCollection) {
 
         BasicDBObject whereQuery = new BasicDBObject();
         whereQuery.put("_id", sID);
@@ -81,7 +80,7 @@ public class MongoDBHandler {
 
         MongoCursor<Document> it = result.iterator();
 
-        while(it.hasNext()){
+        while (it.hasNext()) {
             doc = it.next();
         }
 
@@ -95,7 +94,7 @@ public class MongoDBHandler {
 
         rDocument = getObject(plenaryProtocol.getId(), "protocol");
 
-        if(rDocument==null){
+        if (rDocument == null) {
 
             Document insertObject = MongoHelper.toMongoDocument(plenaryProtocol);
 
@@ -107,8 +106,6 @@ public class MongoDBHandler {
     }
 
 
-
-
     public boolean update(PlenaryProtocol plenaryProtocol) throws UIMAException {
 
         BasicDBObject whereQuery = new BasicDBObject();
@@ -117,24 +114,22 @@ public class MongoDBHandler {
         Document mongoDocument = MongoHelper.toMongoDocument(plenaryProtocol);
         try {
             uResult = this.getCollection("protocol").replaceOne(whereQuery, mongoDocument);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if(uResult==null){
+        if (uResult == null) {
             return false;
-        }
-        else{
-            if(uResult.getMatchedCount()==0){
+        } else {
+            if (uResult.getMatchedCount() == 0) {
                 this.getCollection("protocol").insertOne(mongoDocument);
             }
         }
-        return uResult.getModifiedCount()>0;
+        return uResult.getModifiedCount() > 0;
 
     }
 
-    public void deleteProtocol(String id){
+    public void deleteProtocol(String id) {
         Bson query = eq("_id", id);
 
         DeleteResult result = this.getCollection("protocol").deleteOne(query);
@@ -142,20 +137,19 @@ public class MongoDBHandler {
 
     }
 
-    public Document insertSpeaker(Speaker pSpeaker)  {
+    public Document insertSpeaker(Speaker pSpeaker) {
 
         Document rDocument = null;
 
         rDocument = getObject(pSpeaker.getId(), "speaker");
 
-        if(rDocument==null){
+        if (rDocument == null) {
 
             Document insertObject = MongoHelper.toMongoDocument(pSpeaker);
 
             this.getCollection("speaker").insertOne(insertObject);
             rDocument = getObject(pSpeaker.getId(), "speaker");
-        }
-        else{
+        } else {
             Document updateObject = MongoHelper.toMongoDocument(pSpeaker);
             BasicDBObject whereQuery = new BasicDBObject();
             whereQuery.put("_id", pSpeaker.getId());
@@ -166,6 +160,10 @@ public class MongoDBHandler {
         return rDocument;
     }
 
+    public void insertNlpSpeech(Document document) {
+        this.getCollection("speeches").insertOne(document);
+    }
+
     public boolean update(Speaker pSpeaker) throws UIMAException {
 
         BasicDBObject whereQuery = new BasicDBObject();
@@ -174,24 +172,22 @@ public class MongoDBHandler {
         Document mongoDocument = MongoHelper.toMongoDocument(pSpeaker);
         try {
             uResult = this.getCollection("speaker").replaceOne(whereQuery, mongoDocument);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if(uResult==null){
+        if (uResult == null) {
             return false;
-        }
-        else{
-            if(uResult.getMatchedCount()==0){
+        } else {
+            if (uResult.getMatchedCount() == 0) {
                 this.getCollection("speaker").insertOne(mongoDocument);
             }
         }
-        return uResult.getModifiedCount()>0;
+        return uResult.getModifiedCount() > 0;
 
     }
 
-    public void deleteSpeaker(String id){
+    public void deleteSpeaker(String id) {
         Bson query = eq("_id", id);
 
         DeleteResult result = this.getCollection("speaker").deleteOne(query);

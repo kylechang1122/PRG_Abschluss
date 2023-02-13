@@ -1,6 +1,7 @@
 package project.data.classes;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -17,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,10 +32,6 @@ public class PlenaryProtocol extends PlenaryObject {
     Time endTime;
     String title;
     List<AgendaItem> agendaItems = new ArrayList<>();
-    HashMap<String, AgendaItem> agendaItemCache = new HashMap<>();
-
-    List<Speech> speeches = new ArrayList<>();
-
     String place;
     Set<Speaker> speakers;
     long duration;
@@ -61,22 +57,30 @@ public class PlenaryProtocol extends PlenaryObject {
         this.setEndTime(getTimeFromString(endTime));
 
         NodeList agendaNodes = document.getElementsByTagName("ivz-block");
+        NodeList agendaElements = document.getElementsByTagName("tagesordnungspunkt");
+        // parse agenda items
         for (int b = 0; b < agendaNodes.getLength(); b++) {
             Node agendaNode = agendaNodes.item(b);
             AgendaItem agendaItem = new AgendaItem(agendaNode, this);
-
-            this.agendaItems.add(agendaItem);
-            //this.agendaItemCache.put(agendaItem.getIndex(),agendaItem);
+            this.getAgendaItems().add(agendaItem);
+            // get speeches of current agenda item
+            List<Element> filterResult = XMLHelper.match(agendaElements, (e) -> {
+                String index = e.getAttribute("top-id");
+                return index.equals(agendaItem.getIndex());
+            });
+            // add speeches
+            if(!filterResult.isEmpty()) {
+                Element agendaElement = filterResult.get(0);
+                NodeList speechesNodeList = agendaElement.getElementsByTagName("rede");
+                for (int i = 0; i < speechesNodeList.getLength(); i++) {
+                    Node item = speechesNodeList.item(i);
+                    List<Node> reden = XMLHelper.getDeepChildNodesByName(item, "rede");
+                    List<Speech> speeches = reden.stream().map(node -> new Speech(agendaItem, node, this)).collect(Collectors.toList());
+                }
+            }
         }
 
-        NodeList items = document.getElementsByTagName("rede");
-        for (int i = 0; i < items.getLength(); i++) {
-            Node item = items.item(i);
-            String id = item.getAttributes().getNamedItem("id").getTextContent();
-            List<Node> reden = XMLHelper.getDeepChildNodesByName(item, "rede");
-            List<Speech> speeches = reden.stream().map(node -> new Speech(this.agendaItemCache.get(id), node, this)).collect(Collectors.toList());
-            this.speeches.addAll(speeches);
-        }
+
 
 //        NodeList speeches = document.getElementsByTagName("rede");
 //        for(int i = 0; i < speeches.getLength(); i++){
@@ -204,10 +208,8 @@ public class PlenaryProtocol extends PlenaryObject {
     }
 
     public List<Speech> getSpeeches() {
+        ArrayList<Speech> speeches = new ArrayList<>();
+        this.agendaItems.forEach((agendaItem -> speeches.addAll(agendaItem.getSpeeches())));
         return speeches;
-    }
-
-    public void setSpeeches(List<Speech> speeches) {
-        this.speeches = speeches;
     }
 }
