@@ -64,19 +64,31 @@ public class ParliamentApi {
     private final ParliamentService parliamentService;
     private final BasicAuthHelper basicAuthHelper;
 
+    private final Gson gson;
+
     public ParliamentApi(UserService userService, MongoDBHandler dbConnection) {
         this.parliamentService = new ParliamentService(new ParliamentDbHandler(dbConnection));
         this.basicAuthHelper = new BasicAuthHelper(userService);
+        GsonBuilder gSonBuilder=  new GsonBuilder();
+        gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
+        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
+        gson = gSonBuilder.create();
     }
 
     /**
      * start rest api for parliament data
      */
     public void initApi() {
-        GsonBuilder gSonBuilder=  new GsonBuilder();
-        gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
-        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
-        Gson gson = gSonBuilder.create();
+        //protocol
+        initProtocolApi();
+        //speeches
+        initSpeechesApi();
+        // speaker:
+        initSpeakerApi();
+
+    }
+
+    private void initProtocolApi() {
         // get overview
         get("/rest/parliament/protocol/overview", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
@@ -99,7 +111,7 @@ public class ParliamentApi {
             if(! protocol.getId().equals(id)){
                 halt(400, "Wrong protocol data");
             }
-            return parliamentService.saveProtocol(protocol);
+            return parliamentService.updateProtocol(protocol);
         }, gson::toJson);
         // create protocol
         post("/rest/parliament/protocol", (request, response) -> {
@@ -117,7 +129,72 @@ public class ParliamentApi {
             parliamentService.deleteProtocol(id);
             return "ok";
         }, gson::toJson);
-        // speaker:
+    }
+
+    private void initSpeechesApi() {
+        // get overview
+        get("/rest/parliament/protocol/:id/agenda", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String id = request.params(":id");
+            return parliamentService.getAgendaItemsOverview(id);
+        }, gson::toJson);
+        // get speech
+        get("/rest/parliament/protocol/:id/speeches/:sid", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            String speechId = request.params(":sid");
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            try{
+                return parliamentService.getSpeech(protocolId, speechId);
+            } catch (IllegalArgumentException e) {
+                halt(404, "Speech does not exist");
+            }
+            return null;
+        }, gson::toJson);
+        // update speech
+        put("/rest/parliament/protocol/:id/speeches/:sid", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            String speechId = request.params(":sid");
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            try{
+                Speech speech = gson.fromJson(request.body(), Speech.class);
+                return parliamentService.updateSpeech(protocolId, speech);
+            } catch (IllegalArgumentException e) {
+                halt(404, "Speech does not exist");
+            }
+            return null;
+        }, gson::toJson);
+        // create speech
+        post("/rest/parliament/protocol/:id/agenda/:aid", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            String agendaId = request.params(":aid");
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            try{
+                Speech speech = gson.fromJson(request.body(), Speech.class);
+                return parliamentService.addSpeech(protocolId, agendaId, speech);
+            } catch (IllegalArgumentException e) {
+                halt(404, "Speech does not exist");
+            }
+            return null;
+        }, gson::toJson);
+        // delete speech
+        delete("/rest/parliament/protocol/:id", (request, response) -> {
+            checkAuthorizationManagerLevel(request, response);
+            String id = request.params(":id");
+            parliamentService.deleteProtocol(id);
+            return "ok";
+        }, gson::toJson);
+    }
+
+    private void initSpeakerApi() {
         // get overview
         get("/rest/parliament/speaker/overview", (request, response) -> {
             checkAuthorizationUserLevel(request, response);

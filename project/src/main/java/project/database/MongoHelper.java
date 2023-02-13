@@ -25,7 +25,7 @@ public class MongoHelper {
         for (AgendaItem item : plenaryProtocol.getAgendaItems()) {
             agenditems.add(toMongoDocument(item));
         }
-        mongoDocument.put("agenditems", agenditems);
+        mongoDocument.put("agendaItems", agenditems);
 
 
         return mongoDocument;

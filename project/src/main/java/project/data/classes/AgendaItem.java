@@ -38,6 +38,10 @@ public class AgendaItem extends PlenaryObject{
         this.speeches.add(speech);
     }
 
+    public void removeSpeech(Speech speech) {
+        this.speeches.remove(speech);
+    }
+
     public String getIndex() {
         return index;
     }
