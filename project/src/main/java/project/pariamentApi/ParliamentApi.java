@@ -117,14 +117,6 @@ public class ParliamentApi {
             parliamentService.deleteProtocol(id);
             return "ok";
         }, gson::toJson);
-
-
-
-
-
-
-
-
         // speaker:
         // get overview
         get("/rest/parliament/speaker/overview", (request, response) -> {

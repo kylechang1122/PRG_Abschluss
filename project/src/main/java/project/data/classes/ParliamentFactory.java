@@ -42,11 +42,7 @@ public class ParliamentFactory {
                 try {
                     factory.loadMdbFromXML();
                     WebHelper.downloadProtocols();
-                } catch (ParserConfigurationException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (SAXException e) {
+                } catch (ParserConfigurationException | IOException | SAXException e) {
                     throw new RuntimeException(e);
                 }
         }

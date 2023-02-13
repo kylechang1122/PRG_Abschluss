@@ -6,7 +6,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
-import org.apache.uima.UIMAException;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -20,9 +19,14 @@ public class ParliamentDbHandler {
         this.dbHandler = dbHandler;
     }
 
-    public MongoCollection<Document> getCollection() {
+    public MongoCollection<Document> getProtocolCollection() {
 
         return dbHandler.getCollection("protocol");
+    }
+
+    public MongoCollection<Document> getSpeakerCollection() {
+
+        return dbHandler.getCollection("speaker");
     }
 
     public Document getProtocol(String id) {
@@ -35,7 +39,7 @@ public class ParliamentDbHandler {
             id = new ObjectId().toString();
             document.append("_id", id);
         }
-        this.getCollection().insertOne(document);
+        this.getProtocolCollection().insertOne(document);
         return this.getProtocol(id);
     }
 
@@ -43,14 +47,16 @@ public class ParliamentDbHandler {
         this.dbHandler.deleteProtocol(id);
     }
 
-    public Document updateProtocol(Document updates) {
-        String id = updates.getString("_id");
+    public Document updateProtocol(Document document) {
+        String id = document.getString("_id");
         if(id == null) {
             throw new IllegalArgumentException("cannot update protocol without id");
         }
+        // _id is not allowed in updates
+        document.remove("_id");
         Document query = new Document().append("_id",  id);
         UpdateOptions options = new UpdateOptions().upsert(false);
-        UpdateResult result = this.getCollection().updateOne(query, updates, options);
+        UpdateResult result = this.getProtocolCollection().updateOne(query, document, options);
         return this.getProtocol(id);
     }
 
@@ -58,7 +64,7 @@ public class ParliamentDbHandler {
         // create a filter by _id
         Bson filter = Filters.in("_id", id);
         // search the id in the collection
-        FindIterable<Document> search = getCollection().find(filter);
+        FindIterable<Document> search = getProtocolCollection().find(filter);
         // check if the id exists in the collection
         return search.first() != null;
     }
@@ -73,7 +79,7 @@ public class ParliamentDbHandler {
             id = new ObjectId().toString();
             document.append("_id", id);
         }
-        this.getCollection().insertOne(document);
+        this.getSpeakerCollection().insertOne(document);
         return this.getSpeaker(id);
     }
 
@@ -81,14 +87,17 @@ public class ParliamentDbHandler {
         this.dbHandler.deleteSpeaker(id);
     }
 
-    public Document updateSpeaker(Document updates) {
-        String id = updates.getString("_id");
+    public Document updateSpeaker(Document document) {
+        String id = document.getString("_id");
         if(id == null) {
             throw new IllegalArgumentException("cannot update speaker without id");
         }
+        // _id is not allowed in updates
+        document.remove("_id");
         Document query = new Document().append("_id",  id);
+        Document updates = new Document().append("$set",  document);
         UpdateOptions options = new UpdateOptions().upsert(false);
-        UpdateResult result = this.getCollection().updateOne(query, updates, options);
+        UpdateResult result = this.getSpeakerCollection().updateOne(query, updates, options);
         return this.getSpeaker(id);
     }
 
@@ -96,7 +105,7 @@ public class ParliamentDbHandler {
         // create a filter by _id
         Bson filter = Filters.in("_id", id);
         // search the id in the collection
-        FindIterable<Document> search = getCollection().find(filter);
+        FindIterable<Document> search = getSpeakerCollection().find(filter);
         // check if the id exists in the collection
         return search.first() != null;
     }

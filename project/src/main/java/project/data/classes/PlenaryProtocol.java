@@ -40,6 +40,9 @@ public class PlenaryProtocol extends PlenaryObject {
     Set<Speaker> speakers;
     long duration;
 
+    /**
+     * default constructor needed for gson deserialization
+     */
     public PlenaryProtocol(){}
 
     public PlenaryProtocol(InputStream xmlStream) throws ParserConfigurationException, IOException, SAXException, NodeNotFoundException, ParseException {

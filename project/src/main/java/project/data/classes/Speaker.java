@@ -88,6 +88,18 @@ public class Speaker extends PlenaryObject {
         setGender(document.getString("geschlecht"));
         setJob(document.getString("beruf"));
         setAcademicTitle(document.getString("akademischertitel"));
+        String party = document.getString("party");
+        if (party != null) {
+            //ParliamentFactory can only be used during XML import
+            //setParty(ParliamentFactory.getInstance().getParty(party));
+            setParty(new Party(party));
+        }
+        String fraction = document.getString("fraction");
+        if (fraction != null) {
+            //todo
+            // setParty(ParliamentFactory.getInstance().getFraction(fraction));
+        }
+
         // ... todo
     }
 

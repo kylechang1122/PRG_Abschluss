@@ -1,7 +1,8 @@
 <html>
 <head>
     <#include "./include/editor-head.ftl">
-    <script type="text/javascript" src="ui/speaker-editor.js"></script>
+    <script type="text/javascript" src="/ui/speaker-editor.js"></script>
+    <script type="text/javascript" src="/ui/speaker-overview.js"></script>
     <style>
         #menu > li {
             display: none;
@@ -11,21 +12,13 @@
         function clearEditor() {
             $("#editor").html("");
         }
-        function showAddSpeaker() {
+        function adddSpeaker() {
             clearEditor();
             showSpeakerEditor($("#editor"), {});
         }
-        function showEditSpeaker() {
+        function showSpeakers() {
             clearEditor();
-            showSpeakerEditor($("#editor"), {});
-        }
-        function showSpeaker() {
-            clearEditor();
-            showSpeakerOverview($("#editor"), {});
-        }
-        function showDeleteSpeaker() {
-            clearEditor();
-            showSpeakerEditor($("#editor"), {});
+            showSpeakerOverview("#editor", {});
         }
     </script>
 </head>
@@ -38,10 +31,8 @@
             <#include "./include/menu.ftl">
             <nav class="menu">
                 <ul>
-                    <li class="manager"><a href="#" onclick="showAddSpeaker()"> Add Speaker </a></li>
-                    <li class="manager"><a href="#" onclick="showEditSpeaker()"> Edit Speaker </a></li>
-                    <li class="manager"><a href="#" onclick="showSpeaker()"> Show Speaker </a></li>
-                    <li class="manager"><a href="#" onclick="showDeleteSpeaker()"> Delete Speaker </a></li>
+                    <li class="manager"><a href="#" onclick="showSpeakers()"> Show Speakers </a></li>
+                    <li class="manager"><a href="#" onclick="adddSpeaker()"> Add Speaker </a></li>
                 </ul>
             </nav>
         </div>
@@ -53,6 +44,7 @@
 <script>
 
     evaluateUser();
+    showSpeakers();
 
 </script>
 </body>

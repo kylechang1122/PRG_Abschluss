@@ -37,7 +37,7 @@ public class ParliamentService {
     }
 
     public ArrayList<Document> getProtocolOverview() {
-        return dbConnection.getCollection().aggregate(Arrays.asList(new Document("$project",
+        return dbConnection.getProtocolCollection().aggregate(Arrays.asList(new Document("$project",
                 new Document("title", 1L)
                         .append("_id", 1L)))).into(new ArrayList<>());
     }
@@ -60,7 +60,7 @@ public class ParliamentService {
 
     public Speaker saveSpeaker(Speaker speaker) {
         Document document = dbConnection.updateSpeaker(MongoHelper.toMongoDocument(speaker));
-        return speaker;
+        return new Speaker(document);
     }
 
     public void deleteSpeaker(String id) {
@@ -68,9 +68,13 @@ public class ParliamentService {
     }
 
     public ArrayList<Document> getSpeakerOverview() {
-        return dbConnection.getCollection().aggregate(Arrays.asList(new Document("$project",
-                new Document("title", 1L)
-                        .append("_id", 1L)))).into(new ArrayList<>());
+        return dbConnection.getSpeakerCollection().aggregate(Arrays.asList(new Document("$project",
+                new Document("_id", 1L)
+                        .append("firstName", 1L)
+                        .append("name", 1L)
+                        .append("title", 1L)
+                        .append("role", 1L)
+        ))).into(new ArrayList<>());
     }
 
     public boolean speakerExists(String id) {

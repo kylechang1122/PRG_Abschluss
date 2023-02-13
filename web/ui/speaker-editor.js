@@ -1,5 +1,63 @@
+function parseSpeakerRequestData(data) {
+    // party is object in backend
+    if (data.party) {
+        data.party = {name: data.party};
+    }
+    // fraction is object in backend
+    if (data.fraction) {
+        data.fraction = {name: data.fraction};
+    }
+}
 
-function showSpeakerEditor($target, data) {
+function parseSpeakerResponseData(data) {
+    // party is object in backend
+    if (data.party && data.party.name) {
+        data.party = data.party.name;
+    }
+    // fraction is object in backend
+    if (data.fraction && data.fraction.name) {
+        data.fraction = data.fraction.name;
+    }
+}
+
+function putSpeaker() {
+    var value = this.getValue();
+    var data = value;
+    parseSpeakerRequestData(data);
+    $.ajax({
+        dataType: 'json',
+        type: 'PUT',
+        url: "/rest/parliament/speaker/" + data.id,
+        data: JSON.stringify(data),
+        success: (response) => {
+            alert("Save successful!");
+            this.data = parseSpeakerResponseData(response);
+        },
+        error: function (xhr) {
+            alert("Save failed: " + xhr.responseText);
+        }
+    });
+}
+
+function postSpeaker() {
+    var value = this.getValue();
+    var data = value;
+    parseSpeakerRequestData(data)
+    $.ajax({
+        dataType: 'json',
+        type: 'POST',
+        url: "/rest/parliament/speaker",
+        data: JSON.stringify(data),
+        success: (response) => {
+            alert("Save successful!");
+            this.data = parseSpeakerResponseData(response);
+        },
+        error: function (xhr) {
+            alert("Save failed: " + xhr.responseText);
+        }
+    });
+}
+function showSpeakerEditor($target, submitFunction, data = {}) {
     // schema of Speaker Edit for Alpaca
     var schema = {
         title: "Speaker Eidt",
@@ -13,12 +71,12 @@ function showSpeakerEditor($target, data) {
                 title: "First Name",
                 required: true
             },
-            lastName: {
+            name: {
                 type: "string",
                 title: "Last Name",
                 required: true
             },
-            title: {
+            academicTitle: {
                 type: "string",
                 title: "Title"
             },
@@ -45,12 +103,9 @@ function showSpeakerEditor($target, data) {
         form: {
             buttons: {
                 submit: {
-                    click: function() {
-                        var value = this.getValue();
-                        console.log(value)
-                    },
+                    click: submitFunction,
                     title: "Save"
-                }
+                },
                 cancel: {
                     click: () => $target.html(''),
                     title: "Cancel"

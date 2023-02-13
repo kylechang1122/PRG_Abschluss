@@ -75,6 +75,7 @@
 
 <script>
 
+    showProtocols();
     evaluateUser();
 
 </script>
