@@ -1,54 +1,0 @@
-
-G
-java:S1153k"1Directly append the argument of String.valueOf().(ƒ°¹Ğ
-a
-java:S2095l"LUse try-with-resources or close this "BufferedReader" in a "finally" clause.(ÁÓúW
-n	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(í¶
-t	java:S115 "ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(àÙâ¸ıÿÿÿÿ
-t	java:S115!"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(„¶Ôàıÿÿÿÿ
-v	java:S115#"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ø“—‚8øÌºïá0
-t	java:S115%"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ÎĞ«Îøÿÿÿÿ
-t	java:S115&"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(²—¸ııÿÿÿÿ
-A
-java:S1075?"&Remove this hard-coded path-delimiter.(ãôÌÁùÿÿÿÿ
-N	java:S106C"9Replace this use of System.out or System.err by a logger.(›®çù
-S	java:S106H"9Replace this use of System.out or System.err by a logger.(åºšÂøÿÿÿÿ
-y
-java:S2142R"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(è®ã¶øÿÿÿÿ
-C	java:S108R")Either remove or fill this block of code.(è®ã¶øÿÿÿÿ
-;
-java:S1075Y"&Remove this hard-coded path-delimiter.(à¹Ö8
-S	java:S106`"9Replace this use of System.out or System.err by a logger.(‘ÎÛşÿÿÿÿ
-Z	java:S106b"9Replace this use of System.out or System.err by a logger.(Æ•Íıúÿÿÿÿ8É‹ºïá0
-y
-java:S2142q"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(è®ã¶øÿÿÿÿ
-C	java:S108q")Either remove or fill this block of code.(è®ã¶øÿÿÿÿ
-[
-java:S1128"@Remove this unused import 'com.typesafe.config.ConfigException'.(¿÷å’øÿÿÿÿ
-G
-java:S1128"1Remove this unused import 'org.w3c.dom.Document'.(Á§²“
-H
-java:S1128"-Remove this unused import 'org.w3c.dom.Node'.(ùŠÿËıÿÿÿÿ
-G
-java:S1128"1Remove this unused import 'org.w3c.dom.NodeList'.(ÂÈÃ‚
-P
-java:S1128"5Remove this unused import 'org.xml.sax.SAXException'.(ü…ãşÿÿÿÿ
-Y
-java:S1128
-">Remove this unused import 'javax.xml.parsers.DocumentBuilder'.(ƒ”¯¹ùÿÿÿÿ
-`
-java:S1128"ERemove this unused import 'javax.xml.parsers.DocumentBuilderFactory'.(»·±Ñüÿÿÿÿ
-f
-java:S1128"KRemove this unused import 'javax.xml.parsers.ParserConfigurationException'.(ûıƒøÿÿÿÿ
-M
-java:S1128"7Remove this unused import 'java.net.HttpURLConnection'.(¬¬˜­
-Q
-java:S1128";Remove this unused import 'java.net.MalformedURLException'.(ªËŞˆ
-I
-java:S1128"3Remove this unused import 'java.net.URLConnection'.(š¿šó
-C
-java:S1128".Remove this unused import 'java.util.HashSet'.(Ê‚êX
-E
-java:S1128"*Remove this unused import 'java.util.Set'.(ö²„¤şÿÿÿÿ
-E
-java:S1068"0Remove this unused "protocollUrl" private field.(í¶

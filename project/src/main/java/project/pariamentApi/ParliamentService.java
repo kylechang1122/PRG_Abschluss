@@ -61,7 +61,7 @@ public class ParliamentService {
                             .append("speeches",
                                     new Document("$push", "$speeches"))));
 
-    private ParliamentDbHandler dbConnection;
+    private final ParliamentDbHandler dbConnection;
 
     private static AgendaItem getAgendaItem(String agendaItemIndex, PlenaryProtocol protocol) {
         List<AgendaItem> agenda = protocol.getAgendaItems().stream().filter((s) -> s.getIndex().equals(agendaItemIndex)).collect(Collectors.toList());
@@ -117,10 +117,15 @@ public class ParliamentService {
     // speeches
 
     public ArrayList<Document> getAgendaItemsOverview(String protocolId) {
-        List<Document> aggregate = Arrays.asList(new Document("$match",
+        // match protocol
+        List<Document> aggregate = Arrays.asList(
+                new Document("$match",
                 new Document("_id",
                         new Document("$eq", protocolId))));
+        // query agenda overview
         aggregate.addAll(agendaOverview);
+        // sort
+        aggregate.add(new Document("$sort", new Document("number",1L)));
         return dbConnection.getProtocolCollection().aggregate(aggregate).into(new ArrayList<>());
     }
 

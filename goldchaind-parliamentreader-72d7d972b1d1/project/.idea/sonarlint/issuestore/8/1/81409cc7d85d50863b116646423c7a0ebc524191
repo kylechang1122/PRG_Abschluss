@@ -1,13 +1,0 @@
-
-N
-java:S1481",Remove this unused "current" local variable.(®“îùÿÿÿÿ8°×©çá0
-[
-java:S4719"9Replace charset name argument with StandardCharsets.UTF_8(¯¹¬ûÿÿÿÿ8±×©çá0
-X
-java:S1128";Remove this unused import 'com.mongodb.MongoClientOptions'.(ÏİÔ8µ×©çá0
-U
-java:S1128"8Remove this unused import 'com.mongodb.MongoCredential'.(ó·º­8µ×©çá0
-X
-java:S1128"6Remove this unused import 'com.mongodb.ServerAddress'.(ûÑÀ«ıÿÿÿÿ8¶×©çá0
-]
-java:S1128"@Remove this unused import 'project.exception.DataBaseException'.(µ”û­8¶×©çá0
