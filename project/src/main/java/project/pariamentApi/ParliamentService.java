@@ -133,42 +133,6 @@ public class ParliamentService {
     }
 
     public Speech getSpeech(String protocolId, String speechId) {
-        // ArrayList<Document> result = dbConnection.getProtocolCollection().aggregate(
-        //         Arrays.asList(new Document("$match",
-        //                         new Document("_id",
-        //                                 new Document("$eq", protocolId))),
-        //                 new Document("$unwind",
-        //                         new Document("path", "$agendaItems")
-        //                                 .append("includeArrayIndex", "index")
-        //                                 .append("preserveNullAndEmptyArrays", false)),
-        //                 new Document("$replaceRoot",
-        //                         new Document("newRoot", "$agendaItems")),
-        //                 new Document("$unwind",
-        //                         new Document("path", "$speeches")
-        //                                 .append("includeArrayIndex", "num")
-        //                                 .append("preserveNullAndEmptyArrays", false)),
-        //                 new Document("$replaceRoot",
-        //                         new Document("newRoot", "$speeches")),
-        //                 new Document("$match",
-        //                         new Document("_id",
-        //                                 new Document("$eq", speechId))),
-        //                 new Document("$lookup",
-        //                         new Document("from", "speaker")
-        //                                 .append("localField", "speaker")
-        //                                 .append("foreignField", "_id")
-        //                                 .append("as", "speaker")),
-        //                 new Document("$project",
-        //                         new Document("index", 1L)
-        //                                 .append("texte", 1L)
-        //                                 .append("agendaItem", 1L)
-        //                                 .append("speaker",
-        //                                         new Document("$first", "$speaker")))
-        //         )
-        // ).into(new ArrayList<>());
-        // if (!result.isEmpty()) {
-        //     return new Speech(result.get(0));
-        // }
-        // return null;
         PlenaryProtocol protocol = this.getProtocol(protocolId);
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
