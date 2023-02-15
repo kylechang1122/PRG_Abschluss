@@ -96,8 +96,7 @@ public class Speaker extends PlenaryObject {
         }
         String fraction = document.getString("fraction");
         if (fraction != null) {
-            //todo
-            // setParty(ParliamentFactory.getInstance().getFraction(fraction));
+            setFraction(new Fraction(fraction));
         }
 
         // ... todo

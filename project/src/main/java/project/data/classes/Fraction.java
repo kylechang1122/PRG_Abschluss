@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Fraction extends PlenaryObject {
+    public Fraction(String name){
+        this.name = name;
+    }
     private String name;
     private Set<Speaker> members = new HashSet<Speaker>();
     public String getName(){

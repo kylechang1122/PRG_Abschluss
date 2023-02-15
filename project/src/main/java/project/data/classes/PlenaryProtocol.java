@@ -112,12 +112,6 @@ public class PlenaryProtocol extends PlenaryObject {
             setEndTime(new Time(end.getTime()));
         }
         setPlace(document.getString("standort"));
-        List<org.bson.Document> speechesList = document.getList("speeches", org.bson.Document.class);
-        if(speechesList != null) {
-            speechesList.forEach((speech) -> {
-                // speeches.add(new Speech(speech, this));
-            });
-        }
         List<org.bson.Document> agendaItemList = document.getList("agendaitems", org.bson.Document.class);
         if (agendaItemList != null) {
             agendaItemList.forEach((agendaItem) -> {

@@ -16,6 +16,7 @@ public class Speech extends PlenaryObject {
     String plainText;
     PlenaryProtocol protocol;
     Speaker speaker;
+    String speakerRole;
     int length;
     List<Speech> insertions = new ArrayList<Speech>();
 
@@ -33,6 +34,7 @@ public class Speech extends PlenaryObject {
         this.setId(node.getAttributes().getNamedItem("id").getTextContent());
         NodeList childNodes = node.getChildNodes();
         Speaker currentSpeaker = null;
+        this.speakerRole = ;
         Speech currentSpeech = this;
         for (int a = 0; a < childNodes.getLength(); a++) {
             Node currentNode = childNodes.item(a);
@@ -45,10 +47,13 @@ public class Speech extends PlenaryObject {
                     if (klasse.equalsIgnoreCase("redner")) {
                         Node speakerNode = XMLHelper.getDeepChildNodeByName(currentNode, "redner");
                         String speakerId = speakerNode.getAttributes().getNamedItem("id").getTextContent();
+                        Node speakerRoleNode = XMLHelper.getDeepChildNodeByName(speakerNode, "rolle_lang");
+                        speakerRole = speakerRoleNode.getTextContent();
                         currentSpeaker = factory.getSpeakerById(speakerId);
                         if (currentSpeaker == null) {
                             currentSpeaker = Speaker.fromShortNode(speakerNode);
                         }
+
                         setSpeaker(currentSpeaker);
                         currentSpeaker.getSpeaches().add(this);
                     } else {
@@ -68,9 +73,9 @@ public class Speech extends PlenaryObject {
                         extraSpeeches++;
                     }
                     break;
-               case "kommentar":
-                   texts.add(new Comment(currentNode.getTextContent()));
-                 break;
+                case "kommentar":
+                    texts.add(new Comment(currentNode.getTextContent()));
+                    break;
             }
 
         }
@@ -78,7 +83,18 @@ public class Speech extends PlenaryObject {
     }
 
     public Speech(Document document) {
-        // todo
+        this.setId(document.getString("_id"));
+        List<Document> textList = document.getList("texts", Document.class);
+        if (textList != null) {
+            textList.forEach((text) -> {
+                if (text.getString("type") == "text") {
+                    texts.add(new Text(text.getString("text")));
+                }
+                else {
+                    texts.add(new Comment(text.getString("text")));
+                }
+            });
+        }
     }
 
 

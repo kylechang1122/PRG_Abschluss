@@ -29,9 +29,10 @@ public class AgendaItem extends PlenaryObject{
 
     public AgendaItem(Document document, PlenaryProtocol protocol){
         setProtocol(protocol);
-        String index = document.keySet().iterator().next();
-        setIndex(index);
-        setTitle(document.getString(index));
+        //index
+        this.setIndex(document.getString("index"));
+        //title
+        this.setTitle(document.getString("title"));
     }
 
     public void addSpeech(Speech speech) {
