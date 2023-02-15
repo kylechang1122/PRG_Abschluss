@@ -6,17 +6,20 @@ import project.database.MongoHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ParliamentService {
 
-    static private final List<Document> agendaOverview = Arrays.asList(new Document("$unwind",
+    static private final ArrayList<Document> agendaOverview = new ArrayList<>(Arrays.asList(
+            new Document("$unwind",
                     new Document("path", "$agendaItems")
                             .append("includeArrayIndex", "number")
                             .append("preserveNullAndEmptyArrays", true)),
             new Document("$project",
-                    new Document("number", 1L)
+                    new Document("protocolTitle", "$title")
+                            .append("number", 1L)
                             .append("index", "$agendaItems.index")
                             .append("title", "$agendaItems.title")
                             .append("speeches", "$agendaItems.speeches")),
@@ -27,14 +30,16 @@ public class ParliamentService {
                             .append("foreignField", "_id")
                             .append("as", "speeches.speaker")),
             new Document("$project",
-                    new Document("number", 1L)
+                    new Document("protocolTitle", 1L)
+                            .append("number", 1L)
                             .append("index", 1L)
                             .append("title", 1L)
                             .append("speeches._id", 1L)
                             .append("speaker",
                                     new Document("$first", "$speeches.speaker"))),
             new Document("$project",
-                    new Document("number", 1L)
+                    new Document("protocolTitle", 1L)
+                            .append("number", 1L)
                             .append("index", 1L)
                             .append("title", 1L)
                             .append("speeches", 1L)
@@ -43,7 +48,8 @@ public class ParliamentService {
                             .append("speaker.akademischertitel", 1L)
                             .append("speaker.role", 1L)),
             new Document("$project",
-                    new Document("number", 1L)
+                    new Document("protocolTitle", 1L)
+                            .append("number", 1L)
                             .append("index", 1L)
                             .append("title", 1L)
                             .append("speeches._id", 1L)
@@ -52,25 +58,18 @@ public class ParliamentService {
                     new Document("_id", "$index")
                             .append("number",
                                     new Document("$first", "$number"))
-                            .append("protokollId",
+                            .append("protocolTitle",
+                                    new Document("$first", "$protocolTitle"))
+                            .append("protocolId",
                                     new Document("$first", "$_id"))
                             .append("index",
                                     new Document("$first", "$index"))
                             .append("title",
                                     new Document("$first", "$title"))
                             .append("speeches",
-                                    new Document("$push", "$speeches"))));
+                                    new Document("$push", "$speeches")))));
 
     private final ParliamentDbHandler dbConnection;
-
-    private static AgendaItem getAgendaItem(String agendaItemIndex, PlenaryProtocol protocol) {
-        List<AgendaItem> agenda = protocol.getAgendaItems().stream().filter((s) -> s.getIndex().equals(agendaItemIndex)).collect(Collectors.toList());
-        if (agenda.isEmpty()) {
-            throw new IllegalArgumentException("agenda item not existing");
-        }
-        AgendaItem agendaItem = agenda.get(0);
-        return agendaItem;
-    }
 
     private static Speech getSpeech(String speechId, PlenaryProtocol protocol) {
         List<Speech> speeches = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speechId)).collect(Collectors.toList());
@@ -118,10 +117,12 @@ public class ParliamentService {
 
     public ArrayList<Document> getAgendaItemsOverview(String protocolId) {
         // match protocol
-        List<Document> aggregate = Arrays.asList(
-                new Document("$match",
-                new Document("_id",
-                        new Document("$eq", protocolId))));
+        List<Document> aggregate = new ArrayList<>(
+                Collections.singletonList(
+                        new Document("$match",
+                                new Document("_id",
+                                        new Document("$eq", protocolId))))
+        );
         // query agenda overview
         aggregate.addAll(agendaOverview);
         // sort
@@ -134,7 +135,44 @@ public class ParliamentService {
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
-        return getAgendaItem(agendaIndex, protocol);
+        return protocol.getAgendaItemByIndexString(agendaIndex);
+    }
+
+    public AgendaItem createAgendaItem(String protocolId, int index, AgendaItem agendaItem) {
+        PlenaryProtocol protocol = this.getProtocol(protocolId);
+        if (protocol == null) {
+            throw new IllegalArgumentException("protocol not existing");
+        }
+        agendaItem.setProtocol(protocol);
+        protocol.getAgendaItems().set(index, agendaItem);
+        updateProtocol(protocol);
+        return agendaItem;
+    }
+
+    public AgendaItem updateAgendaItem(String protocolId, int index, AgendaItem agendaItem) {
+        PlenaryProtocol protocol = this.getProtocol(protocolId);
+        if (protocol == null) {
+            throw new IllegalArgumentException("protocol not existing");
+        }
+        AgendaItem existingAgendaItem = protocol.getAgendaItems().get(index);
+        agendaItem.getSpeeches().addAll(existingAgendaItem.getSpeeches());
+        agendaItem.setProtocol(protocol);
+        protocol.getAgendaItems().set(index, agendaItem);
+        updateProtocol(protocol);
+        return agendaItem;
+    }
+
+    public void deleteAgendaItem(String protocolId, String agendaItemIndexString) {
+        PlenaryProtocol protocol = this.getProtocol(protocolId);
+        if (protocol == null) {
+            throw new IllegalArgumentException("protocol not existing");
+        }
+        AgendaItem existingAgendaItem = protocol.getAgendaItemByIndexString(agendaItemIndexString);
+        if (existingAgendaItem == null) {
+            throw new IllegalArgumentException("agendaItem not existing");
+        }
+        protocol.getAgendaItems().remove(existingAgendaItem);
+        updateProtocol(protocol);
     }
 
     public Speech getSpeech(String protocolId, String speechId) {
@@ -145,16 +183,16 @@ public class ParliamentService {
         return getSpeech(speechId, protocol);
     }
 
-    public Speech addSpeech(String protocolId, String agendaItemIndex, Speech speech) {
+    public Speech addSpeech(String protocolId, int agendaNumber, int speechNumber, Speech speech) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
         List<Speech> existing = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speech.getId())).collect(Collectors.toList());
         if (!existing.isEmpty()) {
             throw new IllegalArgumentException("speech already exists");
         }
-        AgendaItem agendaItem = getAgendaItem(agendaItemIndex, protocol);
+        AgendaItem agendaItem = protocol.getAgendaItems().get(agendaNumber);
         speech.setProtocol(protocol);
         speech.setAgendaItem(agendaItem);
-        agendaItem.addSpeech(speech);
+        agendaItem.getSpeeches().set(speechNumber, speech);
         updateProtocol(protocol);
         return speech;
     }

@@ -17,10 +17,6 @@ public class AgendaItem extends PlenaryObject{
 
     PlenaryProtocol protocol;
 
-    public List<Speech> getSpeeches(){
-        return speeches;
-    }
-
     public AgendaItem(Node node,PlenaryProtocol protocol){
         setProtocol(protocol);
         setIndex(XMLHelper.getChildNodeByName(node,"ivz-block-titel").getTextContent().replace(":",""));
@@ -33,6 +29,10 @@ public class AgendaItem extends PlenaryObject{
         this.setIndex(document.getString("index"));
         //title
         this.setTitle(document.getString("title"));
+    }
+
+    public List<Speech> getSpeeches(){
+        return speeches;
     }
 
     public void addSpeech(Speech speech) {

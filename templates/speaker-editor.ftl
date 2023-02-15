@@ -43,7 +43,7 @@
 
 <script>
 
-    evaluateUser();
+    showMenu();
     showSpeakers();
 
 </script>

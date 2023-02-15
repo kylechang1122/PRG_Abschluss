@@ -19,7 +19,7 @@
         <div class="col-md-4">
             <#include "./include/menu.ftl">
             <script>
-                evaluateUser();
+                showMenu();
             </script>
         </div>
         <div id="editor" class="col-md-8">

@@ -31,7 +31,7 @@
                 </ul>
             </nav>
             <script>
-                evaluateUser();
+                showMenu();
             </script>
         </div>
         <div id="editor" class="col-md-8">

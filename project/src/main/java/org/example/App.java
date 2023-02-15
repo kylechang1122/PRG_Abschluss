@@ -24,7 +24,6 @@ import static spark.Spark.*;
  */
 public class App {
     private MongoDBHandler dbConnection;
-    private ParliamentFactory parliamentFactory;
 
     static public String configDir() {
         URL resource = App.class.getResource("/dbconnectionconfig.txt");
@@ -65,7 +64,6 @@ public class App {
             throw new RuntimeException(e);
         }
         dbConnection = new MongoDBHandler(config);
-        parliamentFactory = ParliamentFactory.getInstance();
     }
 
     private void initApis() throws IOException {
@@ -81,6 +79,7 @@ public class App {
     }
 
     private void importXML() {
+        ParliamentFactory parliamentFactory = ParliamentFactory.getInstance();
         System.out.println(parliamentFactory.getProtocols().size());
 
         for (PlenaryProtocol protocol : parliamentFactory.getProtocols()) {
@@ -112,6 +111,8 @@ public class App {
      * @throws SAXException  Exception
      */
     private void getAndAnalyseSpeech() throws UIMAException, IOException, SAXException {
+        ParliamentFactory parliamentFactory = ParliamentFactory.getInstance();
+        System.out.println(parliamentFactory.getProtocols().size());
         List<PlenaryProtocol> plenaryProtocols = parliamentFactory.getProtocols();
 
         Engine engine = new Engine();

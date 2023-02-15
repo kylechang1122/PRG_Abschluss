@@ -177,6 +177,14 @@ public class PlenaryProtocol extends PlenaryObject {
         this.agendaItems = agendaItems;
     }
 
+    public AgendaItem getAgendaItemByIndexString(String agendaItemIndex) {
+        List<AgendaItem> agenda = getAgendaItems().stream().filter((s) -> s.getIndex().equals(agendaItemIndex)).collect(Collectors.toList());
+        if (agenda.isEmpty()) {
+            return null;
+        }
+        return agenda.get(0);
+    }
+
     public String getPlace() {
         return place;
     }
