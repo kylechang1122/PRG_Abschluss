@@ -19,7 +19,7 @@
 
         function showAddProtocol() {
             clearEditor();
-            showProtocolEditor($("#editor"), postProtocol, {
+            showProtocolEditor("editor", postProtocol, {
                 date: "2020-12-25",
                 startTime: "13:00",
                 endTime: "14:00",
@@ -33,20 +33,6 @@
             showProtocolOverview("#editor", {});
         }
 
-        function showAddSpeech() {
-            clearEditor();
-            showSpeechEditor($("#editor"), {});
-        }
-
-        function showAddComment() {
-            clearEditor();
-            showCommentEditor($("#editor"), {});
-        }
-
-        function showAddAgendaItem() {
-            clearEditor();
-            showAgendaItemEditor($("#editor"), {});
-        }
     </script>
 
 </head>
@@ -61,9 +47,6 @@
                 <ul>
                     <li class="manager"><a href="#" onclick="showAddProtocol()"> Add Protocol </a></li>
                     <li class="user"><a href="#" onclick="showProtocols()"> Show Protocols </a></li>
-                    <li class="user"><a href="#" onclick="showAddAgendaItem()"> Add Agenda Item </a></li>
-                    <li class="user"><a href="#" onclick="showAddSpeech()"> Add Speech </a></li>
-                    <li class="user"><a href="#" onclick="showAddComment()"> Add Comment </a></li>
                 </ul>
             </nav>
         </div>
@@ -76,7 +59,7 @@
 <script>
 
     showProtocols();
-    evaluateUser();
+    showMenu();
 
 </script>
 

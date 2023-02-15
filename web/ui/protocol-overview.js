@@ -32,7 +32,7 @@ function showProtocolOverview(targetId) {
 }
 
 function editProtocol(id) {
-    location.href= "/editor/protocol/?id=" + id;
+    location.href= "/editor/protocol?id=" + id;
 };
 
 function deleteProtocol(id, targetId) {

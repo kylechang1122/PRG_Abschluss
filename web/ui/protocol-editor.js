@@ -68,7 +68,8 @@ function postProtocol() {
         }
     });
 }
-function showProtocolEditor($target, submitFunction,  data) {
+function showProtocolEditor(targetId, submitFunction,  data) {
+    $target = $(targetId);
     var schema = {
         title: "Sesseion Edit",
         type: "object",
@@ -147,7 +148,7 @@ function showProtocolEditor($target, submitFunction,  data) {
 function showAgendaOverview(targetId, protocolId) {
     const $target = $(targetId);
     $.getJSON({
-        url: `/rest/parliament/protocol/${protocolId}/agenda`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda/overview`,
         success: function (agenda) {
             $target.html(`<h2>${agenda[0].protocolTitle}</h2>
                 <table class='table agenda'>
@@ -169,6 +170,19 @@ function showAgendaOverview(targetId, protocolId) {
                 </tr>`)
                 $table.append(`<tr><td data-id="${p._id}" colspan="3"></td></tr>`)
             })
+        },
+        error: function (xhr) {
+            alert("Loading Protocols failed: " + xhr.responseText);
+        }
+    });
+}
+
+function editProtocol(targetId, protocolId) {
+    const $target = $(targetId);
+    $.getJSON({
+        url: `/rest/parliament/protocol/${protocolId}`,
+        success: function (protocol) {
+            showProtocolEditor("editor", putProtocol, protocol);
         },
         error: function (xhr) {
             alert("Loading Protocols failed: " + xhr.responseText);

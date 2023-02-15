@@ -6,12 +6,13 @@ import project.database.MongoHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ParliamentService {
 
-    static private final List<Document> agendaOverview = Arrays.asList(
+    static private final ArrayList<Document> agendaOverview = new ArrayList<>(Arrays.asList(
             new Document("$unwind",
                     new Document("path", "$agendaItems")
                             .append("includeArrayIndex", "number")
@@ -57,16 +58,16 @@ public class ParliamentService {
                     new Document("_id", "$index")
                             .append("number",
                                     new Document("$first", "$number"))
-                            .append("protokollTitle",
+                            .append("protocolTitle",
                                     new Document("$first", "$protocolTitle"))
-                            .append("protokollId",
+                            .append("protocolId",
                                     new Document("$first", "$_id"))
                             .append("index",
                                     new Document("$first", "$index"))
                             .append("title",
                                     new Document("$first", "$title"))
                             .append("speeches",
-                                    new Document("$push", "$speeches"))));
+                                    new Document("$push", "$speeches")))));
 
     private final ParliamentDbHandler dbConnection;
 
@@ -116,10 +117,12 @@ public class ParliamentService {
 
     public ArrayList<Document> getAgendaItemsOverview(String protocolId) {
         // match protocol
-        List<Document> aggregate = Arrays.asList(
-                new Document("$match",
-                new Document("_id",
-                        new Document("$eq", protocolId))));
+        List<Document> aggregate = new ArrayList<>(
+                Collections.singletonList(
+                        new Document("$match",
+                                new Document("_id",
+                                        new Document("$eq", protocolId))))
+        );
         // query agenda overview
         aggregate.addAll(agendaOverview);
         // sort

@@ -78,15 +78,14 @@ function showSpeechEditor($target, submitFunction, data = {}) {
         form: {
             buttons: {
                 submit: submitFunction,
-                    title: "Save"
-                },
-                cancel: {
-                    click: () => $target.html(''),
-                    title: "Cancel"
-                }
+                title: "Save"
+            },
+            cancel: {
+                click: () => $target.html(''),
+                title: "Cancel"
             }
         }
-    };
+    }
     $target.alpaca({
         data: data,
         schema: schema,
@@ -119,7 +118,7 @@ function postText(protocolId, speech) {
     speech.texts.splice(data.index, 0, data);
     $.ajax({
         dataType: 'json',
-        type: 'POST',
+        type: 'PUT',
         url: `/rest/parliament/protocol/${protocolId}/speech/${speech.id}`,
         data: JSON.stringify(data),
         success: (response) => {
@@ -166,15 +165,14 @@ function showTextEditor($target, submitFunction, data = {}) {
         form: {
             buttons: {
                 submit: submitFunction,
-                    title: "Save"
-                },
-                cancel: {
-                    click: () => $target.html(''),
-                    title: "Cancel"
-                }
+                title: "Save"
+            },
+            cancel: {
+                click: () => $target.html(''),
+                title: "Cancel"
             }
         }
-    };
+    }
     $target.alpaca({
         data: data,
         schema: schema,

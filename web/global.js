@@ -46,7 +46,7 @@ function showAdminMenu() {
     $(".menu li.admin").show();
 }
 
-function evaluateUser() {
+function showMenu() {
     var user = getCurrentUser();
     if (!user || !user.group) {
         gotToLogin("editor");

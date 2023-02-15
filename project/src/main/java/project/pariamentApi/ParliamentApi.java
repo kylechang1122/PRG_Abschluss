@@ -81,6 +81,8 @@ public class ParliamentApi {
     public void initApi() {
         //protocol
         initProtocolApi();
+        // agenda
+        initAgendaItemApi();
         //speeches
         initSpeechesApi();
         // speaker:
