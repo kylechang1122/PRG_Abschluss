@@ -69,8 +69,8 @@ function postProtocol() {
     });
 }
 
-function showProtocolEditor(targetId, submitFunction, data) {
-    $target = $(targetId);
+function showProtocolEditor(selector, submitFunction, data = {}) {
+    $target = $(selector);
     var schema = {
         title: `${data.title ? data.title : 'New Protocol'}`,
         type: "object",
