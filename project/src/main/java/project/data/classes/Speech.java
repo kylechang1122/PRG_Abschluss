@@ -47,7 +47,9 @@ public class Speech extends PlenaryObject {
                         Node speakerNode = XMLHelper.getDeepChildNodeByName(currentNode, "redner");
                         String speakerId = speakerNode.getAttributes().getNamedItem("id").getTextContent();
                         Node speakerRoleNode = XMLHelper.getDeepChildNodeByName(speakerNode, "rolle_lang");
-                        speakerRole = speakerRoleNode.getTextContent();
+                        if (speakerRoleNode != null) {
+                            speakerRole = speakerRoleNode.getTextContent();
+                        }
                         currentSpeaker = factory.getSpeakerById(speakerId);
                         if (currentSpeaker == null) {
                             currentSpeaker = Speaker.fromShortNode(speakerNode);
@@ -88,8 +90,7 @@ public class Speech extends PlenaryObject {
             textList.forEach((text) -> {
                 if (text.getString("type") == "text") {
                     texts.add(new Text(text.getString("text")));
-                }
-                else {
+                } else {
                     texts.add(new Comment(text.getString("text")));
                 }
             });
@@ -136,6 +137,14 @@ public class Speech extends PlenaryObject {
 
     public void setSpeaker(Speaker speaker) {
         this.speaker = speaker;
+    }
+
+    public String getSpeakerRole() {
+        return speakerRole;
+    }
+
+    public void setSpeakerRole(String speakerRole) {
+        this.speakerRole = speakerRole;
     }
 
     public int getLength() {
