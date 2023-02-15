@@ -20,6 +20,27 @@ import static spark.Spark.*;
 
 public class ParliamentApi {
 
+    private class ProtocolExclusionStrategy implements ExclusionStrategy {
+
+        public boolean shouldSkipField(FieldAttributes fa) {
+            String className = fa.getDeclaringClass().getName();
+            String fieldName = fa.getName();
+            boolean agendaItemProtocol = className.equals("project.data.classes.AgendaItem")
+                    && fieldName.equals("protocol");
+            boolean speechAgendaItem = className.equals("project.data.classes.Speech")
+                    && fieldName.equals("agendaItem");
+            boolean protocolSpeeches = className.equals("project.data.classes.PlenaryProtocol")
+                    && fieldName.equals("speeches");
+            return agendaItemProtocol || speechAgendaItem || protocolSpeeches;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> type) {
+            // never skips any class
+            return false;
+        }
+    }
+
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     private static final String TIME_FORMAT = "HH:mm:ss";
 
@@ -72,6 +93,7 @@ public class ParliamentApi {
         GsonBuilder gSonBuilder=  new GsonBuilder();
         gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
         gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
+        gSonBuilder.setExclusionStrategies(new ProtocolExclusionStrategy());
         gson = gSonBuilder.create();
     }
 
@@ -211,7 +233,12 @@ public class ParliamentApi {
                 halt(404, "Protocol does not exist");
             }
             try{
-                return parliamentService.getAgendaItem(protocolId, agendaItemId);
+                AgendaItem agendaItem = parliamentService.getAgendaItem(protocolId, agendaItemId);
+                if(agendaItem == null) {
+                    halt(404, "Agenda item does not exist");
+                }
+                return agendaItem;
+
             } catch (IllegalArgumentException e) {
                 halt(404, "Speech does not exist");
             }

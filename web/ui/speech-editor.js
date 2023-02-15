@@ -1,3 +1,4 @@
+
 function putSpeech(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -36,7 +37,8 @@ function postSpeech(protocolId) {
     });
 }
 
-function showSpeechEditor($target, submitFunction, data = {}) {
+function showSpeechEditor(selector, submitFunction, data = {}) {
+    $target = $(selector);
     // schema of Speech Edit for Alpaca
     var schema = {
         title: "Speech Edit",
@@ -65,7 +67,8 @@ function showSpeechEditor($target, submitFunction, data = {}) {
             speaker: {
                 type: "string",
                 title: "Speaker",
-                required: true
+                required: true,
+                enum: window.speakers ? window.speakers.map(s => s._id) : undefined
             }
         },
     };
@@ -73,6 +76,9 @@ function showSpeechEditor($target, submitFunction, data = {}) {
         fields: {
             content: {
                 type: "textarea"
+            },
+            speaker: {
+                optionLabels: enum: window.speakers ? window.speakers.map(getSpeakerName) : undefined
             }
         },
         form: {
@@ -132,10 +138,11 @@ function postText(protocolId, speech) {
 }
 
 
-function showTextEditor($target, submitFunction, data = {}) {
+function showTextEditor(selector, submitFunction, data = {}) {
+    $target = $(selector);
     // schema of Speech Edit for Alpaca
     var schema = {
-        title: "Speech Editor",
+        title: "Text",
         type: "object",
         properties: {
             index: {

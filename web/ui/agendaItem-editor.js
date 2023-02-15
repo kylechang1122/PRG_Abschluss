@@ -1,3 +1,10 @@
+function getSpeakerNameById(id){
+    const s = window.speakers? window.speakers.find((s) => s._id === id): undefined;
+    if(s) {
+        return getSpeakerName(s);
+    }
+}
+
 function putAgendaItem(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -86,3 +93,49 @@ function showAgendaItemEditor(selector, submitFunction, data = {}) {
         options: options
     });
 }
+
+function showSpeechOverview(selector, protocolId, agendaItem) {
+    const $target = $(selector);
+    $target.append(`<h4>Speeches</h4>
+                <table class='table agendaItem'>
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>`);
+    const $table = $target.find('table.agendaItem');
+    $table.find('thead').append(`<tr><th>ID</th><th>Speaker</th><th></th></tr>`)
+    const $tbody = $table.find('tbody');
+    agendaItem.speeches.forEach(speech => {
+        $tbody.append(`
+                <tr>
+                    <td>${speech.id}</td>
+                    <td>${getSpeakerNameById(speech.speakerId)}</td>
+                    <td>
+                    <button id="editSpeech${speech.id}">Edit</button>
+                    <button onclick="deleteSpeech('${selector}', '${protocolId}', '${speech.id}')">Delete</button>
+                    </td>
+                </tr>`)
+        $table.append(`<tr><td data-id="speech-editor-${speech.id}" colspan="3"></td></tr>`);
+        $(`#editSpeech${speech._id}`).click(() => {
+            editSpeech(`[data-id="speech-editor-${speech.id}]`, protocolId, speech)
+        })
+    })
+}
+
+function deleteSpeech(selector, protocolId, speechId) {
+    $.ajax({
+        method: 'DELETE',
+        url: `/rest/parliament/protocol/${protocolId}/speech/${speechId}`,
+        success: function () {
+            alert(`speech ${speechId}  deleted`);
+            showAgendaOverview(selector, protocolId);
+        },
+        error: function (xhr) {
+            alert("Deleting speech failed: " + xhr.responseText);
+        }
+    });
+};
+
+function editSpeech(selector, protocolId, agendaItemIndexString, speech) {
+
+};
+

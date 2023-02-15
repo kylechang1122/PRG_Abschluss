@@ -25,6 +25,12 @@ public class AgendaItem extends PlenaryObject{
 
     public AgendaItem(Document document, PlenaryProtocol protocol){
         setProtocol(protocol);
+        List<org.bson.Document> speechesList = document.getList("speeches", org.bson.Document.class);
+        if (speechesList != null) {
+            speechesList.forEach((speech) -> {
+                speeches.add(new Speech(this, speech));
+            });
+        }
         //index
         this.setIndex(document.getString("index"));
         //title

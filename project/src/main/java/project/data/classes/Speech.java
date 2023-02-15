@@ -8,6 +8,7 @@ import project.utils.XMLHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Speech extends PlenaryObject {
     AgendaItem agendaItem;
@@ -17,9 +18,11 @@ public class Speech extends PlenaryObject {
     PlenaryProtocol protocol;
     Speaker speaker;
     String speakerRole;
+
+    String speakerId;
+
     int length;
     List<Speech> insertions = new ArrayList<Speech>();
-
     public Speech(AgendaItem agendaItem, String id) {
         this.agendaItem = agendaItem;
         this.setId(id);
@@ -83,18 +86,20 @@ public class Speech extends PlenaryObject {
 
     }
 
-    public Speech(Document document) {
+    public Speech(AgendaItem agendaItem, Document document) {
+        this.agendaItem = agendaItem;
         this.setId(document.getString("_id"));
         List<Document> textList = document.getList("texts", Document.class);
         if (textList != null) {
             textList.forEach((text) -> {
-                if (text.getString("type") == "text") {
+                if (Objects.equals(text.getString("type"), "text")) {
                     texts.add(new Text(text.getString("text")));
                 } else {
                     texts.add(new Comment(text.getString("text")));
                 }
             });
         }
+        this.setSpeakerId(document.getString("speaker"));
     }
 
 
@@ -137,6 +142,14 @@ public class Speech extends PlenaryObject {
 
     public void setSpeaker(Speaker speaker) {
         this.speaker = speaker;
+    }
+
+    public String getSpeakerId() {
+        return speakerId;
+    }
+
+    public void setSpeakerId(String speakerId) {
+        this.speakerId = speakerId;
     }
 
     public String getSpeakerRole() {

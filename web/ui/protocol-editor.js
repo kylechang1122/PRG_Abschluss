@@ -72,7 +72,7 @@ function postProtocol() {
 function showProtocolEditor(targetId, submitFunction, data) {
     $target = $(targetId);
     var schema = {
-        title: `${data.title? data.title: 'New Protocol'}`,
+        title: `${data.title ? data.title : 'New Protocol'}`,
         type: "object",
         properties: {
             id: {
@@ -165,7 +165,7 @@ function showAgendaOverview(targetId, protocolId) {
                     <td>${agendaItem._id}</td>
                     <td>${agendaItem.title}</td>
                     <td>
-                    <button data-id="editAgendaItem${agendaItem._id}">Edit</button>
+                    <button onclick="editAgendaItem('${protocolId}', '${agendaItem._id}')">Edit</button>
                     <button onclick="deleteAgendaItem('${protocolId}', '${agendaItem._id}')">Delete</button>
                     </td>
                 </tr>`)
@@ -180,10 +180,12 @@ function showAgendaOverview(targetId, protocolId) {
         }
     });
 }
+function editAgendaItem(protocolId, agendaItemId) {
+    //const url = new URL("/editor/agenda-item").searchParams.append("agendaItem", agendaItemId);
+    const url = `/editor/agenda-item?id=${protocolId}&item=${agendaItemId}`
+    location.href = url;
+};
 
-function editAgendaItem(selector, protocolId, agendaItem){
-    showAgendaItemEditor(selector, () => {putAgendaItem(protocolId, agendaItem._id)}, agendaItem)
-}
 
 function deleteAgendaItem(targetId, protocolId, agendaItemIndexString) {
     $.ajax({
@@ -197,55 +199,4 @@ function deleteAgendaItem(targetId, protocolId, agendaItemIndexString) {
             alert("Deleting agenda item failed: " + xhr.responseText);
         }
     });
-};
-
-function showAgendaItemOverview(selector, protocolId, agendaItem) {
-    const $target = $(selector);
-    $target.append(`<h4>${agendaItem.title}</h4>`);
-    $target.append(`<div data-id="agenda-item-editor-${agendaItem._id}"></div>`);
-    showAgendaItemEditor(
-        `[data-id="agenda-item-editor-${agendaItem._id}]`,
-        () => putAgendaItem(protocolId, agendaItem._id),
-        agendaItem)
-    $target.html(`<h4>Speeches</h4>
-                <table class='table agendaItem'>
-                    <thead></thead>
-                    <tbody></tbody>
-                </table>`);
-    const $table = $target.find('table.agendaItem');
-    $table.find('thead').append(`<tr><th>ID</th><th>Speaker</th><th></th></tr>`)
-    const $tbody = $table.find('tbody');
-    agendaItem.speeches.forEach(speech => {
-        $tbody.append(`
-                <tr>
-                    <td>${speech._id}</td>
-                    <td>${getSpeakerName(speech.speaker)}</td>
-                    <td>
-                    <button id="editSpeech${speech._id}">Edit</button>
-                    <button onclick="deleteSpeech('${selector}', '${protocolId}', '${speech._id}')">Delete</button>
-                    </td>
-                </tr>`)
-        $table.append(`<tr><td data-id="speech-editor-${speech._id}" colspan="3"></td></tr>`);
-        $(`#editSpeech${speech._id}`).click(() => {
-            editSpeech(`[data-id="speech-editor-${p._id}]`, protocolId, speech)
-        })
-    })
-}
-
-function deleteSpeech(selector, protocolId, speechId) {
-    $.ajax({
-        method: 'DELETE',
-        url: `/rest/parliament/protocol/${protocolId}/speech/${speechId}`,
-        success: function () {
-            alert(`speech ${speechId}  deleted`);
-            showAgendaOverview(selector, protocolId);
-        },
-        error: function (xhr) {
-            alert("Deleting speech failed: " + xhr.responseText);
-        }
-    });
-};
-
-function editSpeech(selector, protocolId, agendaItemIndexString, speech) {
-
 };

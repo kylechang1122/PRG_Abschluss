@@ -22,8 +22,12 @@ public class MongoHelper {
         mongoDocument.put("standort", plenaryProtocol.getPlace());
 
         List<Document> agenditems = new ArrayList<>();
+        int num = 0;
         for (AgendaItem item : plenaryProtocol.getAgendaItems()) {
-            agenditems.add(toMongoDocument(item));
+            Document agendaItemDocument = toMongoDocument(item);
+            agendaItemDocument.append("number", num);
+            agenditems.add(agendaItemDocument);
+            num++;
         }
         mongoDocument.put("agendaItems", agenditems);
 
