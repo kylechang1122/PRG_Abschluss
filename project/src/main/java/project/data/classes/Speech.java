@@ -34,7 +34,6 @@ public class Speech extends PlenaryObject {
         this.setId(node.getAttributes().getNamedItem("id").getTextContent());
         NodeList childNodes = node.getChildNodes();
         Speaker currentSpeaker = null;
-        this.speakerRole = ;
         Speech currentSpeech = this;
         for (int a = 0; a < childNodes.getLength(); a++) {
             Node currentNode = childNodes.item(a);
