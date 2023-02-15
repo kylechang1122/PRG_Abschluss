@@ -60,7 +60,7 @@ function postSpeaker() {
 function showSpeakerEditor($target, submitFunction, data = {}) {
     // schema of Speaker Edit for Alpaca
     var schema = {
-        title: "Speaker Eidt",
+        title: `${data.name? getSpeakerName(data): 'New Speaker'}`,
         type: "object",
         properties: {
             id: {

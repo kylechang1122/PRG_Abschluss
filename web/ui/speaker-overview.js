@@ -12,7 +12,7 @@ function showSpeakerOverview(targetId) {
             $table.find('thead').append(`<tr><th>Id</th><th>Name</th><th></th></tr>`)
             const $tbody = $table.find('tbody');
             speakers.forEach(s => {
-                const name = `${s.role? s.role + ' ': ''}${s.title? s.title + ' ': ''}${s.firstName} ${s.name}`
+                const name = getSpeakerName(s)
                 $tbody.append(`
                 <tr>
                     <td>${s._id}</td>

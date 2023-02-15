@@ -84,7 +84,7 @@ public class ParliamentApi {
         // agenda
         initAgendaItemApi();
         //speeches
-        initSpeechesApi();
+        initSpeechApi();
         // speaker:
         initSpeakerApi();
 
@@ -133,7 +133,7 @@ public class ParliamentApi {
         }, gson::toJson);
     }
 
-    private void initSpeechesApi() {
+    private void initSpeechApi() {
         // get speech
         get("/rest/parliament/protocol/:id/speech/:sid", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
@@ -186,10 +186,11 @@ public class ParliamentApi {
             return null;
         }, gson::toJson);
         // delete speech
-        delete("/rest/parliament/protocol/:id", (request, response) -> {
+        delete("/rest/parliament/protocol/:id/speech/:sid", (request, response) -> {
             checkAuthorizationManagerLevel(request, response);
             String id = request.params(":id");
-            parliamentService.deleteProtocol(id);
+            String speechId = request.params(":sid");
+            parliamentService.deleteSpeech(id, speechId);
             return "ok";
         }, gson::toJson);
     }

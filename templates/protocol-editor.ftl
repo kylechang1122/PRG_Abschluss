@@ -21,9 +21,13 @@
 
         function showProtocol() {
             $("#protocol").html("");
-            editProtocol("protocol", protocolId);
+            editProtocol("#protocol", protocolId);
         }
 
+        function addAgendaItem() {
+            $("#agenda").html("");
+            showAgendaItemEditor("#agenda", () => postAgendaItem(protocolId));
+        }
     </script>
 
 </head>
@@ -34,10 +38,18 @@
     <div class="row">
         <div class="col-md-2">
             <#include "./include/menu.ftl">
+            <nav class="menu">
+                <ul>
+                    <li class="manager"><a href="#" onclick="addAgendaItem()"> Add Agenda Item </a></li>
+                    <li class="manager"><a href="#" onclick="showAgenda()"> Show Agenda </a></li>
+                </ul>
+            </nav>
         </div>
-        <div id="protocol" class="col-md-10">
-        </div>
-        <div id="agenda" class="col-md-10">
+        <div class="col-md-10">
+            <div id="protocol" >
+            </div>
+            <div id="agenda">
+            </div>
         </div>
     </div>
 </div>

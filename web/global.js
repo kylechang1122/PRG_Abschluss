@@ -68,3 +68,6 @@ function showMenu() {
     }
 }
 
+function getSpeakerName(s){
+    return `${s.role? s.role + ' ': ''}${s.title? s.title + ' ': ''}${s.firstName} ${s.name}`;
+};

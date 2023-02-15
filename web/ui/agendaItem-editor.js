@@ -1,11 +1,11 @@
-function putText(protocol) {
+function putAgendaItem(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
-    protocol.agendaItems[data.number] = data;
+    var number = data.number;
     $.ajax({
         dataType: 'json',
         type: 'PUT',
-        url: `/rest/parliament/protocol/${protocol.id}`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemIndexString}/${number}"`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -17,14 +17,14 @@ function putText(protocol) {
     });
 }
 
-function postText(protocol) {
+function postAgendaItem(protocolId) {
     var value = this.getValue();
     var data = value;
-    protocol.agendaItems.splice(data.number, 0, data);
+    var number = data.number;
     $.ajax({
         dataType: 'json',
         type: 'POST',
-        url: `/rest/parliament/protocol/${protocol.id}`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda/${number}"`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -36,17 +36,18 @@ function postText(protocol) {
     });
 }
 
-function showAgendaItemEditor($target, submitFunction, data = {}) {
+function showAgendaItemEditor(selector, submitFunction, data = {}) {
+    $target= $(selector);
     // schema of Agenda Item Edit for Alpaca
     var schema = {
-        title: "Agenda Item Edit",
+        title: `${data._id? data._id: 'New Agenda Item'}`,
         type: "object",
         properties: {
             number: {
                 type: "number",
                 title: "Number",
                 required: true,
-                "minimum": 1,
+                "minimum": 0,
             },
             index: {
                 type: "string",
