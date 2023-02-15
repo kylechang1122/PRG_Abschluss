@@ -18,14 +18,14 @@ function putSpeech(protocolId) {
     });
 }
 
-function postSpeech(protocolId) {
+function postSpeech(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
     parseDates(data);
     $.ajax({
         dataType: 'json',
         type: 'POST',
-        url: `/rest/parliament/protocol/${protocolId}/speech/${data.id}`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda/${agendaItemIndexString}/${data.number}`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -38,7 +38,7 @@ function postSpeech(protocolId) {
 }
 
 function showSpeechEditor(selector, submitFunction, data = {}) {
-    $target = $(selector);
+    const $target = $(selector);
     // schema of Speech Edit for Alpaca
     var schema = {
         title: "Speech Edit",
@@ -47,19 +47,8 @@ function showSpeechEditor(selector, submitFunction, data = {}) {
             id: {
                 type: "string",
                 title: "ID",
-                required: true
             },
-            protocolId: {
-                type: "string",
-                title: "Protocol ID",
-                required: true
-            },
-            agendaId: {
-                type: "string",
-                title: "Agenda Item ID",
-                required: true
-            },
-            index: {
+            number: {
                 type: "number",
                 title: "Index",
                 required: true
@@ -77,8 +66,11 @@ function showSpeechEditor(selector, submitFunction, data = {}) {
             content: {
                 type: "textarea"
             },
+            id: {
+                type: "hidden",
+            },
             speaker: {
-                optionLabels: enum: window.speakers ? window.speakers.map(getSpeakerName) : undefined
+                optionLabels: window.speakers ? window.speakers.map(getSpeakerName) : undefined
             }
         },
         form: {
@@ -99,14 +91,14 @@ function showSpeechEditor(selector, submitFunction, data = {}) {
     });
 }
 
-function putText(protocolId, speech) {
+function putText(protocolId, speechId) {
     var value = this.getValue();
     var data = value;
     speech.texts[data.index] = data;
     $.ajax({
         dataType: 'json',
         type: 'PUT',
-        url: `/rest/parliament/protocol/${protocolId}/speech/${speech.id}`,
+        url: `/rest/parliament/protocol/${protocolId}/speech/${speechId}`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -118,14 +110,14 @@ function putText(protocolId, speech) {
     });
 }
 
-function postText(protocolId, speech) {
+function postText(protocolId, speechId) {
     var value = this.getValue();
     var data = value;
     speech.texts.splice(data.index, 0, data);
     $.ajax({
         dataType: 'json',
         type: 'PUT',
-        url: `/rest/parliament/protocol/${protocolId}/speech/${speech.id}`,
+        url: `/rest/parliament/protocol/${protocolId}/speech/${speechId}`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -139,7 +131,7 @@ function postText(protocolId, speech) {
 
 
 function showTextEditor(selector, submitFunction, data = {}) {
-    $target = $(selector);
+    const $target = $(selector);
     // schema of Speech Edit for Alpaca
     var schema = {
         title: "Text",

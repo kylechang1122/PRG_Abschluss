@@ -191,17 +191,17 @@ public class ParliamentApi {
             return null;
         }, gson::toJson);
         // create speech
-        post("/rest/parliament/protocol/:id/agenda/:anum/:num", (request, response) -> {
+        post("/rest/parliament/protocol/:id/agenda-item/:aid/:num", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
-            int agendaNumber = Integer.parseInt(request.params(":anum"));
+            String agendaItemIndexString = request.params(":aid");
             int number = Integer.parseInt(request.params(":num"));
             if(! parliamentService.protocolExists(protocolId)){
                 halt(404, "Protocol does not exist");
             }
             Speech speech = gson.fromJson(request.body(), Speech.class);
             try{
-                return parliamentService.addSpeech(protocolId, agendaNumber, number, speech);
+                return parliamentService.addSpeech(protocolId, agendaItemIndexString, number, speech);
             } catch (IllegalArgumentException e) {
                 halt(404, "Speech does not exist");
             }

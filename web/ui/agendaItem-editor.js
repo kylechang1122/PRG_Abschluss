@@ -47,7 +47,7 @@ function showAgendaItemEditor(selector, submitFunction, data = {}) {
     $target= $(selector);
     // schema of Agenda Item Edit for Alpaca
     var schema = {
-        title: `${data._id? data._id: 'New Agenda Item'}`,
+        title: `${data.index? data.index: 'New Agenda Item'}`,
         type: "object",
         properties: {
             number: {
@@ -108,16 +108,13 @@ function showSpeechOverview(selector, protocolId, agendaItem) {
         $tbody.append(`
                 <tr>
                     <td>${speech.id}</td>
-                    <td>${getSpeakerNameById(speech.speakerId)}</td>
+                    <td>${speech.speakerRole? speech.speakerRole + ' ' : ''}${getSpeakerNameById(speech.speakerId)}</td>
                     <td>
-                    <button id="editSpeech${speech.id}">Edit</button>
+                    <button onclick="editSpeech('${selector}', '${protocolId}', '${agendaItem.index}', '${speech.id}')">Edit</button>
                     <button onclick="deleteSpeech('${selector}', '${protocolId}', '${speech.id}')">Delete</button>
                     </td>
                 </tr>`)
         $table.append(`<tr><td data-id="speech-editor-${speech.id}" colspan="3"></td></tr>`);
-        $(`#editSpeech${speech._id}`).click(() => {
-            editSpeech(`[data-id="speech-editor-${speech.id}]`, protocolId, speech)
-        })
     })
 }
 
@@ -135,7 +132,8 @@ function deleteSpeech(selector, protocolId, speechId) {
     });
 };
 
-function editSpeech(selector, protocolId, agendaItemIndexString, speech) {
-
+function editSpeech(selector, protocolId, agendaItemIndexString, speechId) {
+    const url = `/editor/speech?id=${protocolId}&item=${agendaItemIndexString}&speech=${speechId}`
+    location.href = url;
 };
 

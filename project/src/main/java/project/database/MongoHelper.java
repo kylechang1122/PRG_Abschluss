@@ -22,12 +22,9 @@ public class MongoHelper {
         mongoDocument.put("standort", plenaryProtocol.getPlace());
 
         List<Document> agenditems = new ArrayList<>();
-        int num = 0;
         for (AgendaItem item : plenaryProtocol.getAgendaItems()) {
             Document agendaItemDocument = toMongoDocument(item);
-            agendaItemDocument.append("number", num);
             agenditems.add(agendaItemDocument);
-            num++;
         }
         mongoDocument.put("agendaItems", agenditems);
 
@@ -37,7 +34,10 @@ public class MongoHelper {
     }
 
     public static Document toMongoDocument(AgendaItem agendaItem) {
-        Document document = new Document().append("index", agendaItem.getIndex()).append("title", agendaItem.getTitle());
+        Document document = new Document()
+                .append("index", agendaItem.getIndex())
+                .append("title", agendaItem.getTitle())
+                .append("number", agendaItem.getNumber());
         List<Document> speeches = new ArrayList<>();
         for (Speech speech : agendaItem.getSpeeches()) {
             speeches.add(toMongoDocument(speech));

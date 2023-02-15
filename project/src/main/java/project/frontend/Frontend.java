@@ -47,5 +47,8 @@ public class Frontend {
         get("/editor/agenda-item", (request, response) -> {
             return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "agenda-item-editor.ftl"));
         });
+        get("/editor/speech", (request, response) -> {
+            return new FreeMarkerEngine(templateConfig).render(new ModelAndView(new HashMap<>(), "speech-editor.ftl"));
+        });
     }
 }

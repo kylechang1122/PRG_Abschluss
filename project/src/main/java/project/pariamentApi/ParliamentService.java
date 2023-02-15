@@ -12,62 +12,16 @@ import java.util.stream.Collectors;
 
 public class ParliamentService {
 
-    static private final ArrayList<Document> agendaOverview = new ArrayList<>(Arrays.asList(
-            new Document("$unwind",
-                    new Document("path", "$agendaItems")
-                            .append("includeArrayIndex", "number")
-                            .append("preserveNullAndEmptyArrays", true)),
-            new Document("$project",
-                    new Document("protocolTitle", "$title")
-                            .append("number", 1L)
-                            .append("index", "$agendaItems.index")
-                            .append("title", "$agendaItems.title")
-                            .append("speeches", "$agendaItems.speeches")),
-            new Document("$unwind", "$speeches"),
-            new Document("$lookup",
-                    new Document("from", "speaker")
-                            .append("localField", "speeches.speaker")
-                            .append("foreignField", "_id")
-                            .append("as", "speeches.speaker")),
-            new Document("$project",
-                    new Document("protocolTitle", 1L)
-                            .append("number", 1L)
-                            .append("index", 1L)
-                            .append("title", 1L)
-                            .append("speeches._id", 1L)
-                            .append("speaker",
-                                    new Document("$first", "$speeches.speaker"))),
-            new Document("$project",
-                    new Document("protocolTitle", 1L)
-                            .append("number", 1L)
-                            .append("index", 1L)
-                            .append("title", 1L)
-                            .append("speeches", 1L)
-                            .append("speaker.name", 1L)
-                            .append("speaker.firstName", 1L)
-                            .append("speaker.akademischertitel", 1L)
-                            .append("speaker.role", 1L)),
-            new Document("$project",
-                    new Document("protocolTitle", 1L)
-                            .append("number", 1L)
-                            .append("index", 1L)
-                            .append("title", 1L)
-                            .append("speeches._id", 1L)
-                            .append("speeches.speaker", "$speaker")),
-            new Document("$group",
-                    new Document("_id", "$index")
-                            .append("number",
-                                    new Document("$first", "$number"))
-                            .append("protocolTitle",
-                                    new Document("$first", "$protocolTitle"))
-                            .append("protocolId",
-                                    new Document("$first", "$_id"))
-                            .append("index",
-                                    new Document("$first", "$index"))
-                            .append("title",
-                                    new Document("$first", "$title"))
-                            .append("speeches",
-                                    new Document("$push", "$speeches")))));
+    static private final ArrayList<Document> agendaOverview = new ArrayList<>(
+            Arrays.asList(new Document("$unwind",
+                            new Document("path", "$agendaItems")
+                                    .append("includeArrayIndex", "number")
+                                    .append("preserveNullAndEmptyArrays", true)),
+                    new Document("$project",
+                            new Document("number", 1L)
+                                    .append("index", "$agendaItems.index")
+                                    .append("title", "$agendaItems.title")))
+    );
 
     private final ParliamentDbHandler dbConnection;
 
@@ -183,13 +137,13 @@ public class ParliamentService {
         return getSpeech(speechId, protocol);
     }
 
-    public Speech addSpeech(String protocolId, int agendaNumber, int speechNumber, Speech speech) {
+    public Speech addSpeech(String protocolId, String agendaItemIndexString, int speechNumber, Speech speech) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
         List<Speech> existing = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speech.getId())).collect(Collectors.toList());
         if (!existing.isEmpty()) {
             throw new IllegalArgumentException("speech already exists");
         }
-        AgendaItem agendaItem = protocol.getAgendaItems().get(agendaNumber);
+        AgendaItem agendaItem = protocol.getAgendaItemByIndexString(agendaItemIndexString);
         speech.setProtocol(protocol);
         speech.setAgendaItem(agendaItem);
         agendaItem.getSpeeches().set(speechNumber, speech);

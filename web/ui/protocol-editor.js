@@ -162,16 +162,16 @@ function showAgendaOverview(targetId, protocolId) {
             agenda.forEach(agendaItem => {
                 $tbody.append(`
                 <tr>
-                    <td>${agendaItem._id}</td>
+                    <td>${agendaItem.index}</td>
                     <td>${agendaItem.title}</td>
                     <td>
-                    <button onclick="editAgendaItem('${protocolId}', '${agendaItem._id}')">Edit</button>
-                    <button onclick="deleteAgendaItem('${protocolId}', '${agendaItem._id}')">Delete</button>
+                    <button onclick="editAgendaItem('${protocolId}', '${agendaItem.index}')">Edit</button>
+                    <button onclick="deleteAgendaItem('${protocolId}', '${agendaItem.index}')">Delete</button>
                     </td>
                 </tr>`)
                 $table.append(`<tr><td data-id="${agendaItem._id}" colspan="3"></td></tr>`);
-                $(`[data-id="editAgendaItem${agendaItem._id}"]`).click(() => {
-                    editAgendaItem(`[data-id="${agendaItem._id}"]`, protocolId, agendaItem)
+                $(`[data-id="editAgendaItem${agendaItem.index}"]`).click(() => {
+                    editAgendaItem(`[data-id="${agendaItem.index}"]`, protocolId, agendaItem)
                 })
             })
         },

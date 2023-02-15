@@ -13,11 +13,13 @@ public class AgendaItem extends PlenaryObject{
 
     List<Speech> speeches = new ArrayList<>();
     String index;
-    String title;
 
+    int number;
+
+    String title;
     PlenaryProtocol protocol;
 
-    public AgendaItem(Node node,PlenaryProtocol protocol){
+    public AgendaItem(Node node, PlenaryProtocol protocol){
         setProtocol(protocol);
         setIndex(XMLHelper.getChildNodeByName(node,"ivz-block-titel").getTextContent().replace(":",""));
         setTitle(XMLHelper.getDeepChildNodeByName(node,"ivz-eintrag-inhalt").getTextContent());
@@ -31,10 +33,19 @@ public class AgendaItem extends PlenaryObject{
                 speeches.add(new Speech(this, speech));
             });
         }
+        this.setNumber(document.getInteger("number"));
         //index
         this.setIndex(document.getString("index"));
         //title
         this.setTitle(document.getString("title"));
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public List<Speech> getSpeeches(){

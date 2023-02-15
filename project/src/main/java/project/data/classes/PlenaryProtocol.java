@@ -62,6 +62,7 @@ public class PlenaryProtocol extends PlenaryObject {
         for (int b = 0; b < agendaNodes.getLength(); b++) {
             Node agendaNode = agendaNodes.item(b);
             AgendaItem agendaItem = new AgendaItem(agendaNode, this);
+            agendaItem.setNumber(b);
             this.getAgendaItems().add(agendaItem);
             // get speeches of current agenda item
             List<Element> filterResult = XMLHelper.match(agendaElements, (e) -> {
@@ -114,8 +115,9 @@ public class PlenaryProtocol extends PlenaryObject {
         setPlace(document.getString("standort"));
         List<org.bson.Document> agendaItemList = document.getList("agendaItems", org.bson.Document.class);
         if (agendaItemList != null) {
-            agendaItemList.forEach((agendaItem) -> {
-                agendaItems.add(new AgendaItem(agendaItem, this));
+            agendaItemList.forEach((item) -> {
+                AgendaItem agendaItem = new AgendaItem(item, this);
+                agendaItems.add(agendaItem);
             });
         }
     }
