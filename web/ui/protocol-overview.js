@@ -32,16 +32,7 @@ function showProtocolOverview(targetId) {
 }
 
 function editProtocol(id) {
-    const $target = $(`#protocol-${id}`);
-    $.getJSON({
-        url: `/rest/parliament/protocol/${id}`,
-        success: function (protocol) {
-            showProtocolEditor($target, putProtocol, protocol);
-        },
-        error: function (xhr) {
-            alert("Loading Protocol failed: " + xhr.responseText);
-        }
-    });
+    location.href= "/editor/protocol/?id=" + id;
 };
 
 function deleteProtocol(id, targetId) {

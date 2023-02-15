@@ -18,6 +18,19 @@ function parseDates(data) {
     }
 }
 
+function editProtocol(id) {
+    const $target = $(`#protocol-${id}`);
+    $.getJSON({
+        url: `/rest/parliament/protocol/${id}`,
+        success: function (protocol) {
+            showProtocolEditor($target, putProtocol, protocol);
+        },
+        error: function (xhr) {
+            alert("Loading Protocol failed: " + xhr.responseText);
+        }
+    });
+};
+
 function putProtocol() {
     var value = this.getValue();
     var data = value;
@@ -128,5 +141,37 @@ function showProtocolEditor($target, submitFunction,  data) {
         data: data,
         schema: schema,
         options: options
+    });
+}
+
+function showAgendaOverview(targetId, protocolId) {
+    const $target = $(targetId);
+    $.getJSON({
+        url: `/rest/parliament/protocol/${protocolId}/agenda`,
+        success: function (agenda) {
+            $target.html(`<h2>${agenda[0].protocolTitle}</h2>
+                <table class='table agenda'>
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>`);
+            const $table = $target.find('table.agenda');
+            $table.find('thead').append(`<tr><th>Index</th><th>Title</th><th></th></tr>`)
+            const $tbody = $table.find('tbody');
+            agenda.forEach(p => {
+                $tbody.append(`
+                <tr>
+                    <td>${p._id}</td>
+                    <td>${p.title}</td>
+                    <td>
+                    <button onclick="editAgendaItem('${protocolId}', '${p._id}')">Edit</button>
+                    <button onclick="deleteAgenda('${protocolId}', '${p._id}')">Delete</button>
+                    </td>
+                </tr>`)
+                $table.append(`<tr><td data-id="${p._id}" colspan="3"></td></tr>`)
+            })
+        },
+        error: function (xhr) {
+            alert("Loading Protocols failed: " + xhr.responseText);
+        }
     });
 }

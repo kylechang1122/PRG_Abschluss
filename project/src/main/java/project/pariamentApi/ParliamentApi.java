@@ -132,14 +132,8 @@ public class ParliamentApi {
     }
 
     private void initSpeechesApi() {
-        // get overview
-        get("/rest/parliament/protocol/:id/agenda", (request, response) -> {
-            checkAuthorizationUserLevel(request, response);
-            String id = request.params(":id");
-            return parliamentService.getAgendaItemsOverview(id);
-        }, gson::toJson);
         // get speech
-        get("/rest/parliament/protocol/:id/speeches/:sid", (request, response) -> {
+        get("/rest/parliament/protocol/:id/speech/:sid", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
             String speechId = request.params(":sid");
@@ -154,15 +148,18 @@ public class ParliamentApi {
             return null;
         }, gson::toJson);
         // update speech
-        put("/rest/parliament/protocol/:id/speeches/:sid", (request, response) -> {
+        put("/rest/parliament/protocol/:id/speech/:sid", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
             String speechId = request.params(":sid");
             if(! parliamentService.protocolExists(protocolId)){
                 halt(404, "Protocol does not exist");
             }
+            Speech speech = gson.fromJson(request.body(), Speech.class);
+            if(! speech.getId().equals(speechId)){
+                halt(400, "Wrong speech data");
+            }
             try{
-                Speech speech = gson.fromJson(request.body(), Speech.class);
                 return parliamentService.updateSpeech(protocolId, speech);
             } catch (IllegalArgumentException e) {
                 halt(404, "Speech does not exist");
@@ -170,16 +167,17 @@ public class ParliamentApi {
             return null;
         }, gson::toJson);
         // create speech
-        post("/rest/parliament/protocol/:id/agenda/:aid", (request, response) -> {
+        post("/rest/parliament/protocol/:id/agenda/:anum/:num", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
-            String agendaId = request.params(":aid");
+            int agendaNumber = Integer.parseInt(request.params(":anum"));
+            int number = Integer.parseInt(request.params(":num"));
             if(! parliamentService.protocolExists(protocolId)){
                 halt(404, "Protocol does not exist");
             }
+            Speech speech = gson.fromJson(request.body(), Speech.class);
             try{
-                Speech speech = gson.fromJson(request.body(), Speech.class);
-                return parliamentService.addSpeech(protocolId, agendaId, speech);
+                return parliamentService.addSpeech(protocolId, agendaNumber, number, speech);
             } catch (IllegalArgumentException e) {
                 halt(404, "Speech does not exist");
             }
@@ -191,6 +189,72 @@ public class ParliamentApi {
             String id = request.params(":id");
             parliamentService.deleteProtocol(id);
             return "ok";
+        }, gson::toJson);
+    }
+
+    private void initAgendaItemApi() {
+        // get overview
+        get("/rest/parliament/protocol/:id/agenda/overview", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String id = request.params(":id");
+            return parliamentService.getAgendaItemsOverview(id);
+        }, gson::toJson);
+        // get agendaItem
+        get("/rest/parliament/protocol/:id/agenda-item/:aid", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            String agendaItemId = request.params(":aid");
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            try{
+                return parliamentService.getAgendaItem(protocolId, agendaItemId);
+            } catch (IllegalArgumentException e) {
+                halt(404, "Speech does not exist");
+            }
+            return null;
+        }, gson::toJson);
+        // update agendaItem
+        put("/rest/parliament/protocol/:id/agenda-item/:aid/:num", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            String agendaItemIndexString = request.params(":aid");
+            int index = Integer.parseInt(request.params(":num"));
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            AgendaItem agendaItem = gson.fromJson(request.body(), AgendaItem.class);
+            if(! agendaItem.getIndex().equals(agendaItemIndexString)){
+                halt(400, "Wrong agenda-item data");
+            }
+            try{
+                return parliamentService.updateAgendaItem(protocolId, index, agendaItem);
+            } catch (IllegalArgumentException e) {
+                halt(404, "AgendaItem does not exist");
+            }
+            return null;
+        }, gson::toJson);
+        // create agendaItem
+        post("/rest/parliament/protocol/:id/agenda/:num", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            int index = Integer.parseInt(request.params(":num"));
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            AgendaItem agendaItem = gson.fromJson(request.body(), AgendaItem.class);
+            return parliamentService.createAgendaItem(protocolId, index, agendaItem);
+        }, gson::toJson);
+        // delete agendaItem
+        delete("/rest/parliament/protocol/:id/agenda-item/:aid", (request, response) -> {
+            checkAuthorizationUserLevel(request, response);
+            String protocolId = request.params(":id");
+            String agendaItemIndexString = request.params(":aid");
+            if(! parliamentService.protocolExists(protocolId)){
+                halt(404, "Protocol does not exist");
+            }
+            parliamentService.deleteAgendaItem(protocolId, agendaItemIndexString);
+            return "success";
         }, gson::toJson);
     }
 
