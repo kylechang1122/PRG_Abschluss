@@ -145,6 +145,7 @@ public class Speech extends PlenaryObject {
 
     public void setSpeaker(Speaker speaker) {
         this.speaker = speaker;
+        setSpeakerId(speaker.getId());
     }
 
     public String getSpeakerId() {

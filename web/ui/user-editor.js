@@ -87,6 +87,9 @@ function showUserEditor($target, submitFunction, data = {}) {
     var options = {
         focus: "",
         fields: {
+            userId:{
+                readonly: true,
+            },
             group: {
                 "optionLabels": ["User", "Manager", "Administrator"],
                 type: "select",
