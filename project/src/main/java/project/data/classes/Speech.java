@@ -23,6 +23,9 @@ public class Speech extends PlenaryObject {
 
     int length;
     List<Speech> insertions = new ArrayList<Speech>();
+
+    public Speech() {
+    }
     public Speech(AgendaItem agendaItem, String id) {
         this.agendaItem = agendaItem;
         this.setId(id);
@@ -89,7 +92,7 @@ public class Speech extends PlenaryObject {
     public Speech(AgendaItem agendaItem, Document document) {
         this.agendaItem = agendaItem;
         this.setId(document.getString("_id"));
-        List<Document> textList = document.getList("texts", Document.class);
+        List<Document> textList = document.getList("texte", Document.class);
         if (textList != null) {
             textList.forEach((text) -> {
                 if (Objects.equals(text.getString("type"), "text")) {

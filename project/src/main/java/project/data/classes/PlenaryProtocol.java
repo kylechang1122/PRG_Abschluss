@@ -37,7 +37,7 @@ public class PlenaryProtocol extends PlenaryObject {
     long duration;
 
     /**
-     * default constructor needed for gson deserialization
+     * empty constructor needed for gson deserialization
      */
     public PlenaryProtocol(){}
 

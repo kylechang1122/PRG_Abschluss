@@ -19,6 +19,11 @@ public class AgendaItem extends PlenaryObject{
     String title;
     PlenaryProtocol protocol;
 
+    /**
+     * empty constructor, needed for GSON
+     */
+    public AgendaItem(){}
+
     public AgendaItem(Node node, PlenaryProtocol protocol){
         setProtocol(protocol);
         setIndex(XMLHelper.getChildNodeByName(node,"ivz-block-titel").getTextContent().replace(":",""));

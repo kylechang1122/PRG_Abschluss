@@ -1,6 +1,7 @@
 package project.pariamentApi;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import project.data.classes.*;
 import project.database.MongoHelper;
 
@@ -25,10 +26,16 @@ public class ParliamentService {
 
     private final ParliamentDbHandler dbConnection;
 
-    private static Speech getSpeech(String speechId, PlenaryProtocol protocol) {
-        List<Speech> speeches = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speechId)).collect(Collectors.toList());
+    private static Speech getSpeechById(String speechId, PlenaryProtocol protocol) {
+        List<Speech> speeches = protocol.getSpeeches().stream().filter((s) -> {
+            String ID = s.getId();
+            if (ID == null) {
+                return false;
+            }
+            return ID.equals(speechId);
+        }).collect(Collectors.toList());
         if (speeches.isEmpty()) {
-            throw new IllegalArgumentException("speech not existing");
+            return null;
         }
         return speeches.get(0);
     }
@@ -80,7 +87,7 @@ public class ParliamentService {
         // query agenda overview
         aggregate.addAll(agendaOverview);
         // sort
-        aggregate.add(new Document("$sort", new Document("number",1L)));
+        aggregate.add(new Document("$sort", new Document("number", 1L)));
         return dbConnection.getProtocolCollection().aggregate(aggregate).into(new ArrayList<>());
     }
 
@@ -97,6 +104,7 @@ public class ParliamentService {
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
+        agendaItem.setId(new ObjectId().toString());
         agendaItem.setProtocol(protocol);
         protocol.getAgendaItems().set(index, agendaItem);
         updateProtocol(protocol);
@@ -134,46 +142,46 @@ public class ParliamentService {
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
-        return getSpeech(speechId, protocol);
+        return getSpeechById(speechId, protocol);
     }
 
-    public Speech addSpeech(String protocolId, String agendaItemIndexString, int speechNumber, Speech speech) {
+    public Speech createSpeech(String protocolId, String agendaItemIndexString, int position, Speech speech) {
+        speech.setId(new ObjectId().toString());
         PlenaryProtocol protocol = this.getProtocol(protocolId);
-        List<Speech> existing = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speech.getId())).collect(Collectors.toList());
-        if (!existing.isEmpty()) {
-            throw new IllegalArgumentException("speech already exists");
-        }
         AgendaItem agendaItem = protocol.getAgendaItemByIndexString(agendaItemIndexString);
         speech.setProtocol(protocol);
         speech.setAgendaItem(agendaItem);
-        agendaItem.getSpeeches().set(speechNumber, speech);
+        if (position > agendaItem.getSpeeches().size()) {
+            position = agendaItem.getSpeeches().size();
+        }
+        agendaItem.getSpeeches().add(position, speech);
         updateProtocol(protocol);
         return speech;
     }
 
     public Speech updateSpeech(String protocolId, Speech speech) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
-        List<Speech> existing = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speech.getId())).collect(Collectors.toList());
-        if (existing.isEmpty()) {
+        Speech existingSpeech = getSpeechById(speech.getId(), protocol);
+        if (existingSpeech == null) {
             throw new IllegalArgumentException("speech does not exist");
         }
-        Speech existingSpeech = existing.get(0);
+
         AgendaItem agendaItem = existingSpeech.getAgendaItem();
+        int index = agendaItem.getSpeeches().indexOf(existingSpeech);
         agendaItem.removeSpeech(existingSpeech);
         speech.setProtocol(protocol);
         speech.setAgendaItem(agendaItem);
-        agendaItem.addSpeech(speech);
+        agendaItem.getSpeeches().add(index, speech);
         updateProtocol(protocol);
         return speech;
     }
 
     public void deleteSpeech(String protocolId, String speechId) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
-        List<Speech> existing = protocol.getSpeeches().stream().filter((s) -> s.getId().equals(speechId)).collect(Collectors.toList());
-        if (existing.isEmpty()) {
+        Speech existingSpeech = getSpeechById(speechId, protocol);
+        if (existingSpeech == null) {
             throw new IllegalArgumentException("speech does not exist");
         }
-        Speech existingSpeech = existing.get(0);
         AgendaItem agendaItem = existingSpeech.getAgendaItem();
         agendaItem.removeSpeech(existingSpeech);
         updateProtocol(protocol);
@@ -186,7 +194,7 @@ public class ParliamentService {
         return new Speaker(document);
     }
 
-    public Speaker addSpeaker(Speaker speaker) {
+    public Speaker createSpeaker(Speaker speaker) {
         Document document = dbConnection.createSpeaker(MongoHelper.toMongoDocument(speaker));
         speaker.setId(document.getString("_id"));
         return speaker;

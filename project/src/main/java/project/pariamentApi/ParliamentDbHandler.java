@@ -55,8 +55,9 @@ public class ParliamentDbHandler {
         // _id is not allowed in updates
         document.remove("_id");
         Document query = new Document().append("_id",  id);
+        Document updates = new Document().append("$set",  document);
         UpdateOptions options = new UpdateOptions().upsert(false);
-        UpdateResult result = this.getProtocolCollection().updateOne(query, document, options);
+        UpdateResult result = this.getProtocolCollection().updateOne(query, updates, options);
         return this.getProtocol(id);
     }
 

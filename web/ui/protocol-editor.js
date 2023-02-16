@@ -169,10 +169,6 @@ function showAgendaOverview(targetId, protocolId) {
                     <button onclick="deleteAgendaItem('${protocolId}', '${agendaItem.index}')">Delete</button>
                     </td>
                 </tr>`)
-                $table.append(`<tr><td data-id="${agendaItem._id}" colspan="3"></td></tr>`);
-                $(`[data-id="editAgendaItem${agendaItem.index}"]`).click(() => {
-                    editAgendaItem(`[data-id="${agendaItem.index}"]`, protocolId, agendaItem)
-                })
             })
         },
         error: function (xhr) {

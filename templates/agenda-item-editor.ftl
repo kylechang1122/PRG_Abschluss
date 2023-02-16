@@ -42,23 +42,32 @@
 <script>
 
     const protocolId = new URL(location.href).searchParams.get("id");
-    const agendaItemId = new URL(location.href).searchParams.get("item");
+    const agendaItemIndexString = new URL(location.href).searchParams.get("item");
     function showSpeeches() {
         const selector = "#speeches";
+        $(selector).html("");
         showSpeechOverview(selector, protocolId, window.agendaItem);
     }
 
     function showAgendaItem() {
         const selector = "#agenda-item";
+        $(selector).html("");
         showAgendaItemEditor(
             selector,
-            () => putAgendaItem(protocolId, window.agendaItem._id),
-            agendaItem);
+            function() {putAgendaItem.call(this, protocolId, agendaItemIndexString) },
+            agendaItem,
+            false);
     }
 
     function addSpeech() {
         const selector = "#speeches";
-        showSpeechEditor(selector, () => {postSpeech(protocolId, window.agendaItem._id)}, data = {})
+        $(selector).html("");
+        const number = window.agendaItem.speeches.length;
+        showSpeechEditor({
+            selector,
+            submitFunction: function() { postSpeech.call(this, protocolId, agendaItemIndexString).then(loadAgendaItem) },
+            data: {number}
+        })
     }
 
     function loadSpeakers(){
@@ -75,7 +84,7 @@
 
    function loadAgendaItem(){
         return  $.getJSON({
-            url: "/rest/parliament/protocol/"+protocolId+"/agenda-item/"+agendaItemId,
+            url: "/rest/parliament/protocol/"+protocolId+"/agenda-item/"+agendaItemIndexString,
             success: function (response) {
                 window.agendaItem = response;
                 showMenu();

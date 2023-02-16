@@ -1,13 +1,13 @@
 
-function putSpeech(protocolId) {
+function putText(protocolId, speech) {
     var value = this.getValue();
     var data = value;
-    parseDates(data);
+    speech.texts[data.index] = data;
     return $.ajax({
         dataType: 'json',
         type: 'PUT',
-        url: `/rest/parliament/protocol/${protocolId}/speech/${data.id}`,
-        data: JSON.stringify(data),
+        url: `/rest/parliament/protocol/${protocolId}/speech/${speech.id}`,
+        data: JSON.stringify(speech),
         success: (response) => {
             alert("Save successful!");
             this.data = response;
@@ -18,15 +18,15 @@ function putSpeech(protocolId) {
     });
 }
 
-function postSpeech(protocolId, agendaItemIndexString) {
+function postText(protocolId, speech) {
     var value = this.getValue();
     var data = value;
-    parseDates(data);
+    speech.texts.splice(data.index, 0, data);
     return $.ajax({
         dataType: 'json',
-        type: 'POST',
-        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemIndexString}/speeches/${data.number}`,
-        data: JSON.stringify(data),
+        type: 'PUT',
+        url: `/rest/parliament/protocol/${protocolId}/speech/${speech.id}`,
+        data: JSON.stringify(speech),
         success: (response) => {
             alert("Save successful!");
             this.data = response;
@@ -37,42 +37,43 @@ function postSpeech(protocolId, agendaItemIndexString) {
     });
 }
 
-function showSpeechEditor(options) {
-    const {selector, submitFunction, data = {}, id} = options;
+
+function showTextEditor(options) {
+    const {selector, submitFunction, data = {}, id = "text"} = options;
     const $target = $(selector);
     // schema of Speech Edit for Alpaca
     var schema = {
-        title: `${data.id? 'Speech ' + data.id: 'New Speech'}`,
+        title: "Paragraph",
         type: "object",
         properties: {
-            id: {
-                type: "string",
-                title: "ID",
-            },
-            number: {
+            index: {
                 type: "number",
-                title: "Number",
+                title: "Index",
                 required: true
             },
-            speakerId: {
+            type: {
                 type: "string",
-                title: "Speaker",
-                required: true,
-                enum: window.speakers ? window.speakers.map(s => s._id) : undefined
-            }
+                title: "Type",
+                enum: ['text', 'comment'],
+                required: true
+            },
+            text: {
+                type: "string",
+                title: "Content",
+                required: true
+            },
         },
     };
     var options = {
         fields: {
-            content: {
-                type: "textarea"
+            text: {
+                type: "textarea",
             },
-            id: {
-                type: "hidden",
+            type: {
+                "optionLabels": ["Text", "Comment"],
+                type: "select",
+                default: 'text',
             },
-            speakerId: {
-                optionLabels: window.speakers ? window.speakers.map(getSpeakerName) : undefined
-            }
         },
         form: {
             buttons: {
@@ -80,10 +81,6 @@ function showSpeechEditor(options) {
                     click: submitFunction,
                     title: "Save",
                     id
-                },
-                cancel: {
-                    click: () => $target.html(''),
-                    title: "Cancel"
                 }
             }
         }
@@ -94,3 +91,4 @@ function showSpeechEditor(options) {
         options: options
     });
 }
+

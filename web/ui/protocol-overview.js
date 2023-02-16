@@ -22,7 +22,6 @@ function showProtocolOverview(targetId) {
                     <button onclick="deleteProtocol('${p._id}', '${targetId}')">Delete</button>
                     </td>
                 </tr>`)
-                $table.append(`<tr><td id="protocol-${p._id}" colspan="4"></td></tr>`)
             })
         },
         error: function (xhr) {

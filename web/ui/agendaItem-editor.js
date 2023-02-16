@@ -1,6 +1,6 @@
-function getSpeakerNameById(id){
-    const s = window.speakers? window.speakers.find((s) => s._id === id): undefined;
-    if(s) {
+function getSpeakerNameById(id) {
+    const s = window.speakers ? window.speakers.find((s) => s._id === id) : undefined;
+    if (s) {
         return getSpeakerName(s);
     }
 }
@@ -12,7 +12,7 @@ function putAgendaItem(protocolId, agendaItemIndexString) {
     $.ajax({
         dataType: 'json',
         type: 'PUT',
-        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemIndexString}/${number}"`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemIndexString}/${number}`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -31,7 +31,7 @@ function postAgendaItem(protocolId) {
     $.ajax({
         dataType: 'json',
         type: 'POST',
-        url: `/rest/parliament/protocol/${protocolId}/agenda/${number}"`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda/${number}`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -43,11 +43,11 @@ function postAgendaItem(protocolId) {
     });
 }
 
-function showAgendaItemEditor(selector, submitFunction, data = {}) {
-    $target= $(selector);
+function showAgendaItemEditor(selector, submitFunction, data = {}, canceable = true) {
+    const $target = $(selector);
     // schema of Agenda Item Edit for Alpaca
     var schema = {
-        title: `${data.index? data.index: 'New Agenda Item'}`,
+        title: `${data.index ? data.index : 'New Agenda Item'}`,
         type: "object",
         properties: {
             number: {
@@ -70,23 +70,25 @@ function showAgendaItemEditor(selector, submitFunction, data = {}) {
     };
     var options = {
         fields: {
+            title: {
+                type: "textarea"
+            }
         },
         form: {
             buttons: {
                 submit: {
-                    click: function() {
-                        var value = this.getValue();
-                        console.log(value)
-                    },
+                    click: submitFunction,
                     title: "Save"
-                },
-                cancel: {
-                    click: () => $target.html(''),
-                    title: "Cancel"
                 }
             }
         }
     };
+    if (canceable) {
+        options.form.buttons.cancel = {
+            click: () => $target.html(''),
+            title: "Cancel"
+        };
+    }
     $target.alpaca({
         data: data,
         schema: schema,
@@ -104,27 +106,28 @@ function showSpeechOverview(selector, protocolId, agendaItem) {
     const $table = $target.find('table.agendaItem');
     $table.find('thead').append(`<tr><th>ID</th><th>Speaker</th><th></th></tr>`)
     const $tbody = $table.find('tbody');
+    let number = 0;
     agendaItem.speeches.forEach(speech => {
         $tbody.append(`
                 <tr>
                     <td>${speech.id}</td>
-                    <td>${speech.speakerRole? speech.speakerRole + ' ' : ''}${getSpeakerNameById(speech.speakerId)}</td>
+                    <td>${speech.speakerRole ? speech.speakerRole + ' ' : ''}${getSpeakerNameById(speech.speakerId)}</td>
                     <td>
-                    <button onclick="editSpeech('${selector}', '${protocolId}', '${agendaItem.index}', '${speech.id}')">Edit</button>
+                    <button onclick="editSpeech('${selector}', '${protocolId}', '${agendaItem.index}', '${speech.id}', ${number})">Edit</button>
                     <button onclick="deleteSpeech('${selector}', '${protocolId}', '${speech.id}')">Delete</button>
                     </td>
                 </tr>`)
-        $table.append(`<tr><td data-id="speech-editor-${speech.id}" colspan="3"></td></tr>`);
+        number++;
     })
 }
 
 function deleteSpeech(selector, protocolId, speechId) {
-    $.ajax({
+    return $.ajax({
         method: 'DELETE',
         url: `/rest/parliament/protocol/${protocolId}/speech/${speechId}`,
         success: function () {
             alert(`speech ${speechId}  deleted`);
-            showAgendaOverview(selector, protocolId);
+            location.reload();
         },
         error: function (xhr) {
             alert("Deleting speech failed: " + xhr.responseText);
@@ -132,8 +135,8 @@ function deleteSpeech(selector, protocolId, speechId) {
     });
 };
 
-function editSpeech(selector, protocolId, agendaItemIndexString, speechId) {
-    const url = `/editor/speech?id=${protocolId}&item=${agendaItemIndexString}&speech=${speechId}`
+function editSpeech(selector, protocolId, agendaItemIndexString, speechId, number) {
+    const url = `/editor/speech?id=${protocolId}&item=${agendaItemIndexString}&speech=${speechId}&number=${number}`
     location.href = url;
 };
 

@@ -85,7 +85,7 @@ public class MongoHelper {
         Document mongoDocument = new Document();
         mongoDocument.put("_id", speech.getId());
         mongoDocument.put("agendaItem", speech.getAgendaItem().getIndex());
-        mongoDocument.put("speaker", speech.getSpeaker().getId());
+        mongoDocument.put("speaker", speech.getSpeakerId());
         String role = speech.getSpeakerRole();
         if (role != null) {
             mongoDocument.put("speakerRole", role);

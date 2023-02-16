@@ -29,9 +29,13 @@ public class ParliamentApi {
                     && fieldName.equals("protocol");
             boolean speechAgendaItem = className.equals("project.data.classes.Speech")
                     && fieldName.equals("agendaItem");
+            boolean speechProtocol = className.equals("project.data.classes.Speech")
+                    && fieldName.equals("protocol");
+            boolean speechSpeaker = className.equals("project.data.classes.Speech")
+                    && fieldName.equals("speaker");
             boolean protocolSpeeches = className.equals("project.data.classes.PlenaryProtocol")
                     && fieldName.equals("speeches");
-            return agendaItemProtocol || speechAgendaItem || protocolSpeeches;
+            return (agendaItemProtocol || speechAgendaItem || speechProtocol || speechSpeaker || protocolSpeeches);
         }
 
         @Override
@@ -82,6 +86,42 @@ public class ParliamentApi {
         }
     }
 
+    private class TextSerializer implements JsonSerializer<Text> {
+
+        @Override
+        public JsonElement serialize(Text text, Type type, JsonSerializationContext jsonSerializationContext) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("text", text.getText());
+            if(text.getClass().getName().equals("project.data.classes.Comment")){
+                jsonObject.addProperty("type", "comment");
+            } else {
+                jsonObject.addProperty("type", "text");
+            }
+            return jsonObject;
+        }
+    }
+
+    private class TextDeserializer implements JsonDeserializer<Text> {
+
+        @Override
+        public Text deserialize(JsonElement jsonElement, Type type,
+                                JsonDeserializationContext context) throws JsonParseException {
+            try {
+                JsonObject json = jsonElement.getAsJsonObject();
+                String typeProp = String.valueOf(json.get("type"));
+                String content = String.valueOf(json.get("text"));
+                if (typeProp.equals("comment")){
+                   return new Comment(content);
+                } else {
+                    return new Text(content);
+                }
+            } catch (Exception e) {
+                throw new JsonParseException("Unparseable text: \"" + jsonElement.getAsString());
+            }
+        }
+    }
+
     private final ParliamentService parliamentService;
     private final BasicAuthHelper basicAuthHelper;
 
@@ -92,6 +132,8 @@ public class ParliamentApi {
         this.basicAuthHelper = new BasicAuthHelper(userService);
         GsonBuilder gSonBuilder=  new GsonBuilder();
         gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
+        gSonBuilder.registerTypeHierarchyAdapter(Text.class, new TextSerializer());
+        gSonBuilder.registerTypeHierarchyAdapter(Text.class, new TextDeserializer());
         gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
         gSonBuilder.setExclusionStrategies(new ProtocolExclusionStrategy());
         gson = gSonBuilder.create();
@@ -191,7 +233,7 @@ public class ParliamentApi {
             return null;
         }, gson::toJson);
         // create speech
-        post("/rest/parliament/protocol/:id/agenda-item/:aid/:num", (request, response) -> {
+        post("/rest/parliament/protocol/:id/agenda-item/:aid/speeches/:num", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
             String agendaItemIndexString = request.params(":aid");
@@ -201,7 +243,7 @@ public class ParliamentApi {
             }
             Speech speech = gson.fromJson(request.body(), Speech.class);
             try{
-                return parliamentService.addSpeech(protocolId, agendaItemIndexString, number, speech);
+                return parliamentService.createSpeech(protocolId, agendaItemIndexString, number, speech);
             } catch (IllegalArgumentException e) {
                 halt(404, "Speech does not exist");
             }
@@ -320,7 +362,7 @@ public class ParliamentApi {
             if(parliamentService.speakerExists(speaker.getId())){
                 halt(400, "Speaker already exists");
             }
-            return parliamentService.addSpeaker(speaker);
+            return parliamentService.createSpeaker(speaker);
         }, gson::toJson);
         // delete speaker
         delete("/rest/parliament/speaker/:id", (request, response) -> {
