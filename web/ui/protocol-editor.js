@@ -31,6 +31,7 @@ function editProtocol(targetId, protocolId) {
     });
 };
 
+// update a protocol
 function putProtocol() {
     var value = this.getValue();
     var data = value;
@@ -50,6 +51,7 @@ function putProtocol() {
     });
 }
 
+// create a protocol
 function postProtocol() {
     var value = this.getValue();
     var data = value;
@@ -69,6 +71,7 @@ function postProtocol() {
     });
 }
 
+// show protocol editor
 function showProtocolEditor(selector, submitFunction, data = {}) {
     $target = $(selector);
     var schema = {

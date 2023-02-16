@@ -1,3 +1,4 @@
+// show protocol overview
 function showProtocolOverview(targetId) {
     const $target = $(targetId);
     $.getJSON({
@@ -31,10 +32,12 @@ function showProtocolOverview(targetId) {
     });
 }
 
+// edit a protocol
 function editProtocol(id) {
     location.href= "/editor/protocol?id=" + id;
 };
 
+// delete a protocol
 function deleteProtocol(id, targetId) {
     $.ajax({
         method: 'DELETE',

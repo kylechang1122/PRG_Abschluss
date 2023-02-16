@@ -1,3 +1,4 @@
+// show user overview
 function showUserOverview($target) {
     $.getJSON({
         url: "/rest/admin/users/overview",
@@ -30,6 +31,7 @@ function showUserOverview($target) {
     });
 }
 
+// edit a user
 function editUser(id) {
     const $target = $(`#user-${id}`);
     $.getJSON({
@@ -43,6 +45,7 @@ function editUser(id) {
     });
 }
 
+// delete a user
 function deleteUser(id) {
     $.ajax({
         method: 'DELETE',

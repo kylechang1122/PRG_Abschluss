@@ -5,6 +5,7 @@ function getSpeakerNameById(id){
     }
 }
 
+// update an agenda item
 function putAgendaItem(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -24,6 +25,7 @@ function putAgendaItem(protocolId, agendaItemIndexString) {
     });
 }
 
+// create an agenda item
 function postAgendaItem(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -43,6 +45,7 @@ function postAgendaItem(protocolId) {
     });
 }
 
+// show agenda item editor
 function showAgendaItemEditor(selector, submitFunction, data = {}) {
     $target= $(selector);
     // schema of Agenda Item Edit for Alpaca

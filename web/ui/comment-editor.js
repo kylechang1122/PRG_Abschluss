@@ -1,3 +1,4 @@
+// show comment editor
 function showCommentEditor($target, data) {
     // schema of Comment Edit for Alpaca
     var schema = {

@@ -1,4 +1,4 @@
-
+// update a speech
 function putSpeech(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -18,6 +18,7 @@ function putSpeech(protocolId) {
     });
 }
 
+// create a speech
 function postSpeech(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -37,6 +38,7 @@ function postSpeech(protocolId, agendaItemIndexString) {
     });
 }
 
+// show speech editor
 function showSpeechEditor(selector, submitFunction, data = {}) {
     const $target = $(selector);
     // schema of Speech Edit for Alpaca
@@ -91,6 +93,7 @@ function showSpeechEditor(selector, submitFunction, data = {}) {
     });
 }
 
+// update speech text
 function putText(protocolId, speechId) {
     var value = this.getValue();
     var data = value;
@@ -110,6 +113,7 @@ function putText(protocolId, speechId) {
     });
 }
 
+// create a speech text
 function postText(protocolId, speechId) {
     var value = this.getValue();
     var data = value;
@@ -129,7 +133,7 @@ function postText(protocolId, speechId) {
     });
 }
 
-
+// show speech text editor
 function showTextEditor(selector, submitFunction, data = {}) {
     const $target = $(selector);
     // schema of Speech Edit for Alpaca

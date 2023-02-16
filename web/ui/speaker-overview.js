@@ -1,3 +1,4 @@
+// show speaker overview
 function showSpeakerOverview(targetId) {
     const $target = $(targetId);
     $.getJSON({
@@ -31,6 +32,7 @@ function showSpeakerOverview(targetId) {
     });
 }
 
+// edit speaker
 function editSpeaker(id) {
     const $target = $(`#speaker-${id}`);
     $.getJSON({
@@ -45,6 +47,7 @@ function editSpeaker(id) {
     });
 };
 
+// delete speaker
 function deleteSpeaker(id, targetId) {
     $.ajax({
         method: 'DELETE',
