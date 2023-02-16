@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
+import java.util.Scanner;
 
 import static spark.Spark.*;
 
@@ -34,33 +35,50 @@ public class App {
 
     public static void main(String[] args) {
         App app = new App();
-        try{
-            if (args.length == 1) {
-                String arg = args[0];
-                if (arg.equals("import")) {
-                    app.importXML();
-                } else if (arg.equals("analyze")) {
-                    app.getAndAnalyseSpeech();
+        Scanner scanner = new Scanner(System.in);
+        String command = "";
+        while (!command.equalsIgnoreCase("exit")) {
+            System.out.println("Welcome to Parliament Browser");
+            System.out.println("menu:");
+            System.out.println("\t import (= import xml");
+            System.out.println("\t nlp (= start nlp analysis and store results in mongo db)");
+            System.out.println("\t admin (= create new admin user)");
+            System.out.println("\t start (= start webapp)");
+            System.out.println("\t exit (= end program)");
+            command = scanner.nextLine();
+            try {
+                switch (command) {
+                    case "nlp":
+                        app.getAndAnalyseSpeech();
+                        break;
+                    case "import":
+                        app.importXML();
+                        break;
+                    case "admin":
+                        System.out.println("Please enter the userId: ");
+                        String userId = scanner.nextLine();
+                        System.out.println("Please enter the password: ");
+                        String password = scanner.nextLine();
+                        app.createAdminUser(userId, password);
+                        break;
+                    case "start":
+                        startWebApp(app);
+                        break;
+                    default:
+                        throw (new IllegalArgumentException("unknown command"));
                 }
-            } else if (args.length == 3) {
-                if (args[0].equals("create-admin")) {
-                    app.createAdminUser(args[1], args[2]);
-                    System.out.println("user " + args[1] + " created");
-                }
-            } else{
-                startWebApp(app);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     private static void startWebApp(App app) throws IOException {
-            // set external directory for the static files
-            String staticDirectory = System.getProperty("user.dir") + File.separator + "web";
-            staticFiles.externalLocation(staticDirectory);
-            app.initApis();
-            app.initFrontend();
+        // set external directory for the static files
+        String staticDirectory = System.getProperty("user.dir") + File.separator + "web";
+        staticFiles.externalLocation(staticDirectory);
+        app.initApis();
+        app.initFrontend();
     }
 
     App() {
@@ -75,13 +93,14 @@ public class App {
 
     private void createAdminUser(String userId, String password) throws IOException {
         UserService userService = new UserService(new UserDbHandler(dbConnection));
-        String credential = userId + ":" +password;
+        String credential = userId + ":" + password;
         Document admin = new Document();
         admin.append("_id", userId);
         admin.append("group", "admin");
         admin.append("credential", Base64.getEncoder().encodeToString(credential.getBytes()));
         User user = new User(admin);
         userService.addUser(user);
+        System.out.println("user " + userId + "created");
     }
 
     private void initApis() throws IOException {
