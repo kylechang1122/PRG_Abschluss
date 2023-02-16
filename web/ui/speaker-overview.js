@@ -34,17 +34,7 @@ function showSpeakerOverview(targetId) {
 
 // call a speaker w/ id to edit
 function editSpeaker(id) {
-    const $target = $(`#speaker-${id}`);
-    $.getJSON({
-        url: `/rest/parliament/speaker/${id}`,
-        success: function (response) {
-            parseSpeakerResponseData(response)
-            showSpeakerEditor($target, putSpeaker, response);
-        },
-        error: function (xhr) {
-            alert("Loading speaker failed: " + xhr.responseText);
-        }
-    });
+    location.href= "/editor/speaker?id=" + id;
 };
 
 // delete a speaker

@@ -233,7 +233,7 @@ public class ParliamentService {
         return speaker;
     }
 
-    public Speaker saveSpeaker(Speaker speaker) {
+    public Speaker updateSpeaker(Speaker speaker) {
         Document document = dbConnection.updateSpeaker(MongoHelper.toMongoDocument(speaker));
         return new Speaker(document);
     }

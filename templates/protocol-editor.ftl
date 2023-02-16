@@ -40,7 +40,7 @@
 
 
 <script>
-    const protocolId = redirect = new URL(location.href).searchParams.get("id");
+    const protocolId = new URL(location.href).searchParams.get("id");
 
     function showAgenda() {
         const selector = "#agenda";

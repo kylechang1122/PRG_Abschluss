@@ -60,7 +60,9 @@ function postSpeaker() {
     });
 }
 // show speaker editor
-function showSpeakerEditor($target, submitFunction, data = {}) {
+function showSpeakerEditor(selector, submitFunction, data = {}) {
+    $target = $(selector);
+    parseSpeakerResponseData(data);
     // schema of Speaker Edit for Alpaca
     var schema = {
         title: `${data.name? getSpeakerName(data): 'New Speaker'}`,
@@ -83,15 +85,15 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
                 type: "string",
                 title: "Title"
             },
-            birthdate: {
+            birthday: {
                 type: "string",
                 title: "Birthdate"
             },
-            birthplace: {
+            birthPlace: {
                 type: "string",
                 title: "Place of Birth"
             },
-            deathdate: {
+            deathDate: {
                 type: "string",
                 title: "Date of Death"
             },
@@ -99,7 +101,7 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
                 type: "string",
                 title: "Gender"
             },
-            profession: {
+            job: {
                 type: "string",
                 title: "Profession"
             },
@@ -107,7 +109,7 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
                 type: "string",
                 title: "Academic Title"
             },
-            maritalStatus: {
+            familyState: {
                 type: "string",
                 title: "Marital Status"
             },
@@ -142,10 +144,6 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
                 submit: {
                     click: submitFunction,
                     title: "Save"
-                },
-                cancel: {
-                    click: () => $target.html(''),
-                    title: "Cancel"
                 }
             }
         }

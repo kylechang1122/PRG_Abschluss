@@ -35,7 +35,11 @@ public class ParliamentApi {
                     && fieldName.equals("speaker");
             boolean protocolSpeeches = className.equals("project.data.classes.PlenaryProtocol")
                     && fieldName.equals("speeches");
-            return (agendaItemProtocol || speechAgendaItem || speechProtocol || speechSpeaker || protocolSpeeches);
+            boolean speakerSpeeches = className.equals("project.data.classes.Speaker")
+                    && fieldName.equals("speeches");
+            boolean partyMembers = className.equals("project.data.classes.Party")
+                    && fieldName.equals("members");
+            return (agendaItemProtocol || speechAgendaItem || speechProtocol || speechSpeaker || protocolSpeeches || speakerSpeeches || partyMembers);
         }
 
         @Override
@@ -370,7 +374,7 @@ public class ParliamentApi {
             if(! speaker.getId().equals(id)){
                 halt(400, "Wrong speaker data");
             }
-            return parliamentService.saveSpeaker(speaker);
+            return parliamentService.updateSpeaker(speaker);
         }, gson::toJson);
         // creat speaker
         post("/rest/parliament/speaker/", (request, response) -> {
