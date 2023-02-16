@@ -20,10 +20,9 @@ function showSpeakerOverview(targetId) {
                     <td>${name}</td>
                     <td>
                     <button onclick="editSpeaker('${s._id}')">Edit</button>
-                    <button onclick="deleteProtocol('${s._id}', '${targetId}')">Delete</button>
+                    <button onclick="deleteSpeaker('${s._id}')">Delete</button>
                     </td>
                 </tr>`)
-                $table.append(`<tr><td id="speaker-${s._id}" colspan="4"></td></tr>`)
             })
         },
         error: function (xhr) {
@@ -38,13 +37,13 @@ function editSpeaker(id) {
 };
 
 // delete a speaker
-function deleteSpeaker(id, targetId) {
+function deleteSpeaker(id) {
     $.ajax({
         method: 'DELETE',
         url: `/rest/parliament/speaker/${id}`,
         success: function () {
             alert(`speaker ${id}  deleted`);
-            showSpeakerOverview(targetId);
+            location.reload()
         },
         error: function (xhr) {
             alert("Deleting speaker failed: " + xhr.responseText);
