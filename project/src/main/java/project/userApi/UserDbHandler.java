@@ -3,6 +3,8 @@ package project.userApi;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import project.database.MongoDBHandler;
@@ -30,13 +32,16 @@ public class UserDbHandler {
         this.getCollection().insertOne(user);
     }
 
-    public void replaceUser(Document user) {
+    public void replaceUser(Document document) {
         // get id from input document user
-        String userId = user.getString("_id");
-        // filter the field "_id" with userId
-        Bson filter = Filters.in("_id", userId);
+        String userId = document.getString("_id");
+        // _id is not allowed in updates
+        document.remove("_id");
+        Document query = new Document().append("_id",  userId);
+        Document updates = new Document().append("$set",  document);
+        UpdateOptions options = new UpdateOptions().upsert(false);
         //the user is updated with the new Document
-        this.getCollection().updateOne(filter, user);
+        UpdateResult result = this.getCollection().updateOne(query, updates, options);
     }
 
     public void deleteUser(String id) {

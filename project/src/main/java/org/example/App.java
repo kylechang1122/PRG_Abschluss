@@ -8,6 +8,7 @@ import project.database.*;
 import project.frontend.Frontend;
 import project.nlp.Engine;
 import project.pariamentApi.ParliamentApi;
+import project.userApi.User;
 import project.userApi.UserDbHandler;
 import project.userApi.UserApi;
 import project.userApi.UserService;
@@ -15,6 +16,7 @@ import project.userApi.UserService;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 
 import static spark.Spark.*;
@@ -33,12 +35,17 @@ public class App {
     public static void main(String[] args) {
         App app = new App();
         try{
-            if (args.length > 0) {
+            if (args.length == 1) {
                 String arg = args[0];
                 if (arg.equals("import")) {
                     app.importXML();
                 } else if (arg.equals("analyze")) {
                     app.getAndAnalyseSpeech();
+                }
+            } else if (args.length == 3) {
+                if (args[0].equals("create-admin")) {
+                    app.createAdminUser(args[1], args[2]);
+                    System.out.println("user " + args[1] + " created");
                 }
             } else{
                 startWebApp(app);
@@ -64,6 +71,17 @@ public class App {
             throw new RuntimeException(e);
         }
         dbConnection = new MongoDBHandler(config);
+    }
+
+    private void createAdminUser(String userId, String password) throws IOException {
+        UserService userService = new UserService(new UserDbHandler(dbConnection));
+        String credential = userId + ":" +password;
+        Document admin = new Document();
+        admin.append("_id", userId);
+        admin.append("group", "admin");
+        admin.append("credential", Base64.getEncoder().encodeToString(credential.getBytes()));
+        User user = new User(admin);
+        userService.addUser(user);
     }
 
     private void initApis() throws IOException {

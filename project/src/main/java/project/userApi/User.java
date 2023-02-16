@@ -10,6 +10,9 @@ public class User {
 
     protected String group;
     protected String credential;
+
+    public User(){}
+
     public User(Document mongoDBUser) {
         userId = mongoDBUser.get("_id", String.class);
         firstName = mongoDBUser.get("firstName", String.class);

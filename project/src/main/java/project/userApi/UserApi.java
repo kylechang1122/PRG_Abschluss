@@ -58,6 +58,12 @@ public class UserApi {
             }
             return userService.addUser(user);
         }, gson::toJson);
+        delete("/rest/admin/users/:id", (request, response) -> {
+            checkAuthorization(request, response);
+            String id = request.params(":id");
+            userService.deleteUser(id);
+            return true;
+        }, gson::toJson);
     }
 
     private void checkAuthorization(Request request, Response response) throws DataBaseException {

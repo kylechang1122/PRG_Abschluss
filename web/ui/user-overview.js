@@ -7,7 +7,8 @@ function showUserOverview($target) {
                 <table class='table users'>
                     <thead></thead>
                     <tbody></tbody>
-                </table>`);
+                </table>
+            <div id="edit-user"></div>`);
             const $table = $target.find('table.users');
             $table.find('thead').append(`<tr><th>Id</th><th>Vorname</th><th>Nachname</th><th></th></tr>`)
             const $tbody = $table.find('tbody');
@@ -22,7 +23,6 @@ function showUserOverview($target) {
                     <button onclick="deleteUser('${user.userId}')">Delete</button>
                     </td>
                 </tr>`)
-                $table.append(`<tr><td id="user-${user._id}" colspan="4"></td></tr>`)
             })
         },
         error: function (xhr) {
@@ -33,10 +33,11 @@ function showUserOverview($target) {
 
 // edit a user
 function editUser(id) {
-    const $target = $(`#user-${id}`);
+    const $target = $(`#edit-user`);
     $.getJSON({
         url: `/rest/admin/users/${id}`,
         success: function (user) {
+            $target.html("");
             showUserEditor($target, putUser, user);
         },
         error: function (xhr) {
@@ -51,7 +52,8 @@ function deleteUser(id) {
         method: 'DELETE',
         url: `/rest/admin/users/${id}`,
         success: function () {
-            alert(`user ${id}  deleted`)
+            alert(`user ${id}  deleted`);
+            location.reload();
         },
         error: function (xhr) {
             alert("Deleting user failed: " + xhr.responseText);
