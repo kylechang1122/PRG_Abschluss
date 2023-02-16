@@ -1,5 +1,6 @@
 package project.data.classes;
 
+import org.bson.types.ObjectId;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,6 +64,7 @@ public class PlenaryProtocol extends PlenaryObject {
             Node agendaNode = agendaNodes.item(b);
             AgendaItem agendaItem = new AgendaItem(agendaNode, this);
             agendaItem.setNumber(b);
+            agendaItem.setId(new ObjectId().toString());
             this.getAgendaItems().add(agendaItem);
             // get speeches of current agenda item
             List<Element> filterResult = XMLHelper.match(agendaElements, (e) -> {
@@ -177,14 +179,6 @@ public class PlenaryProtocol extends PlenaryObject {
 
     public void setAgendaItems(List<AgendaItem> agendaItems) {
         this.agendaItems = agendaItems;
-    }
-
-    public AgendaItem getAgendaItemByIndexString(String agendaItemIndex) {
-        List<AgendaItem> agenda = getAgendaItems().stream().filter((s) -> s.getIndex().equals(agendaItemIndex)).collect(Collectors.toList());
-        if (agenda.isEmpty()) {
-            return null;
-        }
-        return agenda.get(0);
     }
 
     public String getPlace() {

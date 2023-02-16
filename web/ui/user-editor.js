@@ -85,6 +85,7 @@ function showUserEditor($target, submitFunction, data = {}) {
         }
     };
     var options = {
+        focus: "",
         fields: {
             group: {
                 "optionLabels": ["User", "Manager", "Administrator"],

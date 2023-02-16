@@ -12,7 +12,7 @@
         function clearEditor() {
             $("#editor").html("");
         }
-        function adddSpeaker() {
+        function addSpeaker() {
             clearEditor();
             showSpeakerEditor($("#editor"), {});
         }
@@ -32,7 +32,7 @@
             <nav class="menu">
                 <ul>
                     <li class="manager"><a href="#" onclick="showSpeakers()"> Show Speakers </a></li>
-                    <li class="manager"><a href="#" onclick="adddSpeaker()"> Add Speaker </a></li>
+                    <li class="manager"><a href="#" onclick="addSpeaker()"> Add Speaker </a></li>
                 </ul>
             </nav>
         </div>

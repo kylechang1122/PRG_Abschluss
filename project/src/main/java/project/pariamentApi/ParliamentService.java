@@ -21,7 +21,9 @@ public class ParliamentService {
                     new Document("$project",
                             new Document("number", 1L)
                                     .append("index", "$agendaItems.index")
-                                    .append("title", "$agendaItems.title")))
+                                    .append("title", "$agendaItems.title")
+                                    .append("_id", "$agendaItems._id")
+                    ))
     );
 
     private final ParliamentDbHandler dbConnection;
@@ -38,6 +40,20 @@ public class ParliamentService {
             return null;
         }
         return speeches.get(0);
+    }
+
+    private static AgendaItem getAgendaItemById(String id, PlenaryProtocol protocol) {
+        List<AgendaItem> agendaItems = protocol.getAgendaItems().stream().filter((a) -> {
+            String ID = a.getId();
+            if (ID == null) {
+                return false;
+            }
+            return ID.equals(id);
+        }).collect(Collectors.toList());
+        if (agendaItems.isEmpty()) {
+            return null;
+        }
+        return agendaItems.get(0);
     }
 
     public ParliamentService(ParliamentDbHandler mongoDBHandler) {
@@ -58,6 +74,13 @@ public class ParliamentService {
 
     public PlenaryProtocol updateProtocol(PlenaryProtocol plenaryProtocol) {
         Document document = dbConnection.updateProtocol(MongoHelper.toMongoDocument(plenaryProtocol));
+        return plenaryProtocol;
+    }
+
+    public PlenaryProtocol updateProtocolMetaData(PlenaryProtocol plenaryProtocol) {
+        PlenaryProtocol existingProtocol = getProtocol(plenaryProtocol.getId());
+        plenaryProtocol.setAgendaItems(existingProtocol.getAgendaItems());
+        updateProtocol(plenaryProtocol);
         return plenaryProtocol;
     }
 
@@ -96,40 +119,47 @@ public class ParliamentService {
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
-        return protocol.getAgendaItemByIndexString(agendaIndex);
+        return getAgendaItemById(agendaIndex, protocol);
     }
 
-    public AgendaItem createAgendaItem(String protocolId, int index, AgendaItem agendaItem) {
+    public AgendaItem createAgendaItem(String protocolId, int position, AgendaItem agendaItem) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
         agendaItem.setId(new ObjectId().toString());
         agendaItem.setProtocol(protocol);
-        protocol.getAgendaItems().set(index, agendaItem);
+        if (position > protocol.getAgendaItems().size()) {
+            position = protocol.getAgendaItems().size();
+        }
+        protocol.getAgendaItems().add(position, agendaItem);
         updateProtocol(protocol);
         return agendaItem;
     }
 
-    public AgendaItem updateAgendaItem(String protocolId, int index, AgendaItem agendaItem) {
+    public AgendaItem updateAgendaItem(String protocolId, int position, AgendaItem agendaItem) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
-        AgendaItem existingAgendaItem = protocol.getAgendaItems().get(index);
+        AgendaItem existingAgendaItem = getAgendaItemById(agendaItem.getId(), protocol);
         agendaItem.getSpeeches().addAll(existingAgendaItem.getSpeeches());
         agendaItem.setProtocol(protocol);
-        protocol.getAgendaItems().set(index, agendaItem);
+        protocol.getAgendaItems().remove(existingAgendaItem);
+        if (position > protocol.getAgendaItems().size()) {
+            position = protocol.getAgendaItems().size();
+        }
+        protocol.getAgendaItems().add(position, agendaItem);
         updateProtocol(protocol);
         return agendaItem;
     }
 
-    public void deleteAgendaItem(String protocolId, String agendaItemIndexString) {
+    public void deleteAgendaItem(String protocolId, String agendaItemId) {
         PlenaryProtocol protocol = this.getProtocol(protocolId);
         if (protocol == null) {
             throw new IllegalArgumentException("protocol not existing");
         }
-        AgendaItem existingAgendaItem = protocol.getAgendaItemByIndexString(agendaItemIndexString);
+        AgendaItem existingAgendaItem = getAgendaItemById(agendaItemId, protocol);
         if (existingAgendaItem == null) {
             throw new IllegalArgumentException("agendaItem not existing");
         }
@@ -145,10 +175,13 @@ public class ParliamentService {
         return getSpeechById(speechId, protocol);
     }
 
-    public Speech createSpeech(String protocolId, String agendaItemIndexString, int position, Speech speech) {
+    public Speech createSpeech(String protocolId, String agendaItemId, int position, Speech speech) {
         speech.setId(new ObjectId().toString());
         PlenaryProtocol protocol = this.getProtocol(protocolId);
-        AgendaItem agendaItem = protocol.getAgendaItemByIndexString(agendaItemIndexString);
+        AgendaItem agendaItem = getAgendaItemById(agendaItemId, protocol);
+        if (agendaItem == null) {
+            throw new IllegalArgumentException("agendaItem not existing");
+        }
         speech.setProtocol(protocol);
         speech.setAgendaItem(agendaItem);
         if (position > agendaItem.getSpeeches().size()) {

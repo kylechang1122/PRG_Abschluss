@@ -65,6 +65,7 @@ function showTextEditor(options) {
         },
     };
     var options = {
+        focus: "",
         fields: {
             text: {
                 type: "textarea",

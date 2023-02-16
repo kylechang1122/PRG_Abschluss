@@ -7,14 +7,14 @@ function getSpeakerNameById(id) {
 }
 
 // submit-function for agenda item editor that PUTs agenda item data to the backend
-function putAgendaItem(protocolId, agendaItemIndexString) {
+function putAgendaItem(protocolId, agendaItemId) {
     var value = this.getValue();
     var data = value;
     var number = data.number;
-    $.ajax({
+    return $.ajax({
         dataType: 'json',
         type: 'PUT',
-        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemIndexString}/${number}`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemId}/${number}`,
         data: JSON.stringify(data),
         success: (response) => {
             alert("Save successful!");
@@ -31,7 +31,7 @@ function postAgendaItem(protocolId) {
     var value = this.getValue();
     var data = value;
     var number = data.number;
-    $.ajax({
+    return $.ajax({
         dataType: 'json',
         type: 'POST',
         url: `/rest/parliament/protocol/${protocolId}/agenda/${number}`,
@@ -59,6 +59,11 @@ function showAgendaItemEditor(selector, submitFunction, data = {}, canceable = t
                 required: true,
                 "minimum": 0,
             },
+            id: {
+                type: "string",
+                title: "Id",
+                required: true,
+            },
             index: {
                 type: "string",
                 title: "Index",
@@ -72,9 +77,13 @@ function showAgendaItemEditor(selector, submitFunction, data = {}, canceable = t
         },
     };
     var options = {
+        focus: "",
         fields: {
             title: {
                 type: "textarea"
+            },
+            id: {
+                type: "hidden"
             }
         },
         form: {
@@ -117,7 +126,7 @@ function showSpeechOverview(selector, protocolId, agendaItem) {
                     <td>${speech.id}</td>
                     <td>${speech.speakerRole ? speech.speakerRole + ' ' : ''}${getSpeakerNameById(speech.speakerId)}</td>
                     <td>
-                    <button onclick="editSpeech('${selector}', '${protocolId}', '${agendaItem.index}', '${speech.id}', ${number})">Edit</button>
+                    <button onclick="editSpeech('${selector}', '${protocolId}', '${agendaItem.id}', '${speech.id}', ${number})">Edit</button>
                     <button onclick="deleteSpeech('${selector}', '${protocolId}', '${speech.id}')">Delete</button>
                     </td>
                 </tr>`)
@@ -140,8 +149,8 @@ function deleteSpeech(selector, protocolId, speechId) {
     });
 };
 // call the speech to edit
-function editSpeech(selector, protocolId, agendaItemIndexString, speechId, number) {
-    const url = `/editor/speech?id=${protocolId}&item=${agendaItemIndexString}&speech=${speechId}&number=${number}`
+function editSpeech(selector, protocolId, agendaItemId, speechId, number) {
+    const url = `/editor/speech?id=${protocolId}&item=${agendaItemId}&speech=${speechId}&number=${number}`
     location.href = url;
 };
 

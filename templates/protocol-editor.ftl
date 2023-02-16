@@ -12,22 +12,6 @@
     </style>
     <script>
 
-        const protocolId = redirect = new URL(location.href).searchParams.get("id");
-
-        function showAgenda() {
-            $("#agenda").html("");
-            showAgendaOverview("#agenda", protocolId);
-        }
-
-        function showProtocol() {
-            $("#protocol").html("");
-            editProtocol("#protocol", protocolId);
-        }
-
-        function addAgendaItem() {
-            $("#agenda").html("");
-            showAgendaItemEditor("#agenda", () => postAgendaItem(protocolId));
-        }
     </script>
 
 </head>
@@ -46,7 +30,7 @@
             </nav>
         </div>
         <div class="col-md-10">
-            <div id="protocol" >
+            <div id="protocol">
             </div>
             <div id="agenda">
             </div>
@@ -56,10 +40,54 @@
 
 
 <script>
-    showMenu();
-    showAgenda();
-    showProtocol();
+    const protocolId = redirect = new URL(location.href).searchParams.get("id");
 
+    function showAgenda() {
+        const selector = "#agenda";
+        $(selector).html("");
+        showAgendaOverview(selector, window.protocol);
+    }
+
+    function showProtocol() {
+        const selector = "#protocol";
+        $(selector).html("");
+        showProtocolEditor(
+            selector,
+            function () {
+                putProtocol.call(this).then(() => location.reload())
+            },
+            window.protocol)
+    }
+
+    function addAgendaItem() {
+        const selector = "#agenda";
+        $(selector).html("");
+        const number = window.protocol.agendaItems.length;
+        showAgendaItemEditor(
+            selector,
+            function () {
+                postAgendaItem.call(this, protocolId).then(() => location.reload())
+            },
+            {number}
+        );
+    }
+
+    function loadProtocol() {
+        return $.getJSON({
+            url: "/rest/parliament/protocol/" + protocolId,
+            success: function (response) {
+                window.protocol = response;
+                showMenu();
+                showProtocol();
+                showAgenda();
+            },
+            error: function (xhr) {
+                alert("Loading Agenda-Item failed: " + xhr.responseText);
+            }
+        });
+    }
+
+    loadProtocol();
 </script>
 
 </body>

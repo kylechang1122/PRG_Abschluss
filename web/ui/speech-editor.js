@@ -2,7 +2,6 @@
 function putSpeech(protocolId) {
     var value = this.getValue();
     var data = value;
-    parseDates(data);
     return $.ajax({
         dataType: 'json',
         type: 'PUT',
@@ -22,7 +21,6 @@ function putSpeech(protocolId) {
 function postSpeech(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
-    parseDates(data);
     return $.ajax({
         dataType: 'json',
         type: 'POST',
@@ -65,6 +63,7 @@ function showSpeechEditor(options) {
         },
     };
     var options = {
+        focus: "",
         fields: {
             content: {
                 type: "textarea"

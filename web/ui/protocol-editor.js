@@ -1,42 +1,10 @@
-function toSQLDate(date) {
-    // from https://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime
-    return date.toISOString().slice(0, 19).replace('T', ' ');
-}
-
-function parseDates(data) {
-    if (data.date) {
-        data.date = new Date(Date.parse(data.date));
-        //data.date = toSQLDate(data.date);
-    }
-    if (data.startTime) {
-        data.startTime = new Date(Date.parse("1970-01-01T14:" + data.startTime));
-        //data.startTime = toSQLDate(data.startTime);
-    }
-    if (data.endTime) {
-        data.endTime = new Date(Date.parse("1970-01-01T14:" + data.endTime));
-        //data.endTime = toSQLDate(data.endTime);
-    }
-}
-// call a protocol w/ id to edit
-function editProtocol(targetId, protocolId) {
-    const $target = $(targetId);
-    $.getJSON({
-        url: `/rest/parliament/protocol/${protocolId}`,
-        success: function (protocol) {
-            showProtocolEditor($target, putProtocol, protocol);
-        },
-        error: function (xhr) {
-            alert("Loading Protocol failed: " + xhr.responseText);
-        }
-    });
-};
 
 // submit-function for protocol editor that PUTs protocol data to the backend
 function putProtocol() {
     var value = this.getValue();
     var data = value;
-    parseDates(data);
-    $.ajax({
+    const {agendaItems} = protocol;
+    return $.ajax({
         dataType: 'json',
         type: 'PUT',
         url: "/rest/parliament/protocol/" + data.id,
@@ -55,8 +23,8 @@ function putProtocol() {
 function postProtocol() {
     var value = this.getValue();
     var data = value;
-    parseDates(data);
-    $.ajax({
+    parseDatesOut(data);
+    return $.ajax({
         dataType: 'json',
         type: 'POST',
         url: "/rest/parliament/protocol",
@@ -118,6 +86,7 @@ function showProtocolEditor(selector, submitFunction, data = {}) {
         },
     };
     var options = {
+        focus: "",
         fields: {
             electionperiod: {
                 type: "select",
@@ -134,10 +103,6 @@ function showProtocolEditor(selector, submitFunction, data = {}) {
                 submit: {
                     click: submitFunction,
                     title: "Save"
-                },
-                cancel: {
-                    click: () => $target.html(''),
-                    title: "Cancel"
                 }
             }
         }
@@ -150,35 +115,27 @@ function showProtocolEditor(selector, submitFunction, data = {}) {
 }
 
 // show agenda overview
-function showAgendaOverview(targetId, protocolId) {
-    const $target = $(targetId);
-    $.getJSON({
-        url: `/rest/parliament/protocol/${protocolId}/agenda/overview`,
-        success: function (agenda) {
-            $target.html(`
+function showAgendaOverview(selector, protocol) {
+    const $target = $(selector);
+    $target.html(`
                 <table class='table agenda'>
                     <thead></thead>
                     <tbody></tbody>
                 </table>`);
-            const $table = $target.find('table.agenda');
-            $table.find('thead').append(`<tr><th>Agenda</th><th>Title</th><th></th></tr>`)
-            const $tbody = $table.find('tbody');
-            agenda.forEach(agendaItem => {
-                $tbody.append(`
+    const $table = $target.find('table.agenda');
+    $table.find('thead').append(`<tr><th>Agenda</th><th>Title</th><th></th></tr>`)
+    const $tbody = $table.find('tbody');
+    protocol.agendaItems.forEach(agendaItem => {
+        $tbody.append(`
                 <tr>
                     <td>${agendaItem.index}</td>
                     <td>${agendaItem.title}</td>
                     <td>
-                    <button onclick="editAgendaItem('${protocolId}', '${agendaItem.index}')">Edit</button>
-                    <button onclick="deleteAgendaItem('${protocolId}', '${agendaItem.index}')">Delete</button>
+                    <button onclick="editAgendaItem('${protocolId}', '${agendaItem.id}')">Edit</button>
+                    <button onclick="deleteAgendaItem('${protocolId}', '${agendaItem.id}')">Delete</button>
                     </td>
                 </tr>`)
-            })
-        },
-        error: function (xhr) {
-            alert("Loading Protocols failed: " + xhr.responseText);
-        }
-    });
+    })
 }
 
 // call agenda item to edit
@@ -189,13 +146,13 @@ function editAgendaItem(protocolId, agendaItemId) {
 };
 
 // delete an agenda item
-function deleteAgendaItem(targetId, protocolId, agendaItemIndexString) {
+function deleteAgendaItem(protocolId, agendaItemId) {
     $.ajax({
         method: 'DELETE',
-        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemIndexString}`,
+        url: `/rest/parliament/protocol/${protocolId}/agenda-item/${agendaItemId}`,
         success: function () {
-            alert(`agenda Item ${agendaItemIndexString}  deleted`);
-            showAgendaOverview(targetId, protocolId);
+            alert(`agenda Item ${agendaItemId}  deleted`);
+            location.reload();
         },
         error: function (xhr) {
             alert("Deleting agenda item failed: " + xhr.responseText);

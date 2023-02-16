@@ -38,6 +38,7 @@ public class AgendaItem extends PlenaryObject{
                 speeches.add(new Speech(this, speech));
             });
         }
+        this.setId(document.getString("_id"));
         this.setNumber(document.getInteger("number"));
         //index
         this.setIndex(document.getString("index"));

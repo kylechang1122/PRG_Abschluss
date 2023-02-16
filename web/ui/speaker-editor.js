@@ -128,13 +128,10 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
                 type: "string",
                 title: "Fraction"
             },
-            role: {
-                type: "string",
-                title: "Role"
-            },
         }
     };
     var options = {
+        focus: "",
         fields: {
             id: {
                 type: "hidden"

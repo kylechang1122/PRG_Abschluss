@@ -44,9 +44,8 @@ public class ParliamentApi {
             return false;
         }
     }
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final String TIME_FORMAT = "HH:mm:ss";
+    private static final String UI_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String UI_TIME_FORMAT = "HH:mm";
 
     /**
      * from https://stackoverflow.com/questions/29630028/gson-time-deserilization
@@ -57,13 +56,13 @@ public class ParliamentApi {
         public java.sql.Date deserialize(JsonElement jsonElement, Type typeOF,
                                 JsonDeserializationContext context) throws JsonParseException {
             try {
-                Date date = new SimpleDateFormat(DATE_FORMAT, Locale.GERMAN).parse(jsonElement.getAsString());
+                Date date = new SimpleDateFormat(UI_DATE_FORMAT, Locale.GERMAN).parse(jsonElement.getAsString());
                 return new java.sql.Date(date.getTime());
             } catch (ParseException e) {
             }
 
             throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
-                    + "\". Supported formats: " + DATE_FORMAT);
+                    + "\". Supported formats: " + UI_DATE_FORMAT);
         }
     }
     /**
@@ -76,13 +75,29 @@ public class ParliamentApi {
                                 JsonDeserializationContext context) throws JsonParseException {
             try {
 
-                Date date = new SimpleDateFormat(DATE_FORMAT, Locale.GERMAN).parse(jsonElement.getAsString());
+                Date date = new SimpleDateFormat(UI_TIME_FORMAT, Locale.GERMAN).parse(jsonElement.getAsString());
                 Time t = new Time(date.getTime());
                 return t;
             } catch (ParseException e) {
             }
             throw new JsonParseException("Unparseable time: \"" + jsonElement.getAsString()
-                    + "\". Supported formats: " + TIME_FORMAT);
+                    + "\". Supported formats: " + UI_TIME_FORMAT);
+        }
+    }
+
+    private class TimeSerializer implements JsonSerializer<Time> {
+        @Override
+        public JsonElement serialize(Time time, Type type, JsonSerializationContext jsonSerializationContext) {
+            String formattedTime = new SimpleDateFormat(UI_TIME_FORMAT, Locale.GERMAN).format(time.getTime());
+            return new JsonPrimitive(formattedTime);
+        }
+    }
+
+    private class DateSerializer implements JsonSerializer<Date> {
+        @Override
+        public JsonElement serialize(Date date, Type type, JsonSerializationContext jsonSerializationContext) {
+            String formattedTime = new SimpleDateFormat(UI_DATE_FORMAT, Locale.GERMAN).format(date.getTime());
+            return new JsonPrimitive(formattedTime);
         }
     }
 
@@ -132,9 +147,11 @@ public class ParliamentApi {
         this.basicAuthHelper = new BasicAuthHelper(userService);
         GsonBuilder gSonBuilder=  new GsonBuilder();
         gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateDeserializer());
+        gSonBuilder.registerTypeAdapter(java.sql.Date.class, new DateSerializer());
+        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
+        gSonBuilder.registerTypeAdapter(Time.class, new TimeSerializer());
         gSonBuilder.registerTypeHierarchyAdapter(Text.class, new TextSerializer());
         gSonBuilder.registerTypeHierarchyAdapter(Text.class, new TextDeserializer());
-        gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
         gSonBuilder.setExclusionStrategies(new ProtocolExclusionStrategy());
         gson = gSonBuilder.create();
     }
@@ -177,7 +194,7 @@ public class ParliamentApi {
             if(! protocol.getId().equals(id)){
                 halt(400, "Wrong protocol data");
             }
-            return parliamentService.updateProtocol(protocol);
+            return parliamentService.updateProtocolMetaData(protocol);
         }, gson::toJson);
         // create protocol
         post("/rest/parliament/protocol", (request, response) -> {
@@ -290,13 +307,13 @@ public class ParliamentApi {
         put("/rest/parliament/protocol/:id/agenda-item/:aid/:num", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
-            String agendaItemIndexString = request.params(":aid");
+            String agendaItemId = request.params(":aid");
             int index = Integer.parseInt(request.params(":num"));
             if(! parliamentService.protocolExists(protocolId)){
                 halt(404, "Protocol does not exist");
             }
             AgendaItem agendaItem = gson.fromJson(request.body(), AgendaItem.class);
-            if(! agendaItem.getIndex().equals(agendaItemIndexString)){
+            if(! agendaItem.getId().equals(agendaItemId)){
                 halt(400, "Wrong agenda-item data");
             }
             try{
@@ -321,11 +338,11 @@ public class ParliamentApi {
         delete("/rest/parliament/protocol/:id/agenda-item/:aid", (request, response) -> {
             checkAuthorizationUserLevel(request, response);
             String protocolId = request.params(":id");
-            String agendaItemIndexString = request.params(":aid");
+            String agendaItemId = request.params(":aid");
             if(! parliamentService.protocolExists(protocolId)){
                 halt(404, "Protocol does not exist");
             }
-            parliamentService.deleteAgendaItem(protocolId, agendaItemIndexString);
+            parliamentService.deleteAgendaItem(protocolId, agendaItemId);
             return "success";
         }, gson::toJson);
     }

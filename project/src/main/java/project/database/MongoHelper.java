@@ -35,6 +35,7 @@ public class MongoHelper {
 
     public static Document toMongoDocument(AgendaItem agendaItem) {
         Document document = new Document()
+                .append("_id", agendaItem.getId())
                 .append("index", agendaItem.getIndex())
                 .append("title", agendaItem.getTitle())
                 .append("number", agendaItem.getNumber());
