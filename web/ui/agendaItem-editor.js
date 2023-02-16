@@ -1,3 +1,4 @@
+// get speaker name by id
 function getSpeakerNameById(id) {
     const s = window.speakers ? window.speakers.find((s) => s._id === id) : undefined;
     if (s) {
@@ -5,6 +6,7 @@ function getSpeakerNameById(id) {
     }
 }
 
+// submit-function for agenda item editor that PUTs agenda item data to the backend
 function putAgendaItem(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -24,6 +26,7 @@ function putAgendaItem(protocolId, agendaItemIndexString) {
     });
 }
 
+// submit-function for agenda item editor that POSTs agenda item data to the backend
 function postAgendaItem(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -42,7 +45,7 @@ function postAgendaItem(protocolId) {
         }
     });
 }
-
+// show agenda item editor
 function showAgendaItemEditor(selector, submitFunction, data = {}, canceable = true) {
     const $target = $(selector);
     // schema of Agenda Item Edit for Alpaca
@@ -96,6 +99,7 @@ function showAgendaItemEditor(selector, submitFunction, data = {}, canceable = t
     });
 }
 
+// show speech overview
 function showSpeechOverview(selector, protocolId, agendaItem) {
     const $target = $(selector);
     $target.append(`<h4>Speeches</h4>
@@ -121,6 +125,7 @@ function showSpeechOverview(selector, protocolId, agendaItem) {
     })
 }
 
+// delete speech
 function deleteSpeech(selector, protocolId, speechId) {
     return $.ajax({
         method: 'DELETE',
@@ -134,7 +139,7 @@ function deleteSpeech(selector, protocolId, speechId) {
         }
     });
 };
-
+// call the speech to edit
 function editSpeech(selector, protocolId, agendaItemIndexString, speechId, number) {
     const url = `/editor/speech?id=${protocolId}&item=${agendaItemIndexString}&speech=${speechId}&number=${number}`
     location.href = url;

@@ -19,6 +19,7 @@ function authenticate(userId, password) {
     });
 }
 
+// show login
 function showLogin($target) {
     // schema of Login for Alpaca
     var schema = {

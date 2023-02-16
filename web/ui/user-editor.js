@@ -1,3 +1,4 @@
+// submit-function for user editor that PUTs user data to the backend
 function putUser() {
     var value = this.getValue();
     var credential = btoa(value.userId + ":" + value.password)
@@ -22,6 +23,8 @@ function putUser() {
         }
     });
 }
+
+// submit-function for user editor that POSTs user data to the backend
 function postUser() {
     var value = this.getValue();
     var credential = btoa(value.userId + ":" + value.password)
@@ -46,6 +49,8 @@ function postUser() {
         }
     });
 }
+
+// show user editor
 function showUserEditor($target, submitFunction, data = {}) {
     data.password = data.credential && data.userId && atob(data.credential).replace(data.userId + ':', '');
     // schema of User Edit for Alpaca

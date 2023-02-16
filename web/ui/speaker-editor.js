@@ -20,6 +20,7 @@ function parseSpeakerResponseData(data) {
     }
 }
 
+// submit-function for speaker editor that PUTs speaker data to the backend
 function putSpeaker() {
     var value = this.getValue();
     var data = value;
@@ -39,6 +40,7 @@ function putSpeaker() {
     });
 }
 
+// submit-function for speaker editor that POSTs speaker data to the backend
 function postSpeaker() {
     var value = this.getValue();
     var data = value;
@@ -57,6 +59,7 @@ function postSpeaker() {
         }
     });
 }
+// show speaker editor
 function showSpeakerEditor($target, submitFunction, data = {}) {
     // schema of Speaker Edit for Alpaca
     var schema = {
@@ -76,9 +79,46 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
                 title: "Last Name",
                 required: true
             },
-            academicTitle: {
+            title: {
                 type: "string",
                 title: "Title"
+            },
+            birthdate: {
+                type: "string",
+                title: "Birthdate"
+            },
+            birthplace: {
+                type: "string",
+                title: "Place of Birth"
+            },
+            deathdate: {
+                type: "string",
+                title: "Date of Death"
+            },
+            gender: {
+                type: "string",
+                title: "Gender"
+            },
+            profession: {
+                type: "string",
+                title: "Profession"
+            },
+            academicTitle: {
+                type: "string",
+                title: "Academic Title"
+            },
+            maritalStatus: {
+                type: "string",
+                title: "Marital Status"
+            },
+            religion: {
+                type: "string",
+                title: "Religion"
+            },
+            image: {
+                type: "string",
+                format: "uri",
+                title: "Photo"
             },
             party: {
                 type: "string",

@@ -1,4 +1,4 @@
-
+// submit-function for speech editor that PUTs speech data to the backend
 function putSpeech(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -18,6 +18,7 @@ function putSpeech(protocolId) {
     });
 }
 
+// submit-function for speech editor that POSTs speech data to the backend
 function postSpeech(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -37,6 +38,7 @@ function postSpeech(protocolId, agendaItemIndexString) {
     });
 }
 
+// show speech editor
 function showSpeechEditor(options) {
     const {selector, submitFunction, data = {}, id} = options;
     const $target = $(selector);
