@@ -1,4 +1,4 @@
-// update a user
+// submit-function for user editor that PUTs user data to the backend
 function putUser() {
     var value = this.getValue();
     var credential = btoa(value.userId + ":" + value.password)
@@ -24,7 +24,7 @@ function putUser() {
     });
 }
 
-// create a user
+// submit-function for user editor that POSTs user data to the backend
 function postUser() {
     var value = this.getValue();
     var credential = btoa(value.userId + ":" + value.password)

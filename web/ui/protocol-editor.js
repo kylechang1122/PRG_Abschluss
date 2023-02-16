@@ -17,7 +17,7 @@ function parseDates(data) {
         //data.endTime = toSQLDate(data.endTime);
     }
 }
-
+// call a protocol w/ id to edit
 function editProtocol(targetId, protocolId) {
     const $target = $(targetId);
     $.getJSON({
@@ -31,7 +31,7 @@ function editProtocol(targetId, protocolId) {
     });
 };
 
-// update a protocol
+// submit-function for protocol editor that PUTs protocol data to the backend
 function putProtocol() {
     var value = this.getValue();
     var data = value;
@@ -51,7 +51,7 @@ function putProtocol() {
     });
 }
 
-// create a protocol
+// submit-function for protocol editor that POSTs protocol data to the backend
 function postProtocol() {
     var value = this.getValue();
     var data = value;
@@ -86,7 +86,7 @@ function showProtocolEditor(selector, submitFunction, data = {}) {
             electionperiod: {
                 type: "select",
                 title: "Election Period",
-                enum: ["19", "20"], // less than 3 options will be checkbox.
+                enum: ["19", "20"],
                 required: true,
             },
             date: {
@@ -149,6 +149,7 @@ function showProtocolEditor(selector, submitFunction, data = {}) {
     });
 }
 
+// show agenda overview
 function showAgendaOverview(targetId, protocolId) {
     const $target = $(targetId);
     $.getJSON({
@@ -183,13 +184,15 @@ function showAgendaOverview(targetId, protocolId) {
         }
     });
 }
+
+// call agenda item to edit
 function editAgendaItem(protocolId, agendaItemId) {
     //const url = new URL("/editor/agenda-item").searchParams.append("agendaItem", agendaItemId);
     const url = `/editor/agenda-item?id=${protocolId}&item=${agendaItemId}`
     location.href = url;
 };
 
-
+// delete an agenda item
 function deleteAgendaItem(targetId, protocolId, agendaItemIndexString) {
     $.ajax({
         method: 'DELETE',

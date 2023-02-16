@@ -1,3 +1,4 @@
+// get speaker name by id
 function getSpeakerNameById(id){
     const s = window.speakers? window.speakers.find((s) => s._id === id): undefined;
     if(s) {
@@ -5,7 +6,7 @@ function getSpeakerNameById(id){
     }
 }
 
-// update an agenda item
+// submit-function for agenda item editor that PUTs agenda item data to the backend
 function putAgendaItem(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -25,7 +26,7 @@ function putAgendaItem(protocolId, agendaItemIndexString) {
     });
 }
 
-// create an agenda item
+// submit-function for agenda item editor that POSTs agenda item data to the backend
 function postAgendaItem(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -97,6 +98,7 @@ function showAgendaItemEditor(selector, submitFunction, data = {}) {
     });
 }
 
+// show speech overview
 function showSpeechOverview(selector, protocolId, agendaItem) {
     const $target = $(selector);
     $target.append(`<h4>Speeches</h4>
@@ -121,6 +123,7 @@ function showSpeechOverview(selector, protocolId, agendaItem) {
     })
 }
 
+// delete speech
 function deleteSpeech(selector, protocolId, speechId) {
     $.ajax({
         method: 'DELETE',
@@ -134,7 +137,7 @@ function deleteSpeech(selector, protocolId, speechId) {
         }
     });
 };
-
+// call the speech to edit
 function editSpeech(selector, protocolId, agendaItemIndexString, speechId) {
     const url = `/editor/speech?id=${protocolId}&item=${agendaItemIndexString}&speech=${speechId}`
     location.href = url;

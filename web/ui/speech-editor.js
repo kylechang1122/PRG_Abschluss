@@ -1,4 +1,4 @@
-// update a speech
+// submit-function for speech editor that PUTs speech data to the backend
 function putSpeech(protocolId) {
     var value = this.getValue();
     var data = value;
@@ -18,7 +18,7 @@ function putSpeech(protocolId) {
     });
 }
 
-// create a speech
+// submit-function for speech editor that POSTs speech data to the backend
 function postSpeech(protocolId, agendaItemIndexString) {
     var value = this.getValue();
     var data = value;
@@ -93,7 +93,7 @@ function showSpeechEditor(selector, submitFunction, data = {}) {
     });
 }
 
-// update speech text
+// submit-function for text editor that PUTs text data to the backend
 function putText(protocolId, speechId) {
     var value = this.getValue();
     var data = value;
@@ -113,7 +113,7 @@ function putText(protocolId, speechId) {
     });
 }
 
-// create a speech text
+// submit-function for text editor that POSTs text data to the backend
 function postText(protocolId, speechId) {
     var value = this.getValue();
     var data = value;

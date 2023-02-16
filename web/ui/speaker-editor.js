@@ -20,7 +20,7 @@ function parseSpeakerResponseData(data) {
     }
 }
 
-// update a speaker
+// submit-function for speaker editor that PUTs speaker data to the backend
 function putSpeaker() {
     var value = this.getValue();
     var data = value;
@@ -40,7 +40,7 @@ function putSpeaker() {
     });
 }
 
-// create a speaker
+// submit-function for speaker editor that POSTs speaker data to the backend
 function postSpeaker() {
     var value = this.getValue();
     var data = value;
@@ -138,9 +138,6 @@ function showSpeakerEditor($target, submitFunction, data = {}) {
         fields: {
             id: {
                 type: "hidden"
-            },
-            image: {
-                type: "file"
             },
         },
         form: {

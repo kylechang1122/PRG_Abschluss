@@ -32,7 +32,7 @@ function showProtocolOverview(targetId) {
     });
 }
 
-// edit a protocol
+// call a protocol to edit
 function editProtocol(id) {
     location.href= "/editor/protocol?id=" + id;
 };

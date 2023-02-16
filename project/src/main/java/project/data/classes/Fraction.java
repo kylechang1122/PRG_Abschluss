@@ -3,7 +3,14 @@ package project.data.classes;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * class Fraction represents a fraction in the parliament
+ */
 public class Fraction extends PlenaryObject {
+    /**
+     * constructor for Fraction
+     * @param name //name of the fraction in parliament
+     */
     public Fraction(String name){
         this.name = name;
     }
