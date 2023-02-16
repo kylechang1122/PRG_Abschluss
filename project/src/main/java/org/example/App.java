@@ -64,6 +64,8 @@ public class App {
                     case "start":
                         startWebApp(app);
                         break;
+                    case "exit":
+                        break;
                     default:
                         throw (new IllegalArgumentException("unknown command"));
                 }
