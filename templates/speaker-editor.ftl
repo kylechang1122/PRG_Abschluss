@@ -18,12 +18,6 @@
     <div class="row">
         <div class="col-md-4">
             <#include "./include/menu.ftl">
-            <nav class="menu">
-                <ul>
-                    <li class="manager"><a href="#" onclick="showSpeakers()"> Show Speakers </a></li>
-                    <li class="manager"><a href="#" onclick="addSpeaker()"> Add Speaker </a></li>
-                </ul>
-            </nav>
         </div>
         <div id="speaker" class="col-md-8">
         </div>
