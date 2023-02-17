@@ -140,7 +140,6 @@ function showAgendaOverview(selector, protocol) {
 
 // call agenda item to edit
 function editAgendaItem(protocolId, agendaItemId) {
-    //const url = new URL("/editor/agenda-item").searchParams.append("agendaItem", agendaItemId);
     const url = `/editor/agenda-item?id=${protocolId}&item=${agendaItemId}`
     location.href = url;
 };
