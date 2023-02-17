@@ -1,14 +1,12 @@
 package project.pariamentApi;
 
+import com.ibm.icu.text.SimpleDateFormat;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import project.data.classes.*;
 import project.database.MongoHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParliamentService {
@@ -89,9 +87,18 @@ public class ParliamentService {
     }
 
     public ArrayList<Document> getProtocolOverview() {
-        return dbConnection.getProtocolCollection().aggregate(Arrays.asList(new Document("$project",
+        ArrayList<Document> result = dbConnection.getProtocolCollection().aggregate(
+                Arrays.asList(
+                new Document("$project",
                 new Document("title", 1L)
-                        .append("_id", 1L)))).into(new ArrayList<>());
+                        .append("_id", 1L)
+                        .append("datum", 1L)
+        ))).into(new ArrayList<>());
+        result.forEach((document -> {
+            Date date = document.getDate("datum");
+            document.append("datum", new SimpleDateFormat(ParliamentApi.UI_DATE_FORMAT).format(date.getTime()));
+        }));
+        return result;
     }
 
     public boolean protocolExists(String id) {

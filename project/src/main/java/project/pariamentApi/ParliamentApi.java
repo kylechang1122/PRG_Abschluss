@@ -48,8 +48,8 @@ public class ParliamentApi {
             return false;
         }
     }
-    private static final String UI_DATE_FORMAT = "yyyy-MM-dd";
-    private static final String UI_TIME_FORMAT = "HH:mm";
+    public static final String UI_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String UI_TIME_FORMAT = "HH:mm";
 
     /**
      * from https://stackoverflow.com/questions/29630028/gson-time-deserilization

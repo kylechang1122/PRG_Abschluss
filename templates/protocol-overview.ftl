@@ -4,7 +4,6 @@
     <script type="text/javascript" src="/ui/agendaItem-editor.js"></script>
     <script type="text/javascript" src="/ui/protocol-editor.js"></script>
     <script type="text/javascript" src="/ui/speech-editor.js"></script>
-    <script type="text/javascript" src="/ui/comment-editor.js"></script>
     <script type="text/javascript" src="/ui/protocol-overview.js"></script>
     <style>
         #menu > li {

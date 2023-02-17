@@ -17,7 +17,7 @@ function showProtocolOverview(targetId) {
                 <tr>
                     <td>${p._id}</td>
                     <td>${p.title}</td>
-                    <td>${p.date}</td>
+                    <td>${p.datum}</td>
                     <td>
                     <button onclick="editProtocol('${p._id}')">Edit</button>
                     <button onclick="deleteProtocol('${p._id}', '${targetId}')">Delete</button>
